@@ -4,9 +4,11 @@ import operator, os, pickle, sys
 import cherrypy
 from genshi.template import TemplateLoader
 
+webhome = "/home/hrseweb/hrse"
+templdir = webhome+"/templates"
 
 loader = TemplateLoader(
-    os.path.join(os.path.dirname(__file__), 'templates'),
+    templdir,
     auto_reload=True
 )
 
@@ -30,7 +32,7 @@ def main(filename):
         'tools.encode.on': True, 'tools.encode.encoding': 'utf-8',
         'tools.decode.on': True,
         'tools.trailing_slash.on': True,
-        'tools.staticdir.root': os.path.abspath(os.path.dirname(__file__)),
+        'tools.staticdir.root': webhome,
         'server.socket_host': '0.0.0.0',
         'server.socket_port': 80
     })
@@ -39,6 +41,18 @@ def main(filename):
         '/media': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'static'
+        },
+        '/stylesheets': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': 'stylesheets'
+        },
+        '/js': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': 'bower_components'
+        },
+        '/img': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': 'img'
         }
     })
 
