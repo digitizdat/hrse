@@ -1,0 +1,211 @@
+    1  ls -l
+    2  cd hrse/
+    3  ls -l
+    4  cd
+    5  ls -l
+    6  mkdir dev
+    7  cd dev
+    8  ls -l
+    9  cd ..
+   10  Dmdir dev
+   11  ls -l
+   12  cd dev
+   13  ls -l
+   14  git pull https://github.com/digitizdat/hrse.git master
+   15  git init
+   16  git config --global user.email "martin@mcgreal.org"
+   17  git config --global user.name "Martin McGreal"
+   18  git pull https://github.com/digitizdat/hrse.git master
+   19  ls -l
+   20  cd prototype/
+   21  ls -l
+   22  pwd
+   23  cp index3.html ~/hrse/
+   24  ls -l img
+   25  ls -l
+   26  cd ..
+   27  ls -l
+   28  less prototype/app.scss 
+   29  diff prototype/app.scss ../hrse/scss/app.scss 
+   30  #cp prototype/app.scss ../hrse/scss/app.scss 
+   31  set -o vi
+   32  cp prototype/app.scss ../hrse/scss/app-old.scss 
+   33  ls -l
+   34  find .
+   35  find img/ prototype/
+   36  ls -l ../hrse/
+   37  ls -l
+   38  umask
+   39  vi ~/.bash_profile 
+   40  vi ~/.bashrc 
+   41  cp -r img/ ../hrse/
+   42  ls -l ../hrse/
+   43  ls -l
+   44  cd ../hrse/
+   45  ls -l
+   46  find . -type f |xargs chmod 644
+   47  ls -l
+   48  find . -type f |xargs -i chmod 644 "{}"
+   49  find . -type d |xargs -i chmod 755 "{}"
+   50  ls -l
+   51  less index
+   52  less index3.html 
+   53  cd .ss
+   54  cd
+   55  cd .ssh
+   56  ls -l
+   57  mkdir .ssh
+   58  cat > authorized_keys
+   59  ls -l
+   60  mv authorized_keys .ssh/
+   61  cd .ssh/
+   62  ls -la
+   63  cat > pyro.pem
+   64  ls -l
+   65  cd
+   66  cd hrse/
+   67  ls -l
+   68  cd ../
+   69  ls -l
+   70  cd dev/
+   71  ls -l
+   72  mkdir templates
+   73  cd templates/
+   74  ls -l
+   75  scp -i ~/.ssh/pyro.pem 10.198.91.142:/var/www/hrse/templates/index.html .
+   76  set -i vu
+   77  set -o vi
+   78  scp -i ~/.ssh/pyro.pem root@10.198.91.142:/var/www/hrse/templates/index.html .
+   79  ls -l
+   80  vi ~/.ssh/authorized_keys 
+   81  scp -i ~/.ssh/pyro.pem root@10.198.91.142:/var/www/hrse/templates/index.html .
+   82  cat ~/.ssh/pyro.pem 
+   83  openssl rsa -in ~/.ssh/pyro.pem -pubout
+   84  scp -i ~/.ssh/pyro.pem ec2-user@10.198.91.142:/var/www/hrse/templates/index.html .
+   85  ls -l
+   86  less index.html 
+   87  cd ..
+   88  ls -l
+   89  git add templates/
+   90  git status
+   91  cp templates/index.html ../hrse/
+   92  cd ../hrse/
+   93  ls -l
+   94  mkdir templates
+   95  mv index.html templates/
+   96  ls -l
+   97  cd templates/
+   98  ls -l
+   99  vi index.html 
+  100  ls -l
+  101  cd ..
+  102  ls -l
+  103  fg
+  104  pwd
+  105  ls -l
+  106  find js
+  107  find .|grep js
+  108  ls -l
+  109  less bower
+  110  1.
+  111  set -o vi
+  112  less bower.json 
+  113  cd bower
+  114  ls -l
+  115  cd bower_components/
+  116  ls -l
+  117  cd foundation/
+  118  ls -l
+  119  cd js/
+  120  ls -l
+  121  cd foundation
+  122  ls -l
+  123  cd ..
+  124  find .|grep modern
+  125  ls -l
+  126  cd modernizr/
+  127  ls -l
+  128  less readme.md 
+  129  man foundation
+  130  foundation --help
+  131  foundation help new
+  132  wpd
+  133  p[wd
+  134  pwd
+  135  ls -l
+  136  cd ..
+  137  find . -name vendor
+  138  ls -l ./bower_components/foundation/js/vendor
+  139  diff -Bbu bower_components/modernizr/modernizr.js ./bower_components/foundation/js/vendor/custom.modernizr.js 
+  140  diff -Bbu bower_components/modernizr/modernizr.js ./bower_components/foundation/js/vendor/custom.modernizr.js |less
+  141  pwd
+  142  ls -l
+  143  vi templates/index.html 
+  144  fg
+  145  find . -name foundation.min.js
+  146  fg
+  147  cd scss/
+  148  ls -l
+  149  cat app.scss 
+  150  less app-old.scss 
+  151  find .. |grep normalize
+  152  less app-old.scss 
+  153  mv app-old.scss app.scss 
+  154  less app.scss 
+  155  cd ..
+  156  ls -l
+  157  compass compile
+  158  ls -l
+  159  less templates/index.html 
+  160  vi templates/index.html 
+  161  ls -l stylesheets/
+  162  scp -i ~/.ssh/pyro.pem ec2-user@10.198.91.142:/var/www/hrse/controller.py .
+  163  s -l
+  164  touch __init__.py
+  165  ls -l
+  166  mkdir static
+  167  ls -l
+  168  ls -l 
+  169  less README.md 
+  170  ls -l
+  171  python controller.py hrse.db
+  172  pip install cherrypy
+  173  ls -l
+  174  ls -ltra
+  175  cd ..
+  176  ls -ltra
+  177  find .p
+  178  find .pip
+  179  less .pip/pip.log 
+  180  ls -l
+  181  cd hrse/
+  182  ls -l
+  183  vi controller.py 
+  184  python controller.py hrse.db
+  185  ls -la
+  186  foundation new hrse
+  187  ls -la
+  188  ls -l
+  189  cd hrse/
+  190  ls -l
+  191  cd ..
+  192  ls -l
+  193  find .
+  194  netstat -rn
+  195  • start periodical archiving by clicking on 'Enable Archiving'
+  196  ls -l
+  197  cd hrse/
+  198  ls -l
+  199  mkdir ../dev/py
+  200  cp controller.py __init__.py ../dev/py/
+  201  cp templates/index.html ../dev/templates/
+  202  ls -ltr
+  203  cd ../dev/
+  204  ls -l
+  205  git add py/
+  206  git status
+  207  git commit
+  208  ls -l
+  209  cd dev/
+  210  ls -l
+  211  history > AWS-BUILD-HRSEWEB
