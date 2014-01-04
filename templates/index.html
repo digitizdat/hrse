@@ -5,12 +5,12 @@
 <head>
   <meta charset="utf-8"></meta>
   <meta name="viewport" content="width=device-width"></meta>
-  <title>$title</title>
+  <title>Human Random Sequence Experiment</title>
   <link rel="stylesheet" href="/stylesheets/app.css"></link>
   <script src="/js/foundation/js/vendor/custom.modernizr.js"></script>
 </head>
 
-<body class="index">
+<body class="index" onkeypress="keystroke(event)">
   <div class="row">
         <div class="small-6 medium-6 large-6 columns" style="background-color:black; color:white; padding-right:1em; padding-top:1em; padding-bottom:1em; border-color:black; border-bottom-style:solid; border-top-style:solid; border-width:2">
           <div class="t1" style="float:right">Human Random</div>
@@ -30,44 +30,53 @@
           <p>Thank you for participating in the HRSE!</p>
 
           <p>
-            To submit a new sequence, press the 0 and 1 buttons below or on your keyboard as many
-            times as you please.  When you are done, press the "Done" button to submit your sequence for analysis.
+            <strong>To submit a new sequence:</strong>
+            <ol>
+            <li>Click the 0 and 1 buttons below - or press 0 and 1 on your keyboard - as many times as you please.</li>
+            <li>When you are done, click the "Done" button to submit your sequence for analysis.</li>
+            </ol>
             Please attempt to be as random as possible.  The longer the sequence, the better the result will be.
           </p>
         </div>
-
       </div>
   </div>
 
   <div class="row">
+    <center>
+        <noscript><h1>This site requires Javascript to be enabled in order to function.</h1></noscript>
+    </center>
+
+    <p id="sequence"></p>
     <div class="small-6 medium-6 large-6 columns"
          style="background-color:black; color:white; padding-right:2em; padding-top:1em;
          padding-bottom:1em; border-color:black; border-bottom-style:solid;
          border-top-style:solid; border-width:2">
-      <img style="float:right" data-interchange="[/img/0-white-small.png, (default)],
+      <img alt="" id="updatezero" onmousedown="clickzero()" onmouseup="clickzero()" onclick="addzero()"
+           style="float:right" data-interchange="[/img/0-white-small.png, (default)],
                              [/img/0-white-small.png, (small)],
                              [/img/0-white-med.png, (medium)],
                              [/img/0-white-huge.png, (large)]"></img>
-      <noscript><img src="/img/0-white-large.png"></img></noscript>
     </div>
     <div class="small-6 medium-6 large-6 columns"
          style="background-color:white; color:black; padding-left:2em; padding-top:1em;
          padding-bottom:1em; border-color:black; border-bottom-style:solid;
          border-top-style:solid; border-width:2">
-      <img data-interchange="[/img/1-black-small.png, (default)],
+      <img alt="" id="updateone" onmousedown="clickone()" onmouseup="clickone()" onclick="addone()"
+           data-interchange="[/img/1-black-small.png, (default)],
                              [/img/1-black-small.png, (small)], 
                              [/img/1-black-med.png, (medium)], 
                              [/img/1-black-huge.png, (large)]"></img>
-      <noscript><img src="/img/0-white-large.png"></img></noscript>
     </div>
   </div>
 
-
   <div class="row" style="padding-top:10px; padding-bottom:10px">
     <div class="twelve columns">
-      <div class="t1">
-        <center><a href="#" class="submit-button">Done</a></center>
-      </div>
+      <center><img alt="" id="doneimg" onmousedown="clickdone()" onmouseup="done()"
+           data-interchange="[/img/done-grey-167x69.png, (default)],
+                             [/img/done-100x42.png, (small)], 
+                             [/img/done-140x58.png, (medium)], 
+                             [/img/done-grey-167x69.png, (large)]"></img>
+      </center>
     </div>
   </div>
 
@@ -98,6 +107,7 @@
 -->
   </div>
 
+  <!-- Keyboard events -->
   <script src="/js/foundation/js/vendor/jquery.js"></script>
   <script src="/js/foundation/js/vendor/fastclick.js"></script>
   <script src="/js/foundation/js/foundation.min.js"></script>
@@ -105,6 +115,112 @@
     $(document).foundation();
   </script>
 
+  <script type="text/javascript">
+    seqstring = "";
+
+    function addzero() {
+        seqstring = seqstring.concat("0");
+        document.getElementById("sequence").innerHTML="<center><pre>"+seqstring+"</pre></center>";
+    }
+
+    function addone() {
+        seqstring = seqstring.concat("1");
+        document.getElementById("sequence").innerHTML="<center><pre>"+seqstring+"</pre></center>";
+    }
+
+    function keystroke(event) {
+        if (event.keyCode == 48) {
+            addzero();
+        }
+        if (event.keyCode == 49) {
+            addone();
+        }
+    }
+
+    function clickzero() {
+        var src = document.getElementById("updatezero").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/0-white-small.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-grey-small.png";
+        } else if (src == origin+"/img/0-white-med.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-grey-med.png";
+        } else if (src == origin+"/img/0-white-large.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-grey-large.png";
+        } else if (src == origin+"/img/0-white-huge.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-grey-huge.png";
+        } else if (src == origin+"/img/0-grey-small.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-white-small.png";
+        } else if (src == origin+"/img/0-grey-med.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-white-med.png";
+        } else if (src == origin+"/img/0-grey-large.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-white-large.png";
+        } else if (src == origin+"/img/0-grey-huge.png") {
+            document.getElementById("updatezero").src = origin+"/img/0-white-huge.png";
+        }
+    }
+
+    function clickone() {
+        var src = document.getElementById("updateone").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/1-black-small.png") {
+            document.getElementById("updateone").src = origin+"/img/1-grey-small.png";
+        } else if (src == origin+"/img/1-black-med.png") {
+            document.getElementById("updateone").src = origin+"/img/1-grey-med.png";
+        } else if (src == origin+"/img/1-black-large.png") {
+            document.getElementById("updateone").src = origin+"/img/1-grey-large.png";
+        } else if (src == origin+"/img/1-black-huge.png") {
+            document.getElementById("updateone").src = origin+"/img/1-grey-huge.png";
+        } else if (src == origin+"/img/1-grey-small.png") {
+            document.getElementById("updateone").src = origin+"/img/1-black-small.png";
+        } else if (src == origin+"/img/1-grey-med.png") {
+            document.getElementById("updateone").src = origin+"/img/1-black-med.png";
+        } else if (src == origin+"/img/1-grey-large.png") {
+            document.getElementById("updateone").src = origin+"/img/1-black-large.png";
+        } else if (src == origin+"/img/1-grey-huge.png") {
+            document.getElementById("updateone").src = origin+"/img/1-black-huge.png";
+        }
+    }
+
+    function clickdone() {
+        var src = document.getElementById("doneimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/done-100x42.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-grey-100x42.png";
+        } else if (src == origin+"/img/done-140x58.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-grey-140x58.png";
+        } else if (src == origin+"/img/done-167x69.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-grey-167x69.png";
+        } else if (src == origin+"/img/done-grey-100x42.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-100x42.png";
+        } else if (src == origin+"/img/done-grey-140x58.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-140x58.png";
+        } else if (src == origin+"/img/done-grey-167x69.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-167x69.png";
+        }
+    }
+
+    function done() {
+       jsonstr = JSON.stringify({"sequence": seqstring})
+       $.ajax({url: "/submit/",
+               async: false,
+               data: jsonstr,
+               contentType: 'application/json',
+               type: 'POST'
+              })
+          .done(function(data, textStatus, jqXHR) {
+              var doc = document.open("text/html", "replace");
+              doc.write(data);
+              doc.close();
+          });
+    }
+  </script>
 
 </body>
 </html>
+
+
+
+
