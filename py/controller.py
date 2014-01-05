@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import operator, os, pickle, sys
-import json
-import cherrypy
+import json, cherrypy
+import hrse
 from genshi.template import TemplateLoader
 
 webhome = "/home/hrseweb/hrse"
@@ -56,8 +56,16 @@ class Root(object):
         data = json.loads(cherrypy.request.body.read())
         print "submit called with: "+str(data)
         sequence = getval("sequence", data)
+
+        (runs, longest_run) = hrse.runs(sequence)
+        analysis = {'sequence': sequence,
+                    'zeros': sequence.count('0'),
+                    'ones': sequence.count('1'),
+                    'runs': runs,
+                    'longest_run': longest_run}
+     
         tmpl = loader.load('submission.html')
-        return tmpl.generate(submission=sequence).render('html', doctype='html', strip_whitespace=False)
+        return tmpl.generate(data=analysis).render('html', doctype='html', strip_whitespace=False)
 
 
 def main():
