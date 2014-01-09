@@ -2,7 +2,7 @@
 
 import operator, os, pickle, sys
 import json, cherrypy
-import hrse
+import hrse, math
 from genshi.template import TemplateLoader
 
 webhome = "/home/hrseweb/hrse"
@@ -58,11 +58,25 @@ class Root(object):
         sequence = getval("sequence", data)
 
         (runs, longest_run) = hrse.runs(sequence)
+        (pzgz, pogz, se) = hrse.serdep(sequence)
+
+        # Examine the results of the serial dependency calculations
+        probdiff = math.fabs(pzgz-pogz)
+        if probdiff > 2*se:
+            serdep = False
+        else:
+            serdep = True
+
         analysis = {'sequence': sequence,
                     'zeros': sequence.count('0'),
                     'ones': sequence.count('1'),
                     'runs': runs,
-                    'longest_run': longest_run}
+                    'longest_run': longest_run,
+                    'probzgz': pzgz,
+                    'probogz': pogz,
+                    'se': se,
+                    'probdiff': probdiff,
+                    'serdep': serdep}
      
         tmpl = loader.load('submission.html')
         return tmpl.generate(data=analysis).render('html', doctype='html', strip_whitespace=False)
@@ -83,7 +97,7 @@ def main():
     })
 
     cherrypy.quickstart(Root(data), '/', {
-        '/media': {
+        '/static': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'static'
         },
@@ -98,6 +112,10 @@ def main():
         '/img': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'img'
+        },
+        '/favicon.ico': {
+            'tools.staticfile.on': True,
+            'tools.staticfile.filename': '/home/hrseweb/hrse/img/hrse.ico'
         }
     })
 
