@@ -2,8 +2,11 @@
 
 import operator, os, pickle, sys
 import json, cherrypy
-import hrse, math
+import hrse, dbutils, math
 from genshi.template import TemplateLoader
+import MySQLdb
+import ConfigParser
+
 
 webhome = "/home/hrseweb/hrse"
 templdir = webhome+"/templates"
@@ -38,10 +41,10 @@ def getval(spec, jdict=None):
     return jdict[spec]
 
 
-class Root(object):
+class Root():
     """This is the default root object needed for a CherryPy web instance."""
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, credentials):
+        self.creds = credentials
 
     @cherrypy.expose
     def index(self):
@@ -56,6 +59,11 @@ class Root(object):
         data = json.loads(cherrypy.request.body.read())
         print "submit called with: "+str(data)
         sequence = getval("sequence", data)
+        fingerprint = getval("fingerprint", data)
+
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+        id = dbutils.createparticipant(db, fingerprint)
+        dbutils.insertsequence(db, fingerprint, sequence)
 
         (runs, longest_run) = hrse.runs(sequence)
         (pzgz, pogz, se) = hrse.serdep(sequence)
@@ -76,14 +84,23 @@ class Root(object):
                     'probogz': pogz,
                     'se': se,
                     'probdiff': probdiff,
-                    'serdep': serdep}
+                    'serdep': serdep,
+                    'id': id}
      
         tmpl = loader.load('submission.html')
         return tmpl.generate(data=analysis).render('html', doctype='html', strip_whitespace=False)
 
 
 def main():
-    data = {} # We'll replace this later
+    cp = ConfigParser.ConfigParser()
+    cp.read([os.path.expanduser('~/.my.cnf')])
+    credentials = {'user': cp.get('mysql', 'user'),
+                   'passwd': cp.get('mysql', 'password'),
+                   'host': cp.get('mysql', 'host')}
+
+    # Test the database connection (an exception will be raised if this fails).
+    db = MySQLdb.connect(credentials['host'], credentials['user'], credentials['passwd'], 'hrse')
+    db.close()
 
     # Some global configuration; note that this could be moved into a
     # configuration file
@@ -96,7 +113,7 @@ def main():
         'server.socket_port': 80
     })
 
-    cherrypy.quickstart(Root(data), '/', {
+    cherrypy.quickstart(Root(credentials), '/', {
         '/static': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'static'
@@ -118,6 +135,7 @@ def main():
             'tools.staticfile.filename': '/home/hrseweb/hrse/img/hrse.ico'
         }
     })
+
 
 if __name__ == '__main__':
     main()

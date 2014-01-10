@@ -25,6 +25,7 @@
       <div style="padding-left: 5px">
         <div class="t2">
           <p>Welcome, subject <strong>#0001</strong>, admitted on December 24, 2013.</p>
+          <p>Your fingerprint is <a id='fp'></a></p>
         <hr />
 
           <p>Thank you for participating in the HRSE!</p>
@@ -111,12 +112,17 @@
   <script src="/js/foundation/js/vendor/jquery.js"></script>
   <script src="/js/foundation/js/vendor/fastclick.js"></script>
   <script src="/js/foundation/js/foundation.min.js"></script>
+  <script src="/js/fingerprint/fingerprint.js"></script>
   <script>
     $(document).foundation();
   </script>
 
   <script type="text/javascript">
     seqstring = "";
+
+    fingerprint = new Fingerprint({canvas: true}).get();
+    document.getElementById('fp').innerHTML = fingerprint;
+
 
     function addzero() {
         seqstring = seqstring.concat("0");
@@ -203,7 +209,7 @@
     }
 
     function done() {
-       jsonstr = JSON.stringify({"sequence": seqstring})
+       jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint})
        $.ajax({url: "/submit/",
                async: false,
                data: jsonstr,
@@ -216,6 +222,7 @@
               doc.close();
           });
     }
+
   </script>
 
 </body>

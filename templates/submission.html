@@ -1,7 +1,9 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xml:lang="en">
 <head>
   <meta charset="utf-8"></meta>
   <meta name="viewport" content="width=device-width"></meta>
@@ -28,9 +30,15 @@
           <hr />
 
           <p>You submitted ${data.sequence}.</p>
+          <p>You are participant ${data.id}.</p>
           <p>You entered ${data.zeros} zeros and ${data.ones} ones.</p>
           <p>There were ${data.runs} runs, the longest of which was ${data.longest_run} characters.</p>
-
+          <p>The probability of 0 given 0 was ${data.probzgz}.</p>
+          <p>The probability of 1 given 0 was ${data.probogz}.</p>
+          <p>The standard error was calculated at ${data.se}.</p>
+          <p>The difference in probabilities is ${data.probdiff}.</p>
+          <py:if test="data.serdep"><p>Your sequence <strong>passed</strong> the test for serial dependence.</p></py:if>
+          <py:if test="not data.serdep"><p>Your sequence <strong>did not pass</strong> the test for serial dependence.</p></py:if>
         </div>
       </div>
   </div>

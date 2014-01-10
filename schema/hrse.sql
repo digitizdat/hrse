@@ -14,8 +14,9 @@ DROP TABLE IF EXISTS `hrse`.`participant` ;
 CREATE  TABLE IF NOT EXISTS `hrse`.`participant` (
   `idparticipant` INT NOT NULL AUTO_INCREMENT ,
   `admitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
-  `uuid` VARCHAR(45) NULL ,
-  PRIMARY KEY (`idparticipant`) )
+  `fingerprint` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`idparticipant`) ,
+  UNIQUE INDEX `fingerprint_UNIQUE` (`fingerprint` ASC) )
 ENGINE = InnoDB;
 
 
@@ -26,8 +27,8 @@ DROP TABLE IF EXISTS `hrse`.`sequences` ;
 
 CREATE  TABLE IF NOT EXISTS `hrse`.`sequences` (
   `idsequences` INT NOT NULL AUTO_INCREMENT ,
-  `uuid` VARCHAR(45) NULL ,
-  `sequence` VARCHAR(256) NULL ,
+  `fingerprint` VARCHAR(45) NOT NULL ,
+  `sequence` VARCHAR(256) NOT NULL ,
   PRIMARY KEY (`idsequences`) )
 ENGINE = InnoDB;
 
