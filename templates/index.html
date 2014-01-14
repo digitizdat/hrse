@@ -24,8 +24,7 @@
 
       <div style="padding-left: 5px">
         <div class="t2">
-          <p>Welcome, subject <strong>#0001</strong>, admitted on December 24, 2013.</p>
-          <p>Your fingerprint is <a id='fp'></a></p>
+          <p>Welcome, participant <a id='pid'></a>, admitted on <a id='adate'></a> UTC.</p>
         <hr />
 
           <p>Thank you for participating in the HRSE!</p>
@@ -119,10 +118,7 @@
 
   <script type="text/javascript">
     seqstring = "";
-
     fingerprint = new Fingerprint({canvas: true}).get();
-    document.getElementById('fp').innerHTML = fingerprint;
-
 
     function addzero() {
         seqstring = seqstring.concat("0");
@@ -223,6 +219,22 @@
           });
     }
 
+    function getpid() {
+       jsonstr = JSON.stringify({"fingerprint": fingerprint})
+       $.ajax({url: "/getpid/",
+               async: false,
+               data: jsonstr,
+               contentType: 'application/json',
+               type: 'POST'
+              })
+          .done(function(data, textStatus, jqXHR) {
+              var jdoc = jQuery.parseJSON(data);
+              document.getElementById('pid').innerHTML = jdoc.id;
+              document.getElementById('adate').innerHTML = jdoc.date;
+          });
+    }
+
+    getpid();
   </script>
 
 </body>

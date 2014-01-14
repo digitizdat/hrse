@@ -2,7 +2,7 @@
 
 import operator, os, pickle, sys
 import json, cherrypy
-import hrse, dbutils, math
+import hrse, query, math, time
 from genshi.template import TemplateLoader
 import MySQLdb
 import ConfigParser
@@ -53,6 +53,22 @@ class Root():
         return tmpl.generate().render('html', doctype='html', strip_whitespace=False)
 
     @cherrypy.expose
+    def getpid(self, **kwargs):
+        """Load the participant's ID from the database if it exists.  If not,
+        create a new participant.  Return the participant ID and the formatted
+        date of admittance to the experiment.
+
+        """
+        data = json.loads(cherrypy.request.body.read())
+        fingerprint = getval("fingerprint", data)
+
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+        id = query.createparticipant(db, fingerprint)
+        admitdate = query.getadmittance(db, id)
+
+        return json.dumps({"id": id, "date": admitdate.ctime()})
+
+    @cherrypy.expose
     def submit(self, **kwargs):
         """Analyze the submitted binary sequence and generate a response page."""
 
@@ -62,8 +78,8 @@ class Root():
         fingerprint = getval("fingerprint", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-        id = dbutils.createparticipant(db, fingerprint)
-        dbutils.insertsequence(db, fingerprint, sequence)
+        id = query.createparticipant(db, fingerprint)
+        query.insertsequence(db, fingerprint, sequence)
 
         (runs, longest_run) = hrse.runs(sequence)
         (pzgz, pogz, se) = hrse.serdep(sequence)
@@ -85,7 +101,8 @@ class Root():
                     'se': se,
                     'probdiff': probdiff,
                     'serdep': serdep,
-                    'id': id}
+                    'id': id,
+                    'curdate': time.ctime()}
      
         tmpl = loader.load('submission.html')
         return tmpl.generate(data=analysis).render('html', doctype='html', strip_whitespace=False)
