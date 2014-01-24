@@ -32,10 +32,10 @@
           <p>
             <strong>To submit a new sequence:</strong>
             <ol>
-            <li>Click the 0 and 1 buttons below - or press 0 and 1 on your keyboard - as many times as you please.</li>
+            <li><span id='clicktap'></span> as many times as you please.</li>
             <li>When you are done, click the "Done" button to submit your sequence for analysis.</li>
             </ol>
-            Please attempt to be as random as possible.  The longer the sequence, the better the result will be.
+            <b>Please attempt to be as random as possible</b>.  The longer the sequence, the better the result will be.
           </p>
         </div>
       </div>
@@ -81,30 +81,14 @@
   </div>
 
   <div class="row">
-    <div class="twelve columns" style="background-color:black; color:white; padding-top:0em; padding-bottom:0em">
-      <div class="t1">
-        <div class="row">
+    <div class="twelve columns" style="background-color:black; color:white; padding-top:15px; padding-bottom:15px">
           <center>
-            <a href="#" class="submit-button">My Results</a>
-            <a href="#" class="submit-button">My Relatives</a>
-            <a href="#" class="submit-button">Overall Statistics</a>
+            <img alt="" id="myresults" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/myresults-126x33.png"></img>
+            <img alt="" id="myrelatives" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/myrelatives-126x33.png"></img>
+            <img alt="" id="overallstats" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/overallstats-126x33.png"></img>
+            <img alt="" id="about" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/about-126x33.png"></img>
           </center>
-        </div>
-      </div>
     </div>
-<!--
-    <div class="twelve columns" style="background-color:black; color:white; padding-top:1em; padding-bottom:0em">
-      <div class="t1">
-        <div class="row">
-          <center>
-            <a href="#" class="submit-button">About the HRSE</a>
-            <a href="#" class="submit-button">About the Artist</a>
-            <a href="#" class="submit-button">How can I Help?</a>
-          </center>
-        </div>
-      </div>
-    </div>
--->
   </div>
 
   <!-- Keyboard events -->
@@ -112,6 +96,7 @@
   <script src="/js/foundation/js/vendor/fastclick.js"></script>
   <script src="/js/foundation/js/foundation.min.js"></script>
   <script src="/js/fingerprint/fingerprint.js"></script>
+  <script src="/jc/hrse.js"></script>
   <script>
     $(document).foundation();
   </script>
@@ -120,120 +105,7 @@
     seqstring = "";
     fingerprint = new Fingerprint({canvas: true}).get();
 
-    function addzero() {
-        seqstring = seqstring.concat("0");
-        document.getElementById("sequence").innerHTML="<center><pre>"+seqstring+"</pre></center>";
-    }
-
-    function addone() {
-        seqstring = seqstring.concat("1");
-        document.getElementById("sequence").innerHTML="<center><pre>"+seqstring+"</pre></center>";
-    }
-
-    function keystroke(event) {
-        if (event.keyCode == 48) {
-            addzero();
-        }
-        if (event.keyCode == 49) {
-            addone();
-        }
-    }
-
-    function clickzero() {
-        var src = document.getElementById("updatezero").src;
-        var origin = window.location.origin;
-
-        if (src == origin+"/img/0-white-small.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-grey-small.png";
-        } else if (src == origin+"/img/0-white-med.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-grey-med.png";
-        } else if (src == origin+"/img/0-white-large.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-grey-large.png";
-        } else if (src == origin+"/img/0-white-huge.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-grey-huge.png";
-        } else if (src == origin+"/img/0-grey-small.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-white-small.png";
-        } else if (src == origin+"/img/0-grey-med.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-white-med.png";
-        } else if (src == origin+"/img/0-grey-large.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-white-large.png";
-        } else if (src == origin+"/img/0-grey-huge.png") {
-            document.getElementById("updatezero").src = origin+"/img/0-white-huge.png";
-        }
-    }
-
-    function clickone() {
-        var src = document.getElementById("updateone").src;
-        var origin = window.location.origin;
-
-        if (src == origin+"/img/1-black-small.png") {
-            document.getElementById("updateone").src = origin+"/img/1-grey-small.png";
-        } else if (src == origin+"/img/1-black-med.png") {
-            document.getElementById("updateone").src = origin+"/img/1-grey-med.png";
-        } else if (src == origin+"/img/1-black-large.png") {
-            document.getElementById("updateone").src = origin+"/img/1-grey-large.png";
-        } else if (src == origin+"/img/1-black-huge.png") {
-            document.getElementById("updateone").src = origin+"/img/1-grey-huge.png";
-        } else if (src == origin+"/img/1-grey-small.png") {
-            document.getElementById("updateone").src = origin+"/img/1-black-small.png";
-        } else if (src == origin+"/img/1-grey-med.png") {
-            document.getElementById("updateone").src = origin+"/img/1-black-med.png";
-        } else if (src == origin+"/img/1-grey-large.png") {
-            document.getElementById("updateone").src = origin+"/img/1-black-large.png";
-        } else if (src == origin+"/img/1-grey-huge.png") {
-            document.getElementById("updateone").src = origin+"/img/1-black-huge.png";
-        }
-    }
-
-    function clickdone() {
-        var src = document.getElementById("doneimg").src;
-        var origin = window.location.origin;
-
-        if (src == origin+"/img/done-100x42.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-grey-100x42.png";
-        } else if (src == origin+"/img/done-140x58.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-grey-140x58.png";
-        } else if (src == origin+"/img/done-167x69.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-grey-167x69.png";
-        } else if (src == origin+"/img/done-grey-100x42.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-100x42.png";
-        } else if (src == origin+"/img/done-grey-140x58.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-140x58.png";
-        } else if (src == origin+"/img/done-grey-167x69.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-167x69.png";
-        }
-    }
-
-    function done() {
-       jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint})
-       $.ajax({url: "/submit/",
-               async: false,
-               data: jsonstr,
-               contentType: 'application/json',
-               type: 'POST'
-              })
-          .done(function(data, textStatus, jqXHR) {
-              var doc = document.open("text/html", "replace");
-              doc.write(data);
-              doc.close();
-          });
-    }
-
-    function getpid() {
-       jsonstr = JSON.stringify({"fingerprint": fingerprint})
-       $.ajax({url: "/getpid/",
-               async: false,
-               data: jsonstr,
-               contentType: 'application/json',
-               type: 'POST'
-              })
-          .done(function(data, textStatus, jqXHR) {
-              var jdoc = jQuery.parseJSON(data);
-              document.getElementById('pid').innerHTML = jdoc.id;
-              document.getElementById('adate').innerHTML = jdoc.date;
-          });
-    }
-
+    stepone();
     getpid();
   </script>
 

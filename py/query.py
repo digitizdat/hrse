@@ -95,11 +95,11 @@ def strlistquery(conn, statement, args):
     return retval
 
 
-def insertsequence(conn, fingerprint, sequence):
+def insertsequence(conn, fingerprint, sequence, useragent):
     """Insert a new sequence into the database."""
     c = conn.cursor()
-    rc = c.execute("insert into sequences (fingerprint, sequence) " \
-      + "values (%s, %s)", (fingerprint, sequence))
+    rc = c.execute("insert into sequences (fingerprint, sequence, useragent) " \
+      + "values (%s, %s, %s)", (fingerprint, sequence, useragent))
     c.close()
     conn.commit()
     return rc

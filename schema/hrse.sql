@@ -29,6 +29,8 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`sequences` (
   `idsequences` INT NOT NULL AUTO_INCREMENT ,
   `fingerprint` VARCHAR(45) NOT NULL ,
   `sequence` VARCHAR(256) NOT NULL ,
+  `submitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
+  `useragent` VARCHAR(256) NOT NULL,
   PRIMARY KEY (`idsequences`) )
 ENGINE = InnoDB;
 

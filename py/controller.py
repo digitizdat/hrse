@@ -76,10 +76,11 @@ class Root():
         print "submit called with: "+str(data)
         sequence = getval("sequence", data)
         fingerprint = getval("fingerprint", data)
+        useragent = getval("useragent", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.createparticipant(db, fingerprint)
-        query.insertsequence(db, fingerprint, sequence)
+        query.insertsequence(db, fingerprint, sequence, useragent)
 
         (runs, longest_run) = hrse.runs(sequence)
         (pzgz, pogz, se) = hrse.serdep(sequence)
@@ -142,6 +143,10 @@ def main():
         '/js': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'bower_components'
+        },
+        '/jc': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': 'js'
         },
         '/img': {
             'tools.staticdir.on': True,
