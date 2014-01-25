@@ -1,12 +1,12 @@
 
     function addzero() {
         seqstring = seqstring.concat("0");
-        document.getElementById("sequence").innerHTML="<center><pre>"+seqstring+"</pre></center>";
+        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
     }
 
     function addone() {
         seqstring = seqstring.concat("1");
-        document.getElementById("sequence").innerHTML="<center><pre>"+seqstring+"</pre></center>";
+        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
     }
 
     function keystroke(event) {
@@ -83,8 +83,10 @@
         }
     }
 
+    // Submit the sequence, fingerprint, and User-Agent info to the /submit
+    // WS, and load the results page.
     function done() {
-       jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint, "useragent": navigator.userAgent})
+       jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint, "useragent": navigator.userAgent});
        $.ajax({url: "/submit/",
                async: false,
                data: jsonstr,
@@ -98,8 +100,29 @@
           });
     }
 
+    // Go to the myresults page, which generates a series of graphs describing
+    // the statistical analysis of the participant's sequence.
+    function myresults() {
+       jsonstr = JSON.stringify({"fingerprint": fingerprint});
+       $.ajax({url: "/results/",
+               async: false,
+               data: jsonstr,
+               contentType: 'application/json',
+               type: 'POST'
+              })
+          .done(function(data, textStatus, jqXHR) {
+              var doc = document.open("text/html", "replace");
+              doc.write(data);
+              doc.close();
+          });
+    }
+
+    // Load the fingerprint into the database by calling the /getpid WS, which
+    // returns the participant number and the timestamp for when that
+    // participant was admitted.  Then write the participant number and the
+    // admittance ts to the page at the specified locations.
     function getpid() {
-       jsonstr = JSON.stringify({"fingerprint": fingerprint})
+       jsonstr = JSON.stringify({"fingerprint": fingerprint});
        $.ajax({url: "/getpid/",
                async: false,
                data: jsonstr,
@@ -113,6 +136,9 @@
           });
     }
 
+    // If the screen width is less than 640 pixels, we'll assume it's touch
+    // screen capable, so we'll just include the instructions for tapping the
+    // 0 and 1 buttons.  It saves space for those smaller devices.
     function stepone() {
         var largetext = "Click or tap the 0 and 1 buttons below - or press 0 and 1 on your keyboard -";
         var smalltext = "Tap the 0 and 1 buttons below";

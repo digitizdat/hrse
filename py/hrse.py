@@ -128,3 +128,12 @@ def serdep(sequence):
 
     return (probzgz, probogz, se)
 
+
+def genresults(fingerprint):
+    """Generate a Genshi template that includes the images for all of the
+    pygal-generated charts that show the statistical analysis of the given
+    participant's sequence.
+
+    The return value is the path to the newly created template.
+    """
+    pass

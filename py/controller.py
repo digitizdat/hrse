@@ -109,6 +109,27 @@ class Root():
         return tmpl.generate(data=analysis).render('html', doctype='html', strip_whitespace=False)
 
 
+    @cherrypy.expose
+    def myresults(self, **kwargs):
+        """Generate a page of charts that describes the statistical analysis
+        of the participant's sequence.
+
+        """
+        data = json.loads(cherrypy.request.body.read())
+        print "myresults called with: "+str(data)
+        fingerprint = getval("fingerprint", data)
+
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+        id = query.createparticipant(db, fingerprint)
+
+        # The value for resultspage is a path to a newly created Genshi
+        # template which includes images of all the pygal-generated charts.
+        resultspage = hrse.genresults(fingerprint)
+
+        tmpl = loader.load(resultspage)
+        return tmpl.generate().render('html', doctype='html', strip_whitespace=False)
+
+
 def main():
     cp = ConfigParser.ConfigParser()
     cp.read([os.path.expanduser('~/.my.cnf')])

@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width"></meta>
   <title>Human Random Sequence Experiment</title>
   <link rel="stylesheet" href="/stylesheets/app.css"></link>
-  <script src="/js/foundation/js/vendor/custom.modernizr.js"></script>
+  <script src="/js/foundation/js/vendor/modernizr.js"></script>
 </head>
 
 <body class="index">
@@ -185,7 +185,15 @@
   <div class="row">
     <div class="twelve columns" style="background-color:black; color:white; padding-top:15px; padding-bottom:15px">
           <center>
-            <img alt="" id="myresults" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/myresults-126x33.png"></img>
+               <!-- <img alt="" id="doneimg" onmousedown="clickdone()" onmouseup="done()" onclick="done()"
+                         data-interchange="[/img/done-grey-167x69.png, (default)],
+                             [/img/done-100x42.png, (small)], 
+                             [/img/done-140x58.png, (medium)], 
+                             [/img/done-grey-167x69.png, (large)]"></img> -->
+
+            <img alt="" id="myresults" onmouseup="myresults()" onclick="myresults()" 
+                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" 
+                 src="/img/myresults-126x33.png"></img>
             <img alt="" id="myrelatives" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/myrelatives-126x33.png"></img>
             <img alt="" id="overallstats" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/overallstats-126x33.png"></img>
             <img alt="" id="about" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/about-126x33.png"></img>
@@ -196,8 +204,12 @@
   <script src="/js/foundation/js/vendor/jquery.js"></script>
   <script src="/js/foundation/js/vendor/fastclick.js"></script>
   <script src="/js/foundation/js/foundation.min.js"></script>
-  <script>
+  <script src="/js/fingerprint/fingerprint.js"></script>
+  <script src="/jc/hrse.js"></script>
+
+  <script type="text/javascript">
     $(document).foundation();
+    fingerprint = new Fingerprint({canvas: true}).get();
   </script>
 
 </body>
