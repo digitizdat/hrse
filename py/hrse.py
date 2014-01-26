@@ -136,4 +136,4 @@ def genresults(fingerprint):
 
     The return value is the path to the newly created template.
     """
-    pass
+    return "myresults.html"

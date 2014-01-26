@@ -1,0 +1,73 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xml:lang="en">
+<head>
+  <meta charset="utf-8"></meta>
+  <meta name="viewport" content="width=device-width"></meta>
+  <title>Human Random Sequence Experiment</title>
+  <link rel="stylesheet" href="/stylesheets/app.css"></link>
+  <script src="/js/foundation/js/vendor/modernizr.js"></script>
+</head>
+
+<body class="index">
+  <div class="row">
+        <div class="small-6 medium-6 large-6 columns" style="background-color:black; color:white; padding-right:1em; padding-top:1em; padding-bottom:1em; border-color:black; border-bottom-style:solid; border-top-style:solid; border-width:2">
+          <div class="t1" style="float:right">Human Random</div>
+        </div>
+
+        <div class="small-6 medium-6 large-6 columns" style="background-color:white; color:black; padding-left:1em; padding-top:1em; padding-bottom:1em; border-color:black; border-bottom-style:solid; border-top-style:solid; border-width:2">
+          <div class="t1" style="float:left">Sequence Experiment</div>
+        </div>
+
+      <hr />
+  </div>
+
+  <div class="row">
+      <div style="padding-left: 5px">
+        <div class="t2">
+          <p>Results for participant <a>${data.id}</a>, generated on <a>${data.curdate}</a> UTC.</p>
+          <hr />
+          <p><b>Charts go here</b></p>
+        </div>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="twelve columns" style="background-color:black; color:white; padding-top:15px; padding-bottom:15px">
+          <center>
+            <img alt="" id="mydemoimg" onmousedown="clickmydemo()" onmouseup="mydemo()" onclick="mydemo()"
+                 src="/img/mydemo-126x33.png"
+                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
+            <img alt="" id="myrelimg" onmousedown="clickmyrelatives()" onmouseup="myrelatives()" onclick="myrelatives()"
+                 src="/img/myrelatives-126x33.png"
+                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
+            <img alt="" id="overstatsimg" onmousedown="clickoverallstats()" onmouseup="overallstats()" onclick="overallstats()"
+                 src="/img/overallstats-126x33.png"
+                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
+            <img alt="" id="aboutimg" onmousedown="clickabout()()" onmouseup="about()()" onclick="about()()"
+                 src="/img/about-126x33.png"
+                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
+          </center>
+    </div>
+  </div>
+
+  <script src="/js/foundation/js/vendor/jquery.js"></script>
+  <script src="/js/foundation/js/vendor/fastclick.js"></script>
+  <script src="/js/foundation/js/foundation.min.js"></script>
+  <script src="/js/fingerprint/fingerprint.js"></script>
+  <script src="/jc/hrse.js"></script>
+
+  <script type="text/javascript">
+    $(document).foundation();
+    fingerprint = new Fingerprint({canvas: true}).get();
+  </script>
+
+</body>
+</html>
+
+
+
+

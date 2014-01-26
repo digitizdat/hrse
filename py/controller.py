@@ -126,8 +126,10 @@ class Root():
         # template which includes images of all the pygal-generated charts.
         resultspage = hrse.genresults(fingerprint)
 
+        data = {'curdate': time.ctime(), 'id': id}
+                  
         tmpl = loader.load(resultspage)
-        return tmpl.generate().render('html', doctype='html', strip_whitespace=False)
+        return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 
 def main():

@@ -83,6 +83,61 @@
         }
     }
 
+    function clickmyresults() {
+        var src = document.getElementById("myresimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/myresults-126x33.png") {
+            document.getElementById("myresimg").src = origin+"/img/myresults-grey-126x33.png";
+        } else if (src == origin+"/img/myresults-grey-126x33.png") {
+            document.getElementById("myresimg").src = origin+"/img/myresults-126x33.png";
+        }
+    }
+
+    function clickmyrelatives() {
+        var src = document.getElementById("myrelimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/myrelatives-126x33.png") {
+            document.getElementById("myrelimg").src = origin+"/img/myrelatives-grey-126x33.png";
+        } else if (src == origin+"/img/myrelatives-grey-126x33.png") {
+            document.getElementById("myrelimg").src = origin+"/img/myrelatives-126x33.png";
+        }
+    }
+
+    function clickoverallstats() {
+        var src = document.getElementById("overstatsimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/overallstats-126x33.png") {
+            document.getElementById("overstatsimg").src = origin+"/img/overallstats-grey-126x33.png";
+        } else if (src == origin+"/img/overallstats-grey-126x33.png") {
+            document.getElementById("overstatsimg").src = origin+"/img/overallstats-126x33.png";
+        }
+    }
+
+    function clickabout() {
+        var src = document.getElementById("aboutimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/about-126x33.png") {
+            document.getElementById("aboutimg").src = origin+"/img/about-grey-126x33.png";
+        } else if (src == origin+"/img/about-grey-126x33.png") {
+            document.getElementById("aboutimg").src = origin+"/img/about-126x33.png";
+        }
+    }
+
+    function clickmydemo() {
+        var src = document.getElementById("mydemoimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/mydemo-126x33.png") {
+            document.getElementById("mydemoimg").src = origin+"/img/mydemo-grey-126x33.png";
+        } else if (src == origin+"/img/mydemo-grey-126x33.png") {
+            document.getElementById("mydemoimg").src = origin+"/img/mydemo-126x33.png";
+        }
+    }
+
     // Submit the sequence, fingerprint, and User-Agent info to the /submit
     // WS, and load the results page.
     function done() {
@@ -104,7 +159,7 @@
     // the statistical analysis of the participant's sequence.
     function myresults() {
        jsonstr = JSON.stringify({"fingerprint": fingerprint});
-       $.ajax({url: "/results/",
+       $.ajax({url: "/myresults/",
                async: false,
                data: jsonstr,
                contentType: 'application/json',
