@@ -6,6 +6,7 @@ given (e.g. human-generated) sequence of 0s and 1s.
 """
 
 import math
+import pygal
 
 
 def runs(sequence):
@@ -129,11 +130,31 @@ def serdep(sequence):
     return (probzgz, probogz, se)
 
 
-def genresults(fingerprint):
+def isserdep(pzgz, pogz, se):
+    """Return a boolean value indicating whether or not the given statistics
+    indicate serial independence.
+
+    """
+    probdiff = math.fabs(pzgz-pogz)
+    if probdiff > 2*se:
+        return False
+    else:
+        return True
+
+
+def genresults(conn, seqstring, fingerprint):
     """Generate a Genshi template that includes the images for all of the
     pygal-generated charts that show the statistical analysis of the given
     participant's sequence.
 
     The return value is the path to the newly created template.
     """
-    return "myresults.html"
+
+    (runscount, longest_run) = runs(seqstring)
+    (pzgz, pogz, se) = serdep(seqstring)
+
+    # Examine the results of the serial dependency calculations
+    serdepbool = isserdep(pzgz, pogz, se)
+
+    return {'headstotails': '/img/hist/somechart.png'}
+

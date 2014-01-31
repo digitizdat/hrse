@@ -27,38 +27,19 @@
 
   <div class="row">
       <div style="padding-left: 5px">
-        <div class="t2">
-          <p>Results for participant <a>${data.id}</a>, generated on <a>${data.curdate}</a> UTC.</p>
-          <hr />
-          <p>
-             You submitted ${data.sequence}.<br></br>
-             You are participant ${data.id}.<br></br>
-             You entered ${data.zeros} zeros and ${data.ones} ones.<br></br>
-             There were ${data.runs} runs, the longest of which was ${data.longest_run} characters.<br></br>
-             The probability of 0 given 0 was ${data.probzgz}.<br></br>
-             The probability of 1 given 0 was ${data.probogz}.<br></br>
-             The standard error was calculated at ${data.se}.<br></br>
-             The difference in probabilities is ${data.probdiff}.<br></br>
-             <py:if test="data.serdep">Your sequence <strong>passed</strong> the test for serial dependence.</py:if><br></br>
-             <py:if test="not data.serdep">Your sequence <strong>did not pass</strong> the test for serial dependence.</py:if><br></br>
-          </p>
-        </div>
-      </div>
-      <div style="padding-left: 5px">
         <div class="t1">
-          <p>
-             <strong>Please help us improve the results of this experiment</strong> by providing additional information about yourself.  Please fill in any or all of the fields below.  The more you fill in, the more relationships we can attempt to discover between your sequence and the sequences of other participants.  All information that you provide is anonymous.  You are only known to this experiment as a number.
+          <p>Please provide some information about yourself.  <strong>The more you fill in, the more relationships we can attempt to discover</strong> between your sequence and the sequences of other participants.  Any information that you provide is anonymous.  You are known to this experiment only as a number.
           </p>
         </div>
       </div>
   </div>
 
-  <form>
+  <form id="demoform">
     <div class="t1">
       <div class="row">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Age</label>
-            <select>
+            <select name="age">
                 <option value="na">N/A</option>
                 <option value="lt12">Under 12 years old</option>
                 <option value="lt18">12-17 years old</option>
@@ -74,7 +55,7 @@
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Sex</label>
             <input type="radio" name="sex" value="male" /><label>Male</label>
-            <input type="radio" name="sex" value="male" /><label>Female</label>
+            <input type="radio" name="sex" value="female" /><label>Female</label>
         </div>
     </div>
 
@@ -92,7 +73,7 @@
     <div class="row">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Marital status</label>
-            <select>
+            <select name="maritalstatus">
                 <option value="na">N/A</option>
                 <option value="single">Single, never married</option>
                 <option value="married">Married</option>
@@ -114,7 +95,7 @@
     <div class="row">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>How many people live in your residence, including yourself?</label>
-            <input type="text" pattern="[0-9]*" placeholder="0" />
+            <input type="text" name="residence" pattern="[0-9]*" placeholder="0" />
         </div>
     </div>
 
@@ -127,7 +108,7 @@
 
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Your education level</label>
-            <select>
+            <select name="education">
                 <option value="na">N/A</option>
                 <option value="none">No schooling completed</option>
                 <option value="elementary">Completed up to 8th grade</option>
@@ -146,7 +127,7 @@
     <div class="row">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Your annual income range</label>
-            <select>
+            <select name="income">
                 <option value="na">N/A</option>
                 <option value="lt25k">&lt; $25,000</option>
                 <option value="lt40k">$25,000 - $40,000</option>
@@ -163,7 +144,7 @@
     <div class="row">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Your employment status</label>
-            <select>
+            <select name="employment">
                 <option value="na">N/A</option>
                 <option value="part">Employed part-time for wages</option>
                 <option value="full">Employed full-time for wages</option>
@@ -182,22 +163,19 @@
     </div>
   </form>
 
+  <div class="row" style="padding-top:10px; padding-bottom:10px">
+    <div class="twelve columns">
+      <center><img alt="" id="submitimg" onmousedown="clicksubmitdemo()" onmouseup="submitdemo()" onclick="submitdemo()"
+           data-interchange="[/img/submit-grey-167x69.png, (default)],
+                             [/img/submit-100x42.png, (small)], 
+                             [/img/submit-140x58.png, (medium)], 
+                             [/img/submit-167x69.png, (large)]"></img>
+      </center>
+    </div>
+  </div>
+
   <div class="row">
     <div class="twelve columns" style="background-color:black; color:white; padding-top:15px; padding-bottom:15px">
-          <center>
-            <img alt="" id="myresimg" onmousedown="clickmyresults()" onmouseup="myresults()" onclick="myresults()"
-                 src="/img/myresults-126x33.png"
-                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
-            <img alt="" id="myrelimg" onmousedown="clickmyrelatives()" onmouseup="myrelatives()" onclick="myrelatives()"
-                 src="/img/myrelatives-126x33.png"
-                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
-            <img alt="" id="overstatsimg" onmousedown="clickoverallstats()" onmouseup="overallstats()" onclick="overallstats()"
-                 src="/img/overallstats-126x33.png"
-                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
-            <img alt="" id="aboutimg" onmousedown="clickabout()()" onmouseup="about()()" onclick="about()()"
-                 src="/img/about-126x33.png"
-                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
-          </center>
     </div>
   </div>
 
@@ -210,6 +188,7 @@
   <script type="text/javascript">
     $(document).foundation();
     fingerprint = new Fingerprint({canvas: true}).get();
+    sequence = "${data.sequence}";
   </script>
 
 </body>

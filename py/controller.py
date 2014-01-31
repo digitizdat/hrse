@@ -46,11 +46,13 @@ class Root():
     def __init__(self, credentials):
         self.creds = credentials
 
+
     @cherrypy.expose
     def index(self):
         tmpl = loader.load('index.html')
 
         return tmpl.generate().render('html', doctype='html', strip_whitespace=False)
+
 
     @cherrypy.expose
     def getpid(self, **kwargs):
@@ -68,6 +70,7 @@ class Root():
 
         return json.dumps({"id": id, "date": admitdate.ctime()})
 
+
     @cherrypy.expose
     def submit(self, **kwargs):
         """Analyze the submitted binary sequence and generate a response page."""
@@ -82,53 +85,34 @@ class Root():
         id = query.createparticipant(db, fingerprint)
         query.insertsequence(db, fingerprint, sequence, useragent)
 
-        (runs, longest_run) = hrse.runs(sequence)
-        (pzgz, pogz, se) = hrse.serdep(sequence)
-
-        # Examine the results of the serial dependency calculations
-        probdiff = math.fabs(pzgz-pogz)
-        if probdiff > 2*se:
-            serdep = False
-        else:
-            serdep = True
-
-        analysis = {'sequence': sequence,
-                    'zeros': sequence.count('0'),
-                    'ones': sequence.count('1'),
-                    'runs': runs,
-                    'longest_run': longest_run,
-                    'probzgz': pzgz,
-                    'probogz': pogz,
-                    'se': se,
-                    'probdiff': probdiff,
-                    'serdep': serdep,
-                    'id': id,
-                    'curdate': time.ctime()}
-     
+        data = {'sequence': sequence}
         tmpl = loader.load('submission.html')
-        return tmpl.generate(data=analysis).render('html', doctype='html', strip_whitespace=False)
+        return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 
     @cherrypy.expose
-    def myresults(self, **kwargs):
+    def demosubmit(self, **kwargs):
         """Generate a page of charts that describes the statistical analysis
         of the participant's sequence.
 
         """
         data = json.loads(cherrypy.request.body.read())
-        print "myresults called with: "+str(data)
+        print "demosubmit called with: "+str(data)
         fingerprint = getval("fingerprint", data)
+        sequence = getval("sequence", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-        id = query.createparticipant(db, fingerprint)
+        id = query.getparticipantid(db, fingerprint)
 
         # The value for resultspage is a path to a newly created Genshi
         # template which includes images of all the pygal-generated charts.
-        resultspage = hrse.genresults(fingerprint)
+        charts = hrse.genresults(db, sequence, fingerprint)
 
-        data = {'curdate': time.ctime(), 'id': id}
-                  
-        tmpl = loader.load(resultspage)
+        data = {'curdate': time.ctime(),
+                'id': id,
+                'headstotails': charts['headstotails']}
+
+        tmpl = loader.load("myresults.html")
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 

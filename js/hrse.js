@@ -83,6 +83,25 @@
         }
     }
 
+    function clicksubmitdemo() {
+        var src = document.getElementById("submitimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/submit-100x42.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-grey-100x42.png";
+        } else if (src == origin+"/img/submit-140x58.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-grey-140x58.png";
+        } else if (src == origin+"/img/submit-167x69.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-grey-167x69.png";
+        } else if (src == origin+"/img/submit-grey-100x42.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-100x42.png";
+        } else if (src == origin+"/img/submit-grey-140x58.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-140x58.png";
+        } else if (src == origin+"/img/submit-grey-167x69.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-167x69.png";
+        }
+    }
+
     function clickmyresults() {
         var src = document.getElementById("myresimg").src;
         var origin = window.location.origin;
@@ -155,10 +174,63 @@
           });
     }
 
+    function done_alt1() {
+       jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint, "useragent": navigator.userAgent});
+       $.ajax({url: "/submit_alt1/",
+               async: false,
+               data: jsonstr,
+               contentType: 'application/json',
+               type: 'POST'
+              })
+          .done(function(data, textStatus, jqXHR) {
+              var doc = document.open("text/html", "replace");
+              doc.write(data);
+              doc.close();
+          });
+    }
+
+    // I got this a kind of adhoc method that can be attached to an object.  I
+    // found it here:
+    // http://stackoverflow.com/questions/1184624/convert-form-data-to-js-object-with-jquery
+    //
+    // It converts the form data into a JSON string.  Demo here:
+    // http://jsfiddle.net/sxGtM/3/
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    }
+
+    // Submit the demographic form data, continue on to the results page.
+    function submitdemo() {
+       jsonstr = JSON.stringify({"form": $('form').serializeObject(), "sequence": sequence, "fingerprint": fingerprint});
+       $.ajax({url: "/demosubmit/",
+               async: false,
+               data: jsonstr,
+               contentType: 'application/json',
+               type: 'POST'
+              })
+          .done(function(data, textStatus, jqXHR) {
+              var doc = document.open("text/html", "replace");
+              doc.write(data);
+              doc.close();
+          });
+    }
+
     // Go to the myresults page, which generates a series of graphs describing
     // the statistical analysis of the participant's sequence.
     function myresults() {
-       jsonstr = JSON.stringify({"fingerprint": fingerprint});
+       jsonstr = JSON.stringify({"fingerprint": fingerprint, "sequence": seqstring});
        $.ajax({url: "/myresults/",
                async: false,
                data: jsonstr,
@@ -195,7 +267,7 @@
     // screen capable, so we'll just include the instructions for tapping the
     // 0 and 1 buttons.  It saves space for those smaller devices.
     function stepone() {
-        var largetext = "Click or tap the 0 and 1 buttons below - or press 0 and 1 on your keyboard -";
+        var largetext = "Press 0 and 1 on your keyboard - or click or tap the 0 and 1 buttons below -";
         var smalltext = "Tap the 0 and 1 buttons below";
 
         if (screen.width < 640) {

@@ -29,14 +29,8 @@
 
           <p>Thank you for participating in the HRSE!</p>
 
-          <p>
-            <strong>To submit a new sequence:</strong>
-            <ol>
-            <li><span id='clicktap'></span> as many times as you please.</li>
-            <li>When you are done, click the "Done" button to submit your sequence for analysis.</li>
-            </ol>
-            Attempt to be as <b>random</b> as possible.  The <b>longer</b> your sequence, the more <b>interesting</b> your result will be.
-          </p>
+          <p><span id='clicktap'></span> as many times as you please.</p>
+          <p>Attempt to be as <b>random</b> as possible.  The <b>longer</b> your sequence, the more <b>interesting</b> your result will be.</p>
         </div>
       </div>
   </div>
@@ -83,8 +77,12 @@
   <div class="row">
     <div class="twelve columns" style="background-color:black; color:white; padding-top:15px; padding-bottom:15px">
           <center>
-            <img alt="" id="overallstats" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/overallstats-126x33.png"></img>
-            <img alt="" id="about" style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px" src="/img/about-126x33.png"></img>
+            <img alt="" id="overstatsimg" onmousedown="clickoverallstats()" onmouseup="overallstats()" onclick="overallstats()"
+                 src="/img/overallstats-126x33.png"
+                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
+            <img alt="" id="aboutimg" onmousedown="clickabout()()" onmouseup="about()()" onclick="about()()"
+                 src="/img/about-126x33.png"
+                 style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
           </center>
     </div>
   </div>
