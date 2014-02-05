@@ -63,12 +63,40 @@ class Root():
         """
         data = json.loads(cherrypy.request.body.read())
         fingerprint = getval("fingerprint", data)
+        useragent = getval("useragent", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-        id = query.createparticipant(db, fingerprint)
+        id = query.createparticipant(db, fingerprint, useragent)
         admitdate = query.getadmittance(db, id)
 
         return json.dumps({"id": id, "date": admitdate.ctime()})
+
+
+    @cherrypy.expose
+    def myinfo(self, **kwargs):
+        """Update the participant's demographic information.
+
+        This method is almost exactly like the submit() method, except that we
+        do not attempt to submit a new sequence in this method.
+
+        """
+        data = json.loads(cherrypy.request.body.read())
+        print "myinfo called with: "+str(data)
+        sequence = getval("sequence", data)
+        fingerprint = getval("fingerprint", data)
+
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+        id = query.getparticipantid(db, fingerprint)
+        demodata = query.getparticipantinfo(db, id)
+
+        data = {'sequence': sequence,
+                'id': id}
+
+        data.update(demodata)
+
+        print "myinfo: loading myinfo.html template with data="+str(data)
+        tmpl = loader.load('myinfo.html')
+        return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 
     @cherrypy.expose
@@ -82,11 +110,14 @@ class Root():
         useragent = getval("useragent", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-        id = query.createparticipant(db, fingerprint)
+        id = query.createparticipant(db, fingerprint, useragent)
         query.insertsequence(db, fingerprint, sequence, useragent)
+        demodata = query.getparticipantinfo(db, id)
 
-        data = {'sequence': sequence}
-        tmpl = loader.load('submission.html')
+        data = {'sequence': sequence,
+                'id': id}
+        data.update(demodata)
+        tmpl = loader.load('myinfo.html')
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 
@@ -103,6 +134,38 @@ class Root():
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.getparticipantid(db, fingerprint)
+        
+        # Create a dictionary of demographic data that were provided by the participant
+        demodata = {}
+        try: demodata.update({'maritalstatus': getval("form:maritalstatus", data)})
+        except KeyError: pass
+        try: demodata.update({'curzip': getval("form:curzip", data)})
+        except KeyError: pass
+        try: demodata.update({'origzip': getval("form:origzip", data)})
+        except KeyError: pass
+        try: demodata.update({'family': getval("form:family", data)})
+        except KeyError: pass
+        try: demodata.update({'residence': getval("form:residence", data)})
+        except KeyError: pass
+        try: demodata.update({'age': getval("form:age", data)})
+        except KeyError: pass
+        try: demodata.update({'education': getval("form:education", data)})
+        except KeyError: pass
+        try: demodata.update({'handed': getval("form:handed", data)})
+        except KeyError: pass
+        try: demodata.update({'income': getval("form:income", data)})
+        except KeyError: pass
+        try: demodata.update({'military': getval("form:military", data)})
+        except KeyError: pass
+        try: demodata.update({'sex': getval("form:sex", data)})
+        except KeyError: pass
+        try: demodata.update({'employment': getval("form:employment", data)})
+        except KeyError: pass
+
+        print "demodata: "+str(demodata)
+        # If there was any demographic data provided, insert it into the database.
+        if len(demodata) > 0:
+            query.submitdemo(db, id, demodata)
 
         # The value for resultspage is a path to a newly created Genshi
         # template which includes images of all the pygal-generated charts.
@@ -110,7 +173,11 @@ class Root():
 
         data = {'curdate': time.ctime(),
                 'id': id,
-                'headstotails': charts['headstotails']}
+                'sequence': sequence,
+                'small_zerostoones': charts['small_zerostoones'],
+                'large_zerostoones': charts['large_zerostoones'],
+                'small_runlengths': charts['small_runlengths'],
+                'large_runlengths': charts['large_runlengths']}
 
         tmpl = loader.load("myresults.html")
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)

@@ -30,8 +30,17 @@
         <div class="t2">
           <p>Results for participant <a>${data.id}</a>, generated on <a>${data.curdate}</a> UTC.</p>
           <hr />
-          <p><b>Charts go here</b></p>
-          <img label="heads to tails" src="${data.headstotails}"/>
+          <p>You entered the sequence: ${str(data.sequence)}</p>
+          <img alt="" label="Zeros to Ones"
+           data-interchange="[${data.small_zerostoones}, (default)],
+                             [${data.small_zerostoones}, (small)], 
+                             [${data.large_zerostoones}, (medium)], 
+                             [${data.large_zerostoones}, (large)]"></img>
+          <img alt="" label="Run Lengths"
+           data-interchange="[${data.small_runlengths}, (default)],
+                             [${data.small_runlengths}, (small)], 
+                             [${data.large_runlengths}, (medium)], 
+                             [${data.large_runlengths}, (large)]"></img>
         </div>
       </div>
   </div>
@@ -39,8 +48,8 @@
   <div class="row">
     <div class="twelve columns" style="background-color:black; color:white; padding-top:15px; padding-bottom:15px">
           <center>
-            <img alt="" id="mydemoimg" onmousedown="clickmydemo()" onmouseup="mydemo()" onclick="mydemo()"
-                 src="/img/mydemo-126x33.png"
+            <img alt="" id="myinfoimg" onmousedown="clickmyinfo()" onmouseup="myinfo()" onclick="myinfo()"
+                 src="/img/myinfo-126x33.png"
                  style="margin-left:5px; margin-right:5px; margin-top:2px; margin-bottom:2px"></img>
             <img alt="" id="myrelimg" onmousedown="clickmyrelatives()" onmouseup="myrelatives()" onclick="myrelatives()"
                  src="/img/myrelatives-126x33.png"
@@ -64,6 +73,7 @@
   <script type="text/javascript">
     $(document).foundation();
     fingerprint = new Fingerprint({canvas: true}).get();
+    sequence = ${str(data.sequence)};
   </script>
 
 </body>

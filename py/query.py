@@ -105,7 +105,7 @@ def insertsequence(conn, fingerprint, sequence, useragent):
     return rc
 
 
-def createparticipant(conn, fingerprint):
+def createparticipant(conn, fingerprint, useragent):
     """Create a participant record"""
     id = getparticipantid(conn, fingerprint)
     if id is not None:
@@ -114,8 +114,8 @@ def createparticipant(conn, fingerprint):
 
     c = conn.cursor()
     try:
-        rc = c.execute("insert into participant (fingerprint) " \
-          + "values (%s)", (fingerprint,))
+        rc = c.execute("insert into participant (fingerprint, useragent) " \
+          + "values (%s, %s)", (fingerprint, useragent))
     except MySQLdb.IntegrityError, v:
         if v[0] == 1062:
             # Remove this print statement
@@ -163,4 +163,46 @@ def getsequence(conn, fingerprint):
     """
     return strquery(conn, "select sequence from sequences where " \
       + "fingerprint=%s", (fingerprint,))
+
+def getparticipantinfo(conn, participantid):
+    """Return a dictionary populated with any demographic information that we
+    can muster.
+    
+    Any field that has been not yet been provided by the participant is left
+    out of the dictionary, such that if no demographic information has yet
+    been provided by the participant, this function will return an empty
+     dictionary.
+
+    """
+    results = {}
+
+    lres = dictquery(conn, "select * from participant where idparticipant=%s",
+    (participantid,))
+
+    if lres is None:
+        return results
+
+    print "getparticipantinfo() returned "+str(lres)
+    for entry in lres:
+        if lres[entry] is not None:
+            results.update({entry: lres[entry]})
+
+    return results
+
+def submitdemo(conn, participantid, demodata):
+    """Insert whatever demographic data has been supplied in the demodata
+    dictionary.
+
+    """
+    if len(demodata) == 0:
+        return
+
+    c = conn.cursor()
+    for key in demodata.keys():
+        rc = c.execute("update participant set "+key+"=" \
+          + "%s where idparticipant=%s", (demodata[key], participantid))
+    c.close()
+    conn.commit()
+    return rc
+    
 

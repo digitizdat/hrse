@@ -15,10 +15,22 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`participant` (
   `idparticipant` INT NOT NULL AUTO_INCREMENT ,
   `admitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
   `fingerprint` VARCHAR(45) NOT NULL ,
+  `useragent` VARCHAR(256) NOT NULL,
+  `maritalstatus` VARCHAR(64) NOT NULL,
+  `curzip` VARCHAR(10) NOT NULL,
+  `origzip` VARCHAR(10) NOT NULL,
+  `family` VARCHAR(4) NOT NULL,
+  `residence` VARCHAR(4) NOT NULL,
+  `age` VARCHAR(4) NOT NULL,
+  `education` VARCHAR(64) NOT NULL,
+  `handed` VARCHAR(5) NOT NULL,
+  `income` VARCHAR(6) NOT NULL,
+  `military` VARCHAR(3) NOT NULL,
+  `sex` VARCHAR(6) NOT NULL,
+  `employment` VARCHAR(64) NOT NULL,
   PRIMARY KEY (`idparticipant`) ,
   UNIQUE INDEX `fingerprint_UNIQUE` (`fingerprint` ASC) )
 ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `hrse`.`sequences`

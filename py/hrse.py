@@ -7,6 +7,8 @@ given (e.g. human-generated) sequence of 0s and 1s.
 
 import math
 import pygal
+from pygal.style import LightGreenStyle
+import config
 
 
 def runs(sequence):
@@ -142,19 +144,76 @@ def isserdep(pzgz, pogz, se):
         return True
 
 
-def genresults(conn, seqstring, fingerprint):
+def genrunlengths(sequence):
+    """Return a list of run lengths for the given sequence string."""
+    runlengths = []
+    results = {}
+
+    if len(sequence) == 0:
+        return results
+
+    char = None
+    count = 0
+
+    for x in sequence:
+        if char is None:
+            char = x
+            count = 1
+        elif x == char:
+            count += 1
+        else:  # Switching between 0 and 1
+            char = x
+            runlengths.append(count)
+            count = 1
+
+    runlengths.append(count)
+
+    for i in range(1, max(runlengths)+1):
+        results.update({str(i): 0})
+        for r in runlengths:
+            if r == i:
+                results.update({str(i): results[str(i)]+1})
+
+    return results
+
+
+def genresults(conn, sequence, fingerprint):
     """Generate a Genshi template that includes the images for all of the
     pygal-generated charts that show the statistical analysis of the given
     participant's sequence.
 
     The return value is the path to the newly created template.
     """
+    fprefix = '/img/hist/'+str(fingerprint)
 
-    (runscount, longest_run) = runs(seqstring)
-    (pzgz, pogz, se) = serdep(seqstring)
+    (runscount, longest_run) = runs(sequence)
+    (pzgz, pogz, se) = serdep(sequence)
 
     # Examine the results of the serial dependency calculations
     serdepbool = isserdep(pzgz, pogz, se)
 
-    return {'headstotails': '/img/hist/somechart.png'}
+    # Create a bar chart for 0s and 1s counts
+    chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
+    chart.title = "Ratio of 0s versus 1s"
+    chart.add('Zeros', [sequence.count('0')])
+    chart.add('Ones', [sequence.count('1')])
+    chart.render_to_png(config.get('hrsehome')+fprefix+'-small-zerostoones.png')
+    chart.config.width = 400
+    chart.render_to_png(config.get('hrsehome')+fprefix+'-large-zerostoones.png')
+
+    # Create a histogram of run lengths
+    runlengths = genrunlengths(sequence)
+    chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
+    chart.title = "Run lengths"
+    chart.x_labels = map(str, range(1, len(runlengths)+1))
+    chart.add('Count', [runlengths[str(i)] for i in range(1, len(runlengths)+1)])
+    chart.render_to_png(config.get('hrsehome')+fprefix+'-small-runlengths.png')
+    chart.config.width = 400
+    chart.render_to_png(config.get('hrsehome')+fprefix+'-large-runlengths.png')
+
+
+    return {'small_zerostoones': fprefix+'-small-zerostoones.png',
+            'large_zerostoones': fprefix+'-large-zerostoones.png',
+            'small_runlengths': fprefix+'-small-runlengths.png',
+            'large_runlengths': fprefix+'-large-runlengths.png'}
 
