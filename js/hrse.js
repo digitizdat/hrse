@@ -10,6 +10,7 @@
     }
 
     function keystroke(event) {
+        keyuser = true;
         if (event.keyCode == 48) {
             addzero();
         }
@@ -102,17 +103,6 @@
         }
     }
 
-    function clickmyresults() {
-        var src = document.getElementById("myresimg").src;
-        var origin = window.location.origin;
-
-        if (src == origin+"/img/myresults-126x33.png") {
-            document.getElementById("myresimg").src = origin+"/img/myresults-grey-126x33.png";
-        } else if (src == origin+"/img/myresults-grey-126x33.png") {
-            document.getElementById("myresimg").src = origin+"/img/myresults-126x33.png";
-        }
-    }
-
     function clickmyrelatives() {
         var src = document.getElementById("myrelimg").src;
         var origin = window.location.origin;
@@ -146,47 +136,56 @@
         }
     }
 
-    function clickmydemo() {
-        var src = document.getElementById("mydemoimg").src;
+    function clickmyinfo() {
+        var src = document.getElementById("myinfoimg").src;
         var origin = window.location.origin;
 
-        if (src == origin+"/img/mydemo-126x33.png") {
-            document.getElementById("mydemoimg").src = origin+"/img/mydemo-grey-126x33.png";
-        } else if (src == origin+"/img/mydemo-grey-126x33.png") {
-            document.getElementById("mydemoimg").src = origin+"/img/mydemo-126x33.png";
+        if (src == origin+"/img/myinfo-126x33.png") {
+            document.getElementById("myinfoimg").src = origin+"/img/myinfo-grey-126x33.png";
+        } else if (src == origin+"/img/myinfo-grey-126x33.png") {
+            document.getElementById("myinfoimg").src = origin+"/img/myinfo-126x33.png";
         }
+    }
+
+    // Load the demographic information page.
+    function myinfo() {
+        jsonstr = JSON.stringify({"fingerprint": fingerprint})
+        $.ajax({url: "/myinfo/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               })
+           .done(function(data, textStatus, jqXHR) {
+               var doc = document.open("text/html", "replace");
+               doc.write(data);
+               doc.close();
+           });
     }
 
     // Submit the sequence, fingerprint, and User-Agent info to the /submit
     // WS, and load the results page.
     function done() {
-       jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint, "useragent": navigator.userAgent});
-       $.ajax({url: "/submit/",
-               async: false,
-               data: jsonstr,
-               contentType: 'application/json',
-               type: 'POST'
-              })
-          .done(function(data, textStatus, jqXHR) {
-              var doc = document.open("text/html", "replace");
-              doc.write(data);
-              doc.close();
-          });
-    }
+        mobileuser = false;
 
-    function done_alt1() {
-       jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint, "useragent": navigator.userAgent});
-       $.ajax({url: "/submit_alt1/",
-               async: false,
-               data: jsonstr,
-               contentType: 'application/json',
-               type: 'POST'
-              })
-          .done(function(data, textStatus, jqXHR) {
-              var doc = document.open("text/html", "replace");
-              doc.write(data);
-              doc.close();
-          });
+        if (navigator.userAgent.match(/mobile/i)) {
+            mobileuser = true;
+        };
+
+        jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint,
+                                  "useragent": navigator.userAgent,"keyuser": keyuser,
+                                  "screensize": screen.width, "mobileuser": mobileuser});
+        $.ajax({url: "/submit/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               })
+           .done(function(data, textStatus, jqXHR) {
+               var doc = document.open("text/html", "replace");
+               doc.write(data);
+               doc.close();
+           });
     }
 
     // I got this a kind of adhoc method that can be attached to an object.  I
@@ -213,25 +212,8 @@
 
     // Submit the demographic form data, continue on to the results page.
     function submitdemo() {
-       jsonstr = JSON.stringify({"form": $('form').serializeObject(), "sequence": sequence, "fingerprint": fingerprint});
+       jsonstr = JSON.stringify({"formdata": $('form').serializeObject(), "fingerprint": fingerprint});
        $.ajax({url: "/demosubmit/",
-               async: false,
-               data: jsonstr,
-               contentType: 'application/json',
-               type: 'POST'
-              })
-          .done(function(data, textStatus, jqXHR) {
-              var doc = document.open("text/html", "replace");
-              doc.write(data);
-              doc.close();
-          });
-    }
-
-    // Go to the myresults page, which generates a series of graphs describing
-    // the statistical analysis of the participant's sequence.
-    function myresults() {
-       jsonstr = JSON.stringify({"fingerprint": fingerprint, "sequence": seqstring});
-       $.ajax({url: "/myresults/",
                async: false,
                data: jsonstr,
                contentType: 'application/json',
@@ -249,7 +231,7 @@
     // participant was admitted.  Then write the participant number and the
     // admittance ts to the page at the specified locations.
     function getpid() {
-       jsonstr = JSON.stringify({"fingerprint": fingerprint});
+       jsonstr = JSON.stringify({"fingerprint": fingerprint, "useragent": navigator.userAgent});
        $.ajax({url: "/getpid/",
                async: false,
                data: jsonstr,

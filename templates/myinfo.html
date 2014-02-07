@@ -69,13 +69,28 @@
     </div>
 
     <div class="row">
+        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
+            <label>Your favorite color</label>
+            <select name="income">
+                <option value="na">N/A</option>
+                <option value="red">Red</option>
+                <option value="orange">Orange</option>
+                <option value="yellow">Yellow</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="purple">Purple</option>
+                <option value="pink">Pink</option>
+                <option value="brown">Brown</option>
+                <option value="black">Black</option>
+                <option value="white">White</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="small-4 medium-4 large-2 columns" style="float:left; vertical-align:bottom">
             <label>Zip code where you currently live</label>
             <input name="curzip" type="text" pattern="[0-9]*" placeholder="00000" />
-        </div>
-        <div class="small-4 medium-4 large-2 columns" style="float:left; vertical-align:bottom">
-            <label>Zip code where spent most of your life</label>
-            <input name="origzip" type="text" pattern="[0-9]*" placeholder="00000" />
         </div>
     </div>
 
@@ -135,23 +150,6 @@
 
     <div class="row">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
-            <label>Your annual income range</label>
-            <select name="income">
-                <option value="na">N/A</option>
-                <option value="lt25k">&lt; $25,000</option>
-                <option value="lt40k">$25,000 - $40,000</option>
-                <option value="lt60k">$40,000 - $60,000</option>
-                <option value="lt80k">$60,000 - $80,000</option>
-                <option value="lt100k">$80,000 - $100,000</option>
-                <option value="lt150k">$100,000 - $150,000</option>
-                <option value="lt200k">$150,000 - $200,000</option>
-                <option value="gt200k">&gt; $200,000</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Your employment status</label>
             <select name="employment">
                 <option value="na">N/A</option>
@@ -197,7 +195,6 @@
   <script type="text/javascript">
     $(document).foundation();
     fingerprint = new Fingerprint({canvas: true}).get();
-    sequence = "${data.sequence}";
   </script>
 
 </body>

@@ -150,18 +150,18 @@ def getadmittance(conn, participantid):
     return strquery(conn, "select admitted from participant where " \
       + "idparticipant=%s", (participantid,))
 
-def getsequence(conn, fingerprint):
-    """Return the first submitted sequence for the given participant
-    (identified by the user's browser fingerprint).
+def getsequences(conn, fingerprint):
+    """Return a list of sequences entered by the participant.
+    
+    The participant is identified by his/her browser fingerprint. The returned
+    list will be ordered chronologically, so the most recently entered
+    sequence will be last.
 
     The conn parameter is an open database handle to the server database, and
     name is the name of the server.
 
-    If there are multiple sequences submitted for the given fingerprint, only
-    the first one submitted is returned.
-
     """
-    return strquery(conn, "select sequence from sequences where " \
+    return strlistquery(conn, "select sequence from sequences where " \
       + "fingerprint=%s", (fingerprint,))
 
 def getparticipantinfo(conn, participantid):

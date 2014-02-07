@@ -30,7 +30,7 @@
         <div class="t2">
           <p>Results for participant <a>${data.id}</a>, generated on <a>${data.curdate}</a> UTC.</p>
           <hr />
-          <p>You entered the sequence: ${str(data.sequence)}</p>
+          <p>You entered the sequence: ${data.sequence}</p>
           <img alt="" label="Zeros to Ones"
            data-interchange="[${data.small_zerostoones}, (default)],
                              [${data.small_zerostoones}, (small)], 
@@ -73,7 +73,6 @@
   <script type="text/javascript">
     $(document).foundation();
     fingerprint = new Fingerprint({canvas: true}).get();
-    sequence = ${str(data.sequence)};
   </script>
 
 </body>

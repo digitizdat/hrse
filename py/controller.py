@@ -82,16 +82,13 @@ class Root():
         """
         data = json.loads(cherrypy.request.body.read())
         print "myinfo called with: "+str(data)
-        sequence = getval("sequence", data)
         fingerprint = getval("fingerprint", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.getparticipantid(db, fingerprint)
         demodata = query.getparticipantinfo(db, id)
 
-        data = {'sequence': sequence,
-                'id': id}
-
+        data = {'id': id}
         data.update(demodata)
 
         print "myinfo: loading myinfo.html template with data="+str(data)
@@ -101,8 +98,10 @@ class Root():
 
     @cherrypy.expose
     def submit(self, **kwargs):
-        """Analyze the submitted binary sequence and generate a response page."""
+        """Insert the given sequence into the database, and direct the user
+        to the myinfo page for demographic info collection.
 
+        """
         data = json.loads(cherrypy.request.body.read())
         print "submit called with: "+str(data)
         sequence = getval("sequence", data)
@@ -114,9 +113,9 @@ class Root():
         query.insertsequence(db, fingerprint, sequence, useragent)
         demodata = query.getparticipantinfo(db, id)
 
-        data = {'sequence': sequence,
-                'id': id}
+        data = {'id': id}
         data.update(demodata)
+
         tmpl = loader.load('myinfo.html')
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
@@ -130,36 +129,37 @@ class Root():
         data = json.loads(cherrypy.request.body.read())
         print "demosubmit called with: "+str(data)
         fingerprint = getval("fingerprint", data)
-        sequence = getval("sequence", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.getparticipantid(db, fingerprint)
+        sequences = query.getsequences(db, fingerprint)
+        sequence = sequences[len(sequences)-1]
         
         # Create a dictionary of demographic data that were provided by the participant
         demodata = {}
-        try: demodata.update({'maritalstatus': getval("form:maritalstatus", data)})
+        try: demodata.update({'maritalstatus': getval("formdata:maritalstatus", data)})
         except KeyError: pass
-        try: demodata.update({'curzip': getval("form:curzip", data)})
+        try: demodata.update({'curzip': getval("formdata:curzip", data)})
         except KeyError: pass
-        try: demodata.update({'origzip': getval("form:origzip", data)})
+        try: demodata.update({'origzip': getval("formdata:origzip", data)})
         except KeyError: pass
-        try: demodata.update({'family': getval("form:family", data)})
+        try: demodata.update({'family': getval("formdata:family", data)})
         except KeyError: pass
-        try: demodata.update({'residence': getval("form:residence", data)})
+        try: demodata.update({'residence': getval("formdata:residence", data)})
         except KeyError: pass
-        try: demodata.update({'age': getval("form:age", data)})
+        try: demodata.update({'age': getval("formdata:age", data)})
         except KeyError: pass
-        try: demodata.update({'education': getval("form:education", data)})
+        try: demodata.update({'education': getval("formdata:education", data)})
         except KeyError: pass
-        try: demodata.update({'handed': getval("form:handed", data)})
+        try: demodata.update({'handed': getval("formdata:handed", data)})
         except KeyError: pass
-        try: demodata.update({'income': getval("form:income", data)})
+        try: demodata.update({'income': getval("formdata:income", data)})
         except KeyError: pass
-        try: demodata.update({'military': getval("form:military", data)})
+        try: demodata.update({'military': getval("formdata:military", data)})
         except KeyError: pass
-        try: demodata.update({'sex': getval("form:sex", data)})
+        try: demodata.update({'sex': getval("formdata:sex", data)})
         except KeyError: pass
-        try: demodata.update({'employment': getval("form:employment", data)})
+        try: demodata.update({'employment': getval("formdata:employment", data)})
         except KeyError: pass
 
         print "demodata: "+str(demodata)
