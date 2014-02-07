@@ -55,7 +55,7 @@
 
     </div>
 
-    <div class="row">
+    <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Sex</label>
             <input type="radio" name="sex" value="male" /><label>Male</label>
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Your favorite color</label>
             <select name="income">
@@ -85,16 +85,49 @@
                 <option value="white">White</option>
             </select>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="small-4 medium-4 large-2 columns" style="float:left; vertical-align:bottom">
+        <div class="small-8 medium-4 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Zip code where you currently live</label>
             <input name="curzip" type="text" pattern="[0-9]*" placeholder="00000" />
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="padding-top:15px">
+        <div class="small-12 medium-12 large-4 columns" style="float:left; vertical-align:baseline">
+            <label>Are you more spontaneous or disciplined?</label>
+            <input type="radio" name="spontaneity" value="spontaneous" /><label>Spontaneous!</label>
+            <input type="radio" name="spontaneity" value="disciplined" /><label>Disciplined.</label>
+        </div>
+        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
+            <label>How random do you think your sequence is?</label>
+            <select name="howrandom">
+                <option value="na">N/A</option>
+                <option value="1">1 - Trivial</option>
+                <option value="2">2 - Meh</option>
+                <option value="3">3 - That felt a bit predictable</option>
+                <option value="4">4 - Probably not my best effort</option>
+                <option value="5">5 - Not bad for a human</option>
+                <option value="6">6 - We'll see</option>
+                <option value="7">7 - Confident, but with the wisdom of experience</option>
+                <option value="8">8 - Probably more random than most</option>
+                <option value="9">9 - I accept that I cannot be random</option>
+                <option value="10">10 - Nailed it!</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row" style="padding-top:15px">
+        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
+            <label>How many people live in your residence, including yourself?</label>
+            <input type="text" name="residence" pattern="[0-9]*" placeholder="0" />
+        </div>
+        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
+            <label>Do you live with members of your family?</label>
+            <input type="radio" name="family" value="yes" /><label>Yes</label>
+            <input type="radio" name="family" value="no" /><label>No</label>
+        </div>
+    </div>
+
+    <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Marital status</label>
             <select name="maritalstatus">
@@ -109,21 +142,9 @@
                 <option value="cohab">Cohabitating</option>
             </select>
         </div>
-        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
-            <label>Do you live with members of your family?</label>
-            <input type="radio" name="family" value="yes" /><label>Yes</label>
-            <input type="radio" name="family" value="no" /><label>No</label>
-        </div>
     </div>
 
-    <div class="row">
-        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
-            <label>How many people live in your residence, including yourself?</label>
-            <input type="text" name="residence" pattern="[0-9]*" placeholder="0" />
-        </div>
-    </div>
-
-    <div class="row">
+    <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Have you ever served in the military?</label>
             <input type="radio" name="military" value="yes" /><label>Yes</label>
@@ -148,7 +169,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Your employment status</label>
             <select name="employment">

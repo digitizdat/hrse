@@ -206,10 +206,6 @@ def main():
     })
 
     cherrypy.quickstart(Root(credentials), '/', {
-        '/static': {
-            'tools.staticdir.on': True,
-            'tools.staticdir.dir': 'static'
-        },
         '/stylesheets': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'stylesheets'
