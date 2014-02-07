@@ -23,3 +23,17 @@
  # Once hrseweb has completed his tasks, including creating his ~/.my.cnf file...
    33  cd ~hrseweb/hrse/py/
    35  python controller.py 
+
+
+# Finally, set up your TCP Wrappers:
+[root@ip-10-139-46-197 ~]# echo "ALL: ALL" > /etc/hosts.deny
+
+[root@ip-10-139-46-197 ~]# cat > /etc/hosts.allow
+# Legend:
+# 99-63-162-34.lightspeed.stlsmo.sbcglobal.net: Home
+# 172-15-6-49.lightspeed.stlsmo.sbcglobal.net: Sweet Art
+# 71-91-218-6.dhcp.stls.mo.charter.com: Mokabe's
+# 24-207-221-21.dhcp.stls.mo.charter.com: Gelateria
+
+sshd: 99-63-162-34.lightspeed.stlsmo.sbcglobal.net, 172-15-6-49.lightspeed.stlsmo.sbcglobal.net, admiral.umsl.edu, sdf.org, 71-91-218-6.dhcp.stls.mo.charter.com, 24-207-221-21.dhcp.stls.mo.charter.com
+
