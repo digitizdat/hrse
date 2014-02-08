@@ -42,149 +42,133 @@
             <label>Age</label>
             <select name="age">
                 <option value="na">N/A</option>
-                <option value="lt12">Under 12 years old</option>
-                <option value="lt18">12-17 years old</option>
-                <option value="lt25">18-24 years old</option>
-                <option value="lt35">25-34 years old</option>
-                <option value="lt45">35-44 years old</option>
-                <option value="lt55">45-54 years old</option>
-                <option value="lt65">55-64 years old</option>
-                <option value="ge75">75 years or older</option>
+                <option value="lt12" selected="${data.age_lt12}">Under 12 years old</option>
+                <option value="lt18" selected="${data.age_lt18}">12-17 years old</option>
+                <option value="lt25" selected="${data.age_lt25}">18-24 years old</option>
+                <option value="lt35" selected="${data.age_lt35}">25-34 years old</option>
+                <option value="lt45" selected="${data.age_lt45}">35-44 years old</option>
+                <option value="lt55" selected="${data.age_lt55}">45-54 years old</option>
+                <option value="lt65" selected="${data.age_lt65}">55-64 years old</option>
+                <option value="ge75" selected="${data.age_ge75}">75 years or older</option>
             </select>
         </div>
+      </div>
 
-    </div>
-
-    <div class="row" style="padding-top:15px">
+      <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Sex</label>
-            <input type="radio" name="sex" value="male" /><label>Male</label>
-            <input type="radio" name="sex" value="female" /><label>Female</label>
+            <input type="radio" name="sex" value="male" checked="${data.sex_m}"/><label>Male</label>
+            <input type="radio" name="sex" value="female" checked="${data.sex_f}"/><label>Female</label>
         </div>
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Handedness</label>
-            <input type="radio" name="handed" value="left" /><label>Left</label>
-            <input type="radio" name="handed" value="right" /><label>Right</label>
+            <input type="radio" name="handed" value="left" checked="${data.handed_l}"/><label>Left</label>
+            <input type="radio" name="handed" value="right" checked="${data.handed_r}"/><label>Right</label>
         </div>
-    </div>
+      </div>
 
-    <div class="row" style="padding-top:15px">
+      <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Your favorite color</label>
-            <select name="income">
+            <select name="favcolor">
                 <option value="na">N/A</option>
-                <option value="red">Red</option>
-                <option value="orange">Orange</option>
-                <option value="yellow">Yellow</option>
-                <option value="green">Green</option>
-                <option value="blue">Blue</option>
-                <option value="purple">Purple</option>
-                <option value="pink">Pink</option>
-                <option value="brown">Brown</option>
-                <option value="black">Black</option>
-                <option value="white">White</option>
+                <option value="red" selected="${data.color_red}">Red</option>
+                <option value="orange" selected="${data.color_orange}">Orange</option>
+                <option value="yellow" selected="${data.color_yellow}">Yellow</option>
+                <option value="green" selected="${data.color_green}">Green</option>
+                <option value="blue" selected="${data.color_blue}">Blue</option>
+                <option value="purple" selected="${data.color_purple}">Purple</option>
+                <option value="pink" selected="${data.color_pink}">Pink</option>
+                <option value="brown" selected="${data.color_brown}">Brown</option>
+                <option value="black" selected="${data.color_black}">Black</option>
+                <option value="white" selected="${data.color_white}">White</option>
             </select>
         </div>
         <div class="small-8 medium-4 large-4 columns" style="float:left; vertical-align:baseline">
             <label>Zip code where you currently live</label>
-            <input name="curzip" type="text" pattern="[0-9]*" placeholder="00000" />
+            <input name="curzip" type="text" pattern="[0-9]*" placeholder="00000" value="${data.curzip}"/>
         </div>
-    </div>
+      </div>
 
-    <div class="row" style="padding-top:15px">
+      <div class="row" style="padding-top:15px">
         <div class="small-12 medium-12 large-4 columns" style="float:left; vertical-align:baseline">
-            <label>Are you more spontaneous or disciplined?</label>
-            <input type="radio" name="spontaneity" value="spontaneous" /><label>Spontaneous!</label>
-            <input type="radio" name="spontaneity" value="disciplined" /><label>Disciplined.</label>
+            <label>Are there enough hours in the day?</label>
+            <input type="radio" name="enoughhours" value="yes" checked="${data.enoughhours_y}"/><label>Yes</label>
+            <input type="radio" name="enoughhours" value="no" checked="${data.enoughhours_n}"/><label>No</label>
         </div>
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
-            <label>How random do you think your sequence is?</label>
-            <select name="howrandom">
+            <label>Which one of these super powers would you pick?</label>
+            <select name="superpower">
                 <option value="na">N/A</option>
-                <option value="1">1 - Trivial</option>
-                <option value="2">2 - Meh</option>
-                <option value="3">3 - That felt a bit predictable</option>
-                <option value="4">4 - Probably not my best effort</option>
-                <option value="5">5 - Not bad for a human</option>
-                <option value="6">6 - We'll see</option>
-                <option value="7">7 - Confident, but with the wisdom of experience</option>
-                <option value="8">8 - Probably more random than most</option>
-                <option value="9">9 - I accept that I cannot be random</option>
-                <option value="10">10 - Nailed it!</option>
+                <option value="flight" selected="${data.suppow_flight}">Flight</option>
+                <option value="teleport" selected="${data.suppow_telep}">Teleportation</option>
+                <option value="invisible" selected="${data.suppow_invis}">Invisibility</option>
+                <option value="healing" selected="${data.suppow_healing}">Super fast healing</option>
+                <option value="strength" selected="${data.suppow_strength}">Super strength</option>
+                <option value="mindre" selected="${data.suppow_mindre}">Mind reading</option>
+                <option value="mindco" selected="${data.suppow_mindco}">Mind control</option>
+                <option value="intelligence" selected="${data.suppow_intel}">Super intelligence</option>
+                <option value="timetravel" selected="${data.suppow_timetrav}">Time travel</option>
+                <option value="timefreeze" selected="${data.suppow_timefrez}">Time freeze</option>
             </select>
         </div>
-    </div>
+      </div>
 
-    <div class="row" style="padding-top:15px">
+      <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>How many people live in your residence, including yourself?</label>
-            <input type="text" name="residence" pattern="[0-9]*" placeholder="0" />
+            <input type="text" name="residence" pattern="[0-9]*" placeholder="0" value="${data.residence}"/>
         </div>
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Do you live with members of your family?</label>
-            <input type="radio" name="family" value="yes" /><label>Yes</label>
-            <input type="radio" name="family" value="no" /><label>No</label>
+            <input type="radio" name="family" value="yes" checked="${data.family_y}"/><label>Yes</label>
+            <input type="radio" name="family" value="no" checked="${data.family_n}"/><label>No</label>
         </div>
-    </div>
+      </div>
 
-    <div class="row" style="padding-top:15px">
+      <div class="row" style="padding-top:15px">
+        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
+            <label>Do you have any pets?</label>
+            <input type="radio" name="pets" value="yes" checked="${data.pets_y}"/><label>Yes</label>
+            <input type="radio" name="pets" value="no" checked="${data.pets_n}"/><label>No</label>
+        </div>
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Marital status</label>
             <select name="maritalstatus">
                 <option value="na">N/A</option>
-                <option value="single">Single, never married</option>
-                <option value="married">Married</option>
-                <option value="divorced">Divorced</option>
-                <option value="widowed">Widowed</option>
-                <option value="civunion">Civil union</option>
-                <option value="dompart">Domestic Partnership</option>
-                <option value="separated">Separated</option>
-                <option value="cohab">Cohabitating</option>
+                <option value="single" selected="${data.mari_single}">Single, never married</option>
+                <option value="married" selected="${data.mari_married}">Married</option>
+                <option value="divorced" selected="${data.mari_divorced}">Divorced</option>
+                <option value="widowed" selected="${data.mari_widowed}">Widowed</option>
+                <option value="civunion" selected="${data.mari_civunion}">Civil union</option>
+                <option value="dompart" selected="${data.mari_dompart}">Domestic Partnership</option>
+                <option value="separated" selected="${data.mari_separated}">Separated</option>
+                <option value="cohab" selected="${data.mari_cohab}">Cohabitating</option>
             </select>
         </div>
-    </div>
+      </div>
 
-    <div class="row" style="padding-top:15px">
+      <div class="row" style="padding-top:15px">
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Have you ever served in the military?</label>
-            <input type="radio" name="military" value="yes" /><label>Yes</label>
-            <input type="radio" name="military" value="no" /><label>No</label>
+            <input type="radio" name="military" value="yes" checked="${data.military_y}"/><label>Yes</label>
+            <input type="radio" name="military" value="no" checked="${data.military_n}"/><label>No</label>
         </div>
 
         <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:bottom">
             <label>Your education level</label>
             <select name="education">
                 <option value="na">N/A</option>
-                <option value="none">No schooling completed</option>
-                <option value="elementary">Completed up to 8th grade</option>
-                <option value="hs">High school graduate, diploma, or the equivalent</option>
-                <option value="somecol">Some college credit, no degree</option>
-                <option value="trade">Trade/Tech/Vocactional training</option>
-                <option value="assoc">Associate degree</option>
-                <option value="under">Bachelor's degree</option>
-                <option value="master">Master's degree</option>
-                <option value="prof">Professional degree</option>
-                <option value="doctor">Doctorate degree</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="row" style="padding-top:15px">
-        <div class="small-8 medium-6 large-4 columns" style="float:left; vertical-align:baseline">
-            <label>Your employment status</label>
-            <select name="employment">
-                <option value="na">N/A</option>
-                <option value="part">Employed part-time for wages</option>
-                <option value="full">Employed full-time for wages</option>
-                <option value="multi">Multiple jobs for wages</option>
-                <option value="self">Self-employed</option>
-                <option value="olooking">Out of work and looking for work</option>
-                <option value="onolook">Out of work but not currently looking for work</option>
-                <option value="homemaker">A homemaker</option>
-                <option value="student">A student</option>
-                <option value="military">Military</option>
-                <option value="retired">Retired</option>
-                <option value="disabled">Unable to work</option>
+                <option value="none" selected="${data.edu_none}">No schooling completed</option>
+                <option value="elementary" selected="${data.edu_elem}">Completed up to 8th grade</option>
+                <option value="hs" selected="${data.edu_hs}">High school graduate, diploma, or the equivalent</option>
+                <option value="somecol" selected="${data.edu_somecol}">Some college credit, no degree</option>
+                <option value="trade" selected="${data.edu_trade}">Trade/Tech/Vocactional training</option>
+                <option value="assoc" selected="${data.edu_assoc}">Associate degree</option>
+                <option value="under" selected="${data.edu_under}">Bachelor's degree</option>
+                <option value="master" selected="${data.edu_master}">Master's degree</option>
+                <option value="prof" selected="${data.edu_prof}">Professional degree</option>
+                <option value="doctor" selected="${data.edu_doctor}">Doctorate degree</option>
             </select>
         </div>
       </div>
