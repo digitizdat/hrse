@@ -79,13 +79,58 @@
 }
 
 .t2 {
-    font: {
-        family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
-        size: 1em;
-        weight: lighter;
+    @media #{$screen} {
+        font: {
+            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            size: 13px;
+            weight: normal;
+        }
+        margin: 10px;
+    }
+    @media #{$small} {
+        font: {
+            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            size: 13px;
+            weight: normal;
+        }
+        margin: 10px;
+    }
+    @media #{$medium} {
+        font: {
+            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            size: 1em;
+            weight: normal;
+        }
+        margin: 10px;
     }
 }
 
+.t3 {
+    @media #{$screen} {
+        font: {
+            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            size: 13px;
+            weight: normal;
+        }
+        margin: 10px;
+    }
+    @media #{$small} {
+        font: {
+            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            size: 13px;
+            weight: normal;
+        }
+        margin: 10px;
+    }
+    @media #{$medium} {
+        font: {
+            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            size: 13px;
+            weight: normal;
+        }
+        margin: 10px;
+    }
+}
 
 .submit-button {
     @include button($button-sml, #2c3e50, true, false, false, false);
