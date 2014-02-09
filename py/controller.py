@@ -52,7 +52,7 @@ class Root():
 
 
     @cherrypy.expose
-    def myinfo(self, **kwargs):
+    def yourinfo(self, **kwargs):
         """Update the participant's demographic information.
 
         This method is almost exactly like the submit() method, except that we
@@ -63,17 +63,17 @@ class Root():
 
         """
         data = json.loads(cherrypy.request.body.read())
-        print "myinfo called with: "+str(data)
+        print "yourinfo called with: "+str(data)
         fingerprint = getval("fingerprint", data)
 
         # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.getparticipantid(db, fingerprint)
 
-        # Load the myinfo page
+        # Load the yourinfo page
         data = {'id': id}
         data.update(formvars(query.getparticipantinfo(db, id)))
-        tmpl = loader.load('myinfo.html')
+        tmpl = loader.load('yourinfo.html')
 
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
@@ -81,7 +81,7 @@ class Root():
     @cherrypy.expose
     def submit(self, **kwargs):
         """Insert the given sequence into the database, and direct the user
-        to the myinfo page for demographic info collection.
+        to the yourinfo page for demographic info collection.
 
         """
         data = json.loads(cherrypy.request.body.read())
@@ -97,10 +97,10 @@ class Root():
         # Insert the new sequence
         query.insertsequence(db, fingerprint, sequence, useragent)
 
-        # Load the myinfo page
+        # Load the yourinfo page
         data = {'id': id}
         data.update(formvars(query.getparticipantinfo(db, id)))
-        tmpl = loader.load('myinfo.html')
+        tmpl = loader.load('yourinfo.html')
 
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
@@ -127,24 +127,24 @@ class Root():
         sequences = query.getsequences(db, fingerprint)
         sequence = sequences[len(sequences)-1]
 
-        # Load the myresults page
+        # Load the yourresults page
         data = {'curdate': time.ctime(),
                 'id': id,
                 'sequence': sequence}
         data.update(genresults(db, sequence, fingerprint))
-        tmpl = loader.load("myresults.html")
+        tmpl = loader.load("yourresults.html")
 
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 
     @cherrypy.expose
-    def myresults(self, **kwargs):
-        """Load the myresults page for the sequence submitted most recently by
+    def yourresults(self, **kwargs):
+        """Load the yourresults page for the sequence submitted most recently by
         the current browser fingerprint.
 
         """
         data = json.loads(cherrypy.request.body.read())
-        print "myresults called with: "+str(data)
+        print "yourresults called with: "+str(data)
         fingerprint = getval("fingerprint", data)
 
         # Create a database connection
@@ -155,12 +155,12 @@ class Root():
         sequences = query.getsequences(db, fingerprint)
         sequence = sequences[len(sequences)-1]
 
-        # Load the myresults page
+        # Load the yourresults page
         data = {'curdate': time.ctime(),
                 'id': id,
                 'sequence': sequence}
         data.update(genresults(db, sequence, fingerprint))
-        tmpl = loader.load("myresults.html")
+        tmpl = loader.load("yourresults.html")
 
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
@@ -175,7 +175,7 @@ class Root():
         # Create a sequence of all sequences concatenated together
         sequence = ''.join(query.getallsequences(db))
 
-        # Load the myresults page
+        # Load the yourresults page
         data = {'curdate': time.ctime(),
                 'id': id,
                 'sequence': sequence}
@@ -195,7 +195,7 @@ class Root():
 
 
 def formvars(data):
-    """Return a dictionary of variables for use with the myinfo.html template
+    """Return a dictionary of variables for use with the yourinfo.html template
 
     This is all the work needed to pre-populate the form fields with any
     values already existing in the database for this participant (er, browser
