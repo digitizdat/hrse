@@ -9,6 +9,7 @@
 
 import exceptions
 import MySQLdb
+from hrse import getval
 
 
 def field(name, desc):
@@ -164,6 +165,15 @@ def getsequences(conn, fingerprint):
     return strlistquery(conn, "select sequence from sequences where " \
       + "fingerprint=%s", (fingerprint,))
 
+def getallsequences(conn):
+    """Return a list of all sequences submitted by all participants.
+    
+    The conn parameter is an open database handle to the server database, and
+    name is the name of the server.
+
+    """
+    return strlistquery(conn, "select sequence from sequences", None)
+
 def getparticipantinfo(conn, participantid):
     """Return a dictionary populated with any demographic information that we
     can muster.
@@ -189,11 +199,43 @@ def getparticipantinfo(conn, participantid):
 
     return results
 
-def submitdemo(conn, participantid, demodata):
+def submitdemo(conn, participantid, data):
     """Insert whatever demographic data has been supplied in the demodata
     dictionary.
 
     """
+    demodata = {}
+
+    # Create a dictionary of demographic data that were provided by the participant
+    try: demodata.update({'age': getval("formdata:age", data)})
+    except KeyError: pass
+    try: demodata.update({'sex': getval("formdata:sex", data)})
+    except KeyError: pass
+    try: demodata.update({'handed': getval("formdata:handed", data)})
+    except KeyError: pass
+    try: demodata.update({'favcolor': getval("formdata:favcolor", data)})
+    except KeyError: pass
+    try: demodata.update({'curzip': getval("formdata:curzip", data)})
+    except KeyError: pass
+    try: demodata.update({'enoughhours': getval("formdata:enoughhours", data)})
+    except KeyError: pass
+    try: demodata.update({'superpower': getval("formdata:superpower", data)})
+    except KeyError: pass
+    try: demodata.update({'residence': getval("formdata:residence", data)})
+    except KeyError: pass
+    try: demodata.update({'family': getval("formdata:family", data)})
+    except KeyError: pass
+    try: demodata.update({'pets': getval("formdata:pets", data)})
+    except KeyError: pass
+    try: demodata.update({'maritalstatus': getval("formdata:maritalstatus", data)})
+    except KeyError: pass
+    try: demodata.update({'military': getval("formdata:military", data)})
+    except KeyError: pass
+    try: demodata.update({'education': getval("formdata:education", data)})
+    except KeyError: pass
+
+    print "submitdemo(): demodata: "+str(demodata)
+
     if len(demodata) == 0:
         return
 

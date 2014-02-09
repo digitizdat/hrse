@@ -11,6 +11,30 @@ from pygal.style import LightGreenStyle
 import config
 
 
+def getval(spec, jdict=None):
+    """Retrieve the value of the specified attribute.
+
+    The attribute to retrieve is specified via the spec parameter, where:
+       spec: 'parent1:parent2:...:parentN:valname'
+
+    The jdict parameter is the dictionary of dictionaries to extract the
+    value from.  Typically this would be the decoded JSON document that was
+    passed into the web service.
+
+    If the value is not found, this function will raise a KeyError.
+
+    """
+    if jdict is None:
+        raise RuntimeError, "getval(): You passed me an empty jdict!"
+
+    if ':' in spec:
+        valpath = spec.split(':')
+        return getval(':'.join(valpath[1:]),
+                           jdict[valpath[0]])
+
+    return jdict[spec]
+
+
 def runs(sequence):
     """Calculate the number of runs and the longest run.
 
@@ -211,9 +235,24 @@ def genresults(conn, sequence, fingerprint):
     chart.config.width = 400
     chart.render_to_png(config.get('hrsehome')+fprefix+'-large-runlengths.png')
 
+    # Create a histogram of '01', '10', '00, '11' distribution
+    pairs = {'00': sequence.count('00'),
+             '01': sequence.count('01'),
+             '11': sequence.count('11'),
+             '10': sequence.count('10')}
+    chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
+    chart.title = "Distribution of pairs"
+    chart.x_labels = pairs.keys()
+    chart.add('Count', [pairs[i] for i in pairs.keys()])
+    chart.render_to_png(config.get('hrsehome')+fprefix+'-small-pairs.png')
+    chart.config.width = 400
+    chart.render_to_png(config.get('hrsehome')+fprefix+'-large-pairs.png')
+
 
     return {'small_zerostoones': fprefix+'-small-zerostoones.png',
             'large_zerostoones': fprefix+'-large-zerostoones.png',
             'small_runlengths': fprefix+'-small-runlengths.png',
-            'large_runlengths': fprefix+'-large-runlengths.png'}
+            'large_runlengths': fprefix+'-large-runlengths.png',
+            'small_pairs': fprefix+'-small-pairs.png',
+            'large_pairs': fprefix+'-large-pairs.png'}
 

@@ -2,7 +2,8 @@
 
 import operator, os, pickle, sys
 import json, cherrypy
-import hrse, query, math, time
+import query, math, time
+from hrse import getval, genresults
 from genshi.template import TemplateLoader
 import MySQLdb
 import ConfigParser
@@ -17,38 +18,16 @@ loader = TemplateLoader(
 )
 
 
-def getval(spec, jdict=None):
-    """Retrieve the value of the specified attribute.
-
-    The attribute to retrieve is specified via the spec parameter, where:
-       spec: 'parent1:parent2:...:parentN:valname'
-
-    The jdict parameter is the dictionary of dictionaries to extract the
-    value from.  Typically this would be the decoded JSON document that was
-    passed into the web service.
-
-    If the value is not found, this function will raise a KeyError.
-
-    """
-    if jdict is None:
-        raise RuntimeError, "getval(): You passed me an empty jdict!"
-
-    if ':' in spec:
-        valpath = spec.split(':')
-        return getval(':'.join(valpath[1:]),
-                           jdict[valpath[0]])
-
-    return jdict[spec]
-
-
 class Root():
     """This is the default root object needed for a CherryPy web instance."""
     def __init__(self, credentials):
-        self.creds = credentials
+        self.creds = credentials  # Database credentials
 
 
     @cherrypy.expose
     def index(self):
+        """Load the front page."""
+
         tmpl = loader.load('index.html')
 
         return tmpl.generate().render('html', doctype='html', strip_whitespace=False)
@@ -77,22 +56,25 @@ class Root():
         """Update the participant's demographic information.
 
         This method is almost exactly like the submit() method, except that we
-        do not attempt to submit a new sequence in this method.
+        do not attempt to submit a new sequence in this method (so, these two
+        methods could probably be consolidated by examining the referrer,
+        although I'm not sure if that's actually possible since I'm just
+        AJAXing between pages).
 
         """
         data = json.loads(cherrypy.request.body.read())
         print "myinfo called with: "+str(data)
         fingerprint = getval("fingerprint", data)
 
+        # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.getparticipantid(db, fingerprint)
-        demodata = query.getparticipantinfo(db, id)
 
+        # Load the myinfo page
         data = {'id': id}
-        data.update(demodata)
-
-        print "myinfo: loading myinfo.html template with data="+str(data)
+        data.update(formvars(query.getparticipantinfo(db, id)))
         tmpl = loader.load('myinfo.html')
+
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 
@@ -108,88 +90,118 @@ class Root():
         fingerprint = getval("fingerprint", data)
         useragent = getval("useragent", data)
 
+        # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.createparticipant(db, fingerprint, useragent)
+
+        # Insert the new sequence
         query.insertsequence(db, fingerprint, sequence, useragent)
-        demodata = formvars(query.getparticipantinfo(db, id))
 
+        # Load the myinfo page
         data = {'id': id}
-        data.update(demodata)
-
+        data.update(formvars(query.getparticipantinfo(db, id)))
         tmpl = loader.load('myinfo.html')
+
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
 
 
     @cherrypy.expose
     def demosubmit(self, **kwargs):
-        """Generate a page of charts that describes the statistical analysis
-        of the participant's sequence.
+        """Organize the given form data (given in JSON) and pass it into the
+        query.submitdemo() function to update the database, then load the
+        results page.
 
         """
         data = json.loads(cherrypy.request.body.read())
         print "demosubmit called with: "+str(data)
         fingerprint = getval("fingerprint", data)
 
+        # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.getparticipantid(db, fingerprint)
+        
+        # Submit the given form data to the database
+        query.submitdemo(db, id, data)
+
+        # Load the most recently submitted sequence for this fingerprint
         sequences = query.getsequences(db, fingerprint)
         sequence = sequences[len(sequences)-1]
-        
-        # Create a dictionary of demographic data that were provided by the participant
-        demodata = {}
-        try: demodata.update({'age': getval("formdata:age", data)})
-        except KeyError: pass
-        try: demodata.update({'sex': getval("formdata:sex", data)})
-        except KeyError: pass
-        try: demodata.update({'handed': getval("formdata:handed", data)})
-        except KeyError: pass
-        try: demodata.update({'favcolor': getval("formdata:favcolor", data)})
-        except KeyError: pass
-        try: demodata.update({'curzip': getval("formdata:curzip", data)})
-        except KeyError: pass
-        try: demodata.update({'enoughhours': getval("formdata:enoughhours", data)})
-        except KeyError: pass
-        try: demodata.update({'superpower': getval("formdata:superpower", data)})
-        except KeyError: pass
-        try: demodata.update({'residence': getval("formdata:residence", data)})
-        except KeyError: pass
-        try: demodata.update({'family': getval("formdata:family", data)})
-        except KeyError: pass
-        try: demodata.update({'pets': getval("formdata:pets", data)})
-        except KeyError: pass
-        try: demodata.update({'maritalstatus': getval("formdata:maritalstatus", data)})
-        except KeyError: pass
-        try: demodata.update({'military': getval("formdata:military", data)})
-        except KeyError: pass
-        try: demodata.update({'education': getval("formdata:education", data)})
-        except KeyError: pass
 
-        print "demodata: "+str(demodata)
-        # If there was any demographic data provided, insert it into the database.
-        if len(demodata) > 0:
-            query.submitdemo(db, id, demodata)
-
-        # The value for resultspage is a path to a newly created Genshi
-        # template which includes images of all the pygal-generated charts.
-        charts = hrse.genresults(db, sequence, fingerprint)
-
+        # Load the myresults page
         data = {'curdate': time.ctime(),
                 'id': id,
-                'sequence': sequence,
-                'small_zerostoones': charts['small_zerostoones'],
-                'large_zerostoones': charts['large_zerostoones'],
-                'small_runlengths': charts['small_runlengths'],
-                'large_runlengths': charts['large_runlengths']}
-
+                'sequence': sequence}
+        data.update(genresults(db, sequence, fingerprint))
         tmpl = loader.load("myresults.html")
+
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
+
+
+    @cherrypy.expose
+    def myresults(self, **kwargs):
+        """Load the myresults page for the sequence submitted most recently by
+        the current browser fingerprint.
+
+        """
+        data = json.loads(cherrypy.request.body.read())
+        print "myresults called with: "+str(data)
+        fingerprint = getval("fingerprint", data)
+
+        # Create a database connection
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+        id = query.getparticipantid(db, fingerprint)
+        
+        # Load the most recently submitted sequence for this fingerprint
+        sequences = query.getsequences(db, fingerprint)
+        sequence = sequences[len(sequences)-1]
+
+        # Load the myresults page
+        data = {'curdate': time.ctime(),
+                'id': id,
+                'sequence': sequence}
+        data.update(genresults(db, sequence, fingerprint))
+        tmpl = loader.load("myresults.html")
+
+        return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
+
+
+    @cherrypy.expose
+    def overallstats(self, **kwargs):
+        """Load the overall results page."""
+
+        # Create a database connection
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+
+        # Create a sequence of all sequences concatenated together
+        sequence = ''.join(query.getallsequences(db))
+
+        # Load the myresults page
+        data = {'curdate': time.ctime(),
+                'id': id,
+                'sequence': sequence}
+        data.update(genresults(db, sequence, 'overall'))
+        tmpl = loader.load("overall.html")
+
+        return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
+
+
+    @cherrypy.expose
+    def about(self, **kwargs):
+        """Load the about page."""
+
+        tmpl = loader.load("about.html")
+
+        return tmpl.generate().render('html', doctype='html', strip_whitespace=False)
 
 
 def formvars(data):
     """Return a dictionary of variables for use with the myinfo.html template
 
-    """
+    This is all the work needed to pre-populate the form fields with any
+    values already existing in the database for this participant (er, browser
+    fingerprint).
 
+    """
     # Initialize all the form variables to empty strings.
     results = {
       'age_lt12': '',

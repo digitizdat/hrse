@@ -115,13 +115,13 @@
     }
 
     function clickoverallstats() {
-        var src = document.getElementById("overstatsimg").src;
+        var src = document.getElementById("overallstatsimg").src;
         var origin = window.location.origin;
 
         if (src == origin+"/img/overallstats-126x33.png") {
-            document.getElementById("overstatsimg").src = origin+"/img/overallstats-grey-126x33.png";
+            document.getElementById("overallstatsimg").src = origin+"/img/overallstats-grey-126x33.png";
         } else if (src == origin+"/img/overallstats-grey-126x33.png") {
-            document.getElementById("overstatsimg").src = origin+"/img/overallstats-126x33.png";
+            document.getElementById("overallstatsimg").src = origin+"/img/overallstats-126x33.png";
         }
     }
 
@@ -147,10 +147,67 @@
         }
     }
 
+    function clickmyresults() {
+        var src = document.getElementById("myresultsimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/myresults-126x33.png") {
+            document.getElementById("myresultsimg").src = origin+"/img/myresults-grey-126x33.png";
+        } else if (src == origin+"/img/myresults-grey-126x33.png") {
+            document.getElementById("myresultsimg").src = origin+"/img/myresults-126x33.png";
+        }
+    }
+
     // Load the demographic information page.
     function myinfo() {
-        jsonstr = JSON.stringify({"fingerprint": fingerprint})
+        jsonstr = JSON.stringify({"fingerprint": fingerprint});
         $.ajax({url: "/myinfo/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               })
+           .done(function(data, textStatus, jqXHR) {
+               var doc = document.open("text/html", "replace");
+               doc.write(data);
+               doc.close();
+           });
+    }
+
+    // Load the participant results page
+    function myresults() {
+        jsonstr = JSON.stringify({"fingerprint": fingerprint});
+        $.ajax({url: "/myresults/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               })
+           .done(function(data, textStatus, jqXHR) {
+               var doc = document.open("text/html", "replace");
+               doc.write(data);
+               doc.close();
+           });
+    }
+
+    // Load the participant results page
+    function overallstats() {
+        $.ajax({url: "/overallstats/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               })
+           .done(function(data, textStatus, jqXHR) {
+               var doc = document.open("text/html", "replace");
+               doc.write(data);
+               doc.close();
+           });
+    }
+
+    // Load the about page
+    function about() {
+        $.ajax({url: "/about/",
                 async: false,
                 data: jsonstr,
                 contentType: 'application/json',
@@ -170,7 +227,7 @@
 
         if (navigator.userAgent.match(/mobile/i)) {
             mobileuser = true;
-        };
+        }
 
         jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint,
                                   "useragent": navigator.userAgent,"keyuser": keyuser,
