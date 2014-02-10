@@ -10,6 +10,8 @@
 import exceptions
 import MySQLdb
 from hrse import getval
+import time
+from cherrypy import log
 
 
 def field(name, desc):
@@ -264,4 +266,20 @@ def submitdemo(conn, participantid, data):
     conn.commit()
     return rc
     
+
+def prunepool(pool):
+    """Close any connections that have been open for over an hour."""
+    condemned = []
+
+    log("Pruning the connection pool")
+    for c in pool:
+        if (time.time() - pool[c][1]) > 60:
+            condemned.append(c)
+
+    for c in condemned:
+        log("Closing and deleting connection for seqid "+str(c))
+        pool[c][0].close()
+        del pool[c]
+
+    return
 

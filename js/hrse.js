@@ -173,6 +173,18 @@
     }
 
     // Load the demographic information page.
+    function done() {
+        jsonstr = JSON.stringify({"seqid": sequenceid});
+        $.ajax({url: "/endsequence/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               })
+           .done(yourinfo());
+    }
+
+    // Load the demographic information page.
     function yourinfo() {
         jsonstr = JSON.stringify({"fingerprint": fingerprint});
         $.ajax({url: "/yourinfo/",
@@ -234,31 +246,6 @@
            });
     }
 
-    // Submit the sequence, fingerprint, and User-Agent info to the /submit
-    // WS, and load the results page.
-    function done() {
-        mobileuser = false;
-
-        if (navigator.userAgent.match(/mobile/i)) {
-            mobileuser = true;
-        }
-
-        jsonstr = JSON.stringify({"sequence": seqstring, "fingerprint": fingerprint,
-                                  "useragent": navigator.userAgent,"keyuser": keyuser,
-                                  "screensize": screen.width, "mobileuser": mobileuser});
-        $.ajax({url: "/submit/",
-                async: false,
-                data: jsonstr,
-                contentType: 'application/json',
-                type: 'POST'
-               })
-           .done(function(data, textStatus, jqXHR) {
-               var doc = document.open("text/html", "replace");
-               doc.write(data);
-               doc.close();
-           });
-    }
-
     // I got this a kind of adhoc method that can be attached to an object.  I
     // found it here:
     // http://stackoverflow.com/questions/1184624/convert-form-data-to-js-object-with-jquery
@@ -302,19 +289,27 @@
     // participant was admitted.  Then write the participant number and the
     // admittance ts to the page at the specified locations.
     function getpid() {
-       jsonstr = JSON.stringify({"fingerprint": fingerprint, "useragent": navigator.userAgent});
-       $.ajax({url: "/getpid/",
-               async: false,
-               data: jsonstr,
-               contentType: 'application/json',
-               type: 'POST'
-              })
-          .done(function(data, textStatus, jqXHR) {
-              var jdoc = jQuery.parseJSON(data);
-              document.getElementById('pid').innerHTML = jdoc.id;
-              document.getElementById('adate').innerHTML = jdoc.date;
-              sequenceid = jdoc.seqid;
-          });
+        mobileuser = false;
+
+        if (navigator.userAgent.match(/mobile/i)) {
+            mobileuser = true;
+        }
+
+        jsonstr = JSON.stringify({"fingerprint": fingerprint,
+                                  "useragent": navigator.userAgent,"keyuser": keyuser,
+                                  "screensize": screen.width, "mobileuser": mobileuser});
+        $.ajax({url: "/getpid/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               })
+            .done(function(data, textStatus, jqXHR) {
+               var jdoc = jQuery.parseJSON(data);
+               document.getElementById('pid').innerHTML = jdoc.id;
+               document.getElementById('adate').innerHTML = jdoc.date;
+               sequenceid = jdoc.seqid;
+            });
     }
 
     // If the screen width is less than 640 pixels, we'll assume it's touch
