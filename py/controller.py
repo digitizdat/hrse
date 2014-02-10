@@ -35,9 +35,10 @@ class Root():
 
     @cherrypy.expose
     def getpid(self, **kwargs):
-        """Load the participant's ID from the database if it exists.  If not,
-        create a new participant.  Return the participant ID and the formatted
-        date of admittance to the experiment.
+        """Return the participant's ID, if it exists, along with a new sequence ID.
+
+        If the participant doesn't already exist, create a new participant,
+        the formatted date of admittance to the experiment, and a new sequence ID.
 
         """
         data = json.loads(cherrypy.request.body.read())
@@ -47,8 +48,9 @@ class Root():
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.createparticipant(db, fingerprint, useragent)
         admitdate = query.getadmittance(db, id)
+        seqid = query.startsequence(db, fingerprint, useragent)
 
-        return json.dumps({"id": id, "date": admitdate.ctime()})
+        return json.dumps({"id": id, "seqid": seqid, "date": admitdate.ctime()})
 
 
     @cherrypy.expose
@@ -192,6 +194,23 @@ class Root():
         tmpl = loader.load("about.html")
 
         return tmpl.generate().render('html', doctype='html', strip_whitespace=False)
+
+
+    @cherrypy.expose
+    def updateseq(self, **kwargs):
+        """Update the sequence in the database given by the sequenceid with the given sequence."""
+        data = json.loads(cherrypy.request.body.read())
+        print "updateseq called with: "+str(data)
+        seqid = getval("seqid", data)
+        sequence = getval("sequence", data)
+
+        # Create a database connection
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+
+        # Update the given sequence
+        query.updatesequence(db, seqid, sequence)
+
+        return
 
 
 def formvars(data):

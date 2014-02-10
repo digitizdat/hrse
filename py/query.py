@@ -96,14 +96,31 @@ def strlistquery(conn, statement, args):
     return retval
 
 
-def insertsequence(conn, fingerprint, sequence, useragent):
+def startsequence(conn, fingerprint, useragent):
     """Insert a new sequence into the database."""
     c = conn.cursor()
-    rc = c.execute("insert into sequences (fingerprint, sequence, useragent) " \
-      + "values (%s, %s, %s)", (fingerprint, sequence, useragent))
+    c.execute("insert into sequences (fingerprint, sequence, useragent) " \
+      + "values (%s, %s, %s)", (fingerprint, '', useragent))
+    c.close()
+
+    idlist = intlistquery(conn, "select idsequences from sequences where " \
+      + "fingerprint=%s", (fingerprint,))
+    mostrecent = idlist[len(idlist)-1]
+
+    conn.commit()
+
+    return mostrecent
+
+
+def updatesequence(conn, seqid, sequence):
+    """Update the sequence identified by seqid with the given sequence."""
+    c = conn.cursor()
+    c.execute("update sequences set sequence=%s where idsequences=%s",
+        (sequence, seqid))
     c.close()
     conn.commit()
-    return rc
+
+    return
 
 
 def createparticipant(conn, fingerprint, useragent):

@@ -249,7 +249,8 @@ def genresults(conn, sequence, fingerprint):
     chart.render_to_png(config.get('hrsehome')+fprefix+'-large-pairs.png')
 
 
-    return {'small_zerostoones': fprefix+'-small-zerostoones.png',
+    return {'serdep': serdepbool,
+            'small_zerostoones': fprefix+'-small-zerostoones.png',
             'large_zerostoones': fprefix+'-large-zerostoones.png',
             'small_runlengths': fprefix+'-small-runlengths.png',
             'large_runlengths': fprefix+'-large-runlengths.png',

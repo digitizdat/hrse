@@ -2,11 +2,25 @@
     function addzero() {
         seqstring = seqstring.concat("0");
         document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+        jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid});
+        $.ajax({url: "/updateseq/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               });
     }
 
     function addone() {
         seqstring = seqstring.concat("1");
         document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+        jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid});
+        $.ajax({url: "/updateseq/",
+                async: false,
+                data: jsonstr,
+                contentType: 'application/json',
+                type: 'POST'
+               });
     }
 
     function keystroke(event) {
@@ -103,14 +117,14 @@
         }
     }
 
-    function clickmyrelatives() {
-        var src = document.getElementById("myrelimg").src;
+    function clickyourrelatives() {
+        var src = document.getElementById("yourrelimg").src;
         var origin = window.location.origin;
 
-        if (src == origin+"/img/myrelatives-126x33.png") {
-            document.getElementById("myrelimg").src = origin+"/img/myrelatives-grey-126x33.png";
-        } else if (src == origin+"/img/myrelatives-grey-126x33.png") {
-            document.getElementById("myrelimg").src = origin+"/img/myrelatives-126x33.png";
+        if (src == origin+"/img/yourrelatives-126x33.png") {
+            document.getElementById("yourrelimg").src = origin+"/img/yourrelatives-grey-126x33.png";
+        } else if (src == origin+"/img/yourrelatives-grey-126x33.png") {
+            document.getElementById("yourrelimg").src = origin+"/img/yourrelatives-126x33.png";
         }
     }
 
@@ -136,32 +150,32 @@
         }
     }
 
-    function clickmyinfo() {
-        var src = document.getElementById("myinfoimg").src;
+    function clickyourinfo() {
+        var src = document.getElementById("yourinfoimg").src;
         var origin = window.location.origin;
 
-        if (src == origin+"/img/myinfo-126x33.png") {
-            document.getElementById("myinfoimg").src = origin+"/img/myinfo-grey-126x33.png";
-        } else if (src == origin+"/img/myinfo-grey-126x33.png") {
-            document.getElementById("myinfoimg").src = origin+"/img/myinfo-126x33.png";
+        if (src == origin+"/img/yourinfo-126x33.png") {
+            document.getElementById("yourinfoimg").src = origin+"/img/yourinfo-grey-126x33.png";
+        } else if (src == origin+"/img/yourinfo-grey-126x33.png") {
+            document.getElementById("yourinfoimg").src = origin+"/img/yourinfo-126x33.png";
         }
     }
 
-    function clickmyresults() {
-        var src = document.getElementById("myresultsimg").src;
+    function clickyourresults() {
+        var src = document.getElementById("yourresultsimg").src;
         var origin = window.location.origin;
 
-        if (src == origin+"/img/myresults-126x33.png") {
-            document.getElementById("myresultsimg").src = origin+"/img/myresults-grey-126x33.png";
-        } else if (src == origin+"/img/myresults-grey-126x33.png") {
-            document.getElementById("myresultsimg").src = origin+"/img/myresults-126x33.png";
+        if (src == origin+"/img/yourresults-126x33.png") {
+            document.getElementById("yourresultsimg").src = origin+"/img/yourresults-grey-126x33.png";
+        } else if (src == origin+"/img/yourresults-grey-126x33.png") {
+            document.getElementById("yourresultsimg").src = origin+"/img/yourresults-126x33.png";
         }
     }
 
     // Load the demographic information page.
-    function myinfo() {
+    function yourinfo() {
         jsonstr = JSON.stringify({"fingerprint": fingerprint});
-        $.ajax({url: "/myinfo/",
+        $.ajax({url: "/yourinfo/",
                 async: false,
                 data: jsonstr,
                 contentType: 'application/json',
@@ -175,9 +189,9 @@
     }
 
     // Load the participant results page
-    function myresults() {
+    function yourresults() {
         jsonstr = JSON.stringify({"fingerprint": fingerprint});
-        $.ajax({url: "/myresults/",
+        $.ajax({url: "/yourresults/",
                 async: false,
                 data: jsonstr,
                 contentType: 'application/json',
@@ -299,6 +313,7 @@
               var jdoc = jQuery.parseJSON(data);
               document.getElementById('pid').innerHTML = jdoc.id;
               document.getElementById('adate').innerHTML = jdoc.date;
+              sequenceid = jdoc.seqid;
           });
     }
 
