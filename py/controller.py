@@ -4,17 +4,15 @@ import operator, os, pickle, sys
 import json, cherrypy
 import math, time
 from hrse import getval, genresults
-import query, form, daemon
+import query, form, daemon, config
 from genshi.template import TemplateLoader
 import MySQLdb
 import ConfigParser
 from cherrypy import log
 
 
-webhome = "/home/hrseweb/hrse"
-templdir = webhome+"/templates"
+templdir = config.get('templates')
 progname = "hrsedaemon"
-logsock = "/dev/log"
 
 loader = TemplateLoader(
     templdir,
@@ -24,9 +22,12 @@ loader = TemplateLoader(
 
 class Root():
     """This is the default root object needed for a CherryPy web instance."""
-    def __init__(self, credentials, log):
+    def __init__(self, credentials):
         self.creds = credentials  # Database credentials
         self.pool = {}  # a rudimentary connection pool for the db connections
+        self.last = 0   # This tracks the latest sequence ID so that we can
+                        # determine if we need to re-render the PNGs for the
+                        # overall stats page.
 
 
     @cherrypy.expose
@@ -143,18 +144,7 @@ class Root():
         # Submit the given form data to the database
         query.submitdemo(db, id, data)
 
-        # Load the most recently submitted sequence for this fingerprint
-        sequences = query.getsequences(db, fingerprint)
-        sequence = sequences[len(sequences)-1]
-
-        # Load the yourresults page
-        data = {'curdate': time.ctime(),
-                'id': id,
-                'sequence': sequence}
-        data.update(genresults(db, sequence, fingerprint))
-        tmpl = loader.load("yourresults.html")
-
-        return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
+        return
 
 
     @cherrypy.expose
@@ -172,14 +162,14 @@ class Root():
         id = query.getparticipantid(db, fingerprint)
         
         # Load the most recently submitted sequence for this fingerprint
-        sequences = query.getsequences(db, fingerprint)
-        sequence = sequences[len(sequences)-1]
+        results = query.getsequences(db, fingerprint)
+        mostrecent = results[len(results)-1]
 
         # Load the yourresults page
         data = {'curdate': time.ctime(),
                 'id': id,
-                'sequence': sequence}
-        data.update(genresults(db, sequence, fingerprint))
+                'sequence': mostrecent['sequence']}
+        data.update(genresults(db, mostrecent['sequence'], mostrecent['idsequences']))
         tmpl = loader.load("yourresults.html")
 
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
@@ -192,14 +182,23 @@ class Root():
         # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
 
+        # Determine the sequence ID of the last time we rendered the overall stats
+        last = query.getlastseqid(db)
+
+        # Only perform the renderings if there is new data to render for.
+        if last > self.last:
+            log("overallstats: rendering overall images, updating last to "+str(last))
+            self.last = last
+            renderpngs = True
+        else:
+            renderpngs = False
+
         # Create a sequence of all sequences concatenated together
         sequence = ''.join(query.getallsequences(db))
 
-        # Load the yourresults page
-        data = {'curdate': time.ctime(),
-                'id': id,
-                'sequence': sequence}
-        data.update(genresults(db, sequence, 'overall'))
+        data = {'curdate': time.ctime()}
+        data.update(genresults(db, sequence, 'overall', renderpngs))
+
         tmpl = loader.load("overall.html")
 
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
@@ -235,14 +234,14 @@ if __name__ == '__main__':
         'tools.encode.on': True, 'tools.encode.encoding': 'utf-8',
         'tools.decode.on': True,
         'tools.trailing_slash.on': True,
-        'tools.staticdir.root': webhome,
+        'tools.staticdir.root': config.get('hrsehome'),
+        'log.access_file': config.get('accesslog'),
+        'log.error_file': config.get('errorlog'),
         'server.socket_host': '0.0.0.0',
-        'server.socket_port': 80,
-        'log.access_file': webhome+'/log/access_log',
-        'log.error_file': webhome+'/log/error_log'
+        'server.socket_port': 80
     })
 
-    cherrypy.quickstart(Root(credentials, log), '/', {
+    cherrypy.quickstart(Root(credentials), '/', {
         '/stylesheets': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'stylesheets'
@@ -261,7 +260,7 @@ if __name__ == '__main__':
         },
         '/favicon.ico': {
             'tools.staticfile.on': True,
-            'tools.staticfile.filename': '/home/hrseweb/hrse/img/hrse.ico'
+            'tools.staticfile.filename': config.get('favicon')
         }
     })
 

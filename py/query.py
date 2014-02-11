@@ -12,6 +12,7 @@ import MySQLdb
 from hrse import getval
 import time
 from cherrypy import log
+import config
 
 
 def field(name, desc):
@@ -33,6 +34,7 @@ def dictquery(conn, statement, args=None):
     """Execute a SQL statement and return the first result or None.  The
     result is returned in dictionary form, where the dictionary is keyed by
     field name.
+
     """
     retval = None
 
@@ -50,7 +52,31 @@ def dictquery(conn, statement, args=None):
     return retval
 
 
-def strquery(conn, statement, args):
+def dictlistquery(conn, statement, args=None):
+    """Execute a SQL statement and return a list of dictionary results, where
+    each dictionary is keyed by field name.
+
+    """
+    retval = None
+
+    c = conn.cursor()
+    res = c.execute(statement, args)
+
+    if res is not None:
+        desc = c.description
+        retval = []
+        for line in c.fetchall():
+            tmpdict = {}
+            for i in xrange(len(desc)):
+                tmpdict[desc[i][0]] = line[i]
+
+            retval.append(tmpdict)
+
+    c.close()
+    return retval
+
+
+def strquery(conn, statement, args=None):
     """Execute a SQL statement and return the first result or None."""
     c = conn.cursor()
     rc = c.execute(statement, args)
@@ -62,7 +88,7 @@ def strquery(conn, statement, args):
     return retval
 
 
-def intquery(conn, statement, args):
+def intquery(conn, statement, args=None):
     """Execute a SQL statement and return the first result or None."""
     c = conn.cursor()
     rc = c.execute(statement, args)
@@ -74,7 +100,7 @@ def intquery(conn, statement, args):
     return retval
 
  
-def intlistquery(conn, statement, args):
+def intlistquery(conn, statement, args=None):
     """Execute a SQL statement and return a list of results or None."""
     c = conn.cursor()
     rc = c.execute(statement, args)
@@ -86,7 +112,7 @@ def intlistquery(conn, statement, args):
     return retval
 
 
-def strlistquery(conn, statement, args):
+def strlistquery(conn, statement, args=None):
     """Execute a SQL statement and return a list of results or None."""
     c = conn.cursor()
     rc = c.execute(statement, args)
@@ -170,19 +196,20 @@ def getadmittance(conn, participantid):
     return strquery(conn, "select admitted from participant where " \
       + "idparticipant=%s", (participantid,))
 
-def getsequences(conn, fingerprint):
-    """Return a list of sequences entered by the participant.
-    
-    The participant is identified by his/her browser fingerprint. The returned
-    list will be ordered chronologically, so the most recently entered
-    sequence will be last.
 
-    The conn parameter is an open database handle to the server database, and
-    name is the name of the server.
+def getsequences(conn, fingerprint):
+    """Return a list of dictionaries keyed by 'idsequences' and 'sequence' for
+    the given fingerprint.
+    
+    The returned list will be ordered chronologically, so the most recently
+    entered sequence will be last.
+
+    The conn parameter is an open database handle to the server database.
 
     """
-    return strlistquery(conn, "select sequence from sequences where " \
-      + "fingerprint=%s", (fingerprint,))
+    return dictlistquery(conn, "select idsequences,sequence from sequences " \
+      + "where fingerprint=%s", (fingerprint,))
+
 
 def getallsequences(conn):
     """Return a list of all sequences submitted by all participants.
@@ -192,6 +219,14 @@ def getallsequences(conn):
 
     """
     return strlistquery(conn, "select sequence from sequences", None)
+
+
+def getlastseqid(conn):
+    """Return the latest idsequences value from the sequences table."""
+    idlist = intlistquery(conn, "select idsequences from sequences where sequence != ''")
+
+    return idlist[len(idlist)-1]
+
 
 def getparticipantinfo(conn, participantid):
     """Return a dictionary populated with any demographic information that we
@@ -217,6 +252,7 @@ def getparticipantinfo(conn, participantid):
             results.update({entry: lres[entry]})
 
     return results
+
 
 def submitdemo(conn, participantid, data):
     """Insert whatever demographic data has been supplied in the demodata
@@ -273,7 +309,7 @@ def prunepool(pool):
 
     log("Pruning the connection pool")
     for c in pool:
-        if (time.time() - pool[c][1]) > 60:
+        if (time.time() - pool[c][1]) > config.get("pruneinterval"):
             condemned.append(c)
 
     for c in condemned:

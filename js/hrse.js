@@ -172,6 +172,17 @@
         }
     }
 
+    function clicknewsequence() {
+        var src = document.getElementById("newseqimg").src;
+        var origin = window.location.origin;
+
+        if (src == origin+"/img/newsequence-126x33.png") {
+            document.getElementById("newseqimg").src = origin+"/img/newsequence-grey-126x33.png";
+        } else if (src == origin+"/img/newsequence-grey-126x33.png") {
+            document.getElementById("newseqimg").src = origin+"/img/newsequence-126x33.png";
+        }
+    }
+
     // Load the demographic information page.
     function done() {
         jsonstr = JSON.stringify({"seqid": sequenceid});
@@ -277,11 +288,7 @@
                contentType: 'application/json',
                type: 'POST'
               })
-          .done(function(data, textStatus, jqXHR) {
-              var doc = document.open("text/html", "replace");
-              doc.write(data);
-              doc.close();
-          });
+          .done(yourresults());
     }
 
     // Load the fingerprint into the database by calling the /getpid WS, which

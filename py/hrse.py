@@ -5,10 +5,11 @@ given (e.g. human-generated) sequence of 0s and 1s.
 
 """
 
-import math
+import os, math
 import pygal
 from pygal.style import LightGreenStyle
 import config
+from cherrypy import log
 
 
 def getval(spec, jdict=None):
@@ -201,59 +202,134 @@ def genrunlengths(sequence):
     return results
 
 
-def genresults(conn, sequence, fingerprint):
+def genresults(conn, sequence, seqid, render=True):
     """Generate a Genshi template that includes the images for all of the
     pygal-generated charts that show the statistical analysis of the given
     participant's sequence.
 
     The return value is the path to the newly created template.
     """
-    fprefix = '/img/hist/'+str(fingerprint)
-
     (runscount, longest_run) = runs(sequence)
     (pzgz, pogz, se) = serdep(sequence)
 
     # Examine the results of the serial dependency calculations
     serdepbool = isserdep(pzgz, pogz, se)
 
+    if render:
+        imgpaths = renderimages(sequence, seqid)
+    else:
+        fprefix = '/img/hist/'+str(seqid)
+        imgpaths = {'small_zerostoones': fprefix+'-small-zerostoones.png',
+                    'large_zerostoones': fprefix+'-large-zerostoones.png',
+                    'small_runlengths': fprefix+'-small-runlengths.png',
+                    'large_runlengths': fprefix+'-large-runlengths.png',
+                    'small_pairs': fprefix+'-small-pairs.png',
+                    'large_pairs': fprefix+'-large-pairs.png',
+                    'small_triples': fprefix+'-small-triples.png',
+                    'large_triples': fprefix+'-large-triples.png'}
+
+    results = {'pzgz': pzgz,
+               'pogz': pogz,
+               'se': se,
+               'serdepbool': serdepbool}
+    results.update(imgpaths)
+
+    return results
+
+
+def renderimages(sequence, seqid):
+    """Render the PNG images of the charts for the given sequence.
+
+    The return value is a dictionary of paths for the images, keyed by
+    symbolic names.
+
+    The images will not be rendered if they already exist, with the exception
+    being if the seqid is 'overall', because the decision on whether to
+    re-render the overall images is made outside this function.
+
+    """
+    fprefix = '/img/hist/'+str(seqid)
+
     # Create a bar chart for 0s and 1s counts
-    chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
-    chart.title = "Ratio of 0s versus 1s"
-    chart.add('Zeros', [sequence.count('0')])
-    chart.add('Ones', [sequence.count('1')])
-    chart.render_to_png(config.get('hrsehome')+fprefix+'-small-zerostoones.png')
-    chart.config.width = 400
-    chart.render_to_png(config.get('hrsehome')+fprefix+'-large-zerostoones.png')
+    smztopath = config.get('hrsehome')+fprefix+'-small-zerostoones.png'
+    lgztopath = config.get('hrsehome')+fprefix+'-large-zerostoones.png'
+
+    if seqid == "overall" or not os.path.exists(smztopath) or not os.path.exists(lgztopath):
+        chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
+        chart.title = "Ratio of 0s versus 1s"
+        chart.add('Zeros', [sequence.count('0')])
+        chart.add('Ones', [sequence.count('1')])
+        chart.render_to_png(smztopath)
+        chart.config.width = 400
+        chart.render_to_png(lgztopath)
+    else:
+        log("genresults: skipping zto pngs")
 
     # Create a histogram of run lengths
-    runlengths = genrunlengths(sequence)
-    chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
-    chart.title = "Run lengths"
-    chart.x_labels = map(str, range(1, len(runlengths)+1))
-    chart.add('Count', [runlengths[str(i)] for i in range(1, len(runlengths)+1)])
-    chart.render_to_png(config.get('hrsehome')+fprefix+'-small-runlengths.png')
-    chart.config.width = 400
-    chart.render_to_png(config.get('hrsehome')+fprefix+'-large-runlengths.png')
+    smrunlengths = config.get('hrsehome')+fprefix+'-small-runlengths.png'
+    lgrunlengths = config.get('hrsehome')+fprefix+'-large-runlengths.png'
+
+    if seqid == "overall" or not os.path.exists(smrunlengths) or not os.path.exists(lgrunlengths):
+        runlengths = genrunlengths(sequence)
+        chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
+        chart.title = "Run lengths"
+        chart.x_labels = map(str, range(1, len(runlengths)+1))
+        chart.add('Count', [runlengths[str(i)] for i in range(1, len(runlengths)+1)])
+        chart.render_to_png(smrunlengths)
+        chart.config.width = 400
+        chart.render_to_png(lgrunlengths)
+    else:
+        log("genresults: skipping runlength pngs")
 
     # Create a histogram of '01', '10', '00, '11' distribution
-    pairs = {'00': sequence.count('00'),
-             '01': sequence.count('01'),
-             '11': sequence.count('11'),
-             '10': sequence.count('10')}
-    chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
-    chart.title = "Distribution of pairs"
-    chart.x_labels = pairs.keys()
-    chart.add('Count', [pairs[i] for i in pairs.keys()])
-    chart.render_to_png(config.get('hrsehome')+fprefix+'-small-pairs.png')
-    chart.config.width = 400
-    chart.render_to_png(config.get('hrsehome')+fprefix+'-large-pairs.png')
+    smpairs = config.get('hrsehome')+fprefix+'-small-pairs.png'
+    lgpairs = config.get('hrsehome')+fprefix+'-large-pairs.png'
+
+    if seqid == "overall" or not os.path.exists(smpairs) or not os.path.exists(lgpairs):
+        pairs = {'00': sequence.count('00'),
+                 '01': sequence.count('01'),
+                 '11': sequence.count('11'),
+                 '10': sequence.count('10')}
+        chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
+        chart.title = "Distribution of pairs"
+        chart.x_labels = pairs.keys()
+        chart.add('Count', [pairs[i] for i in pairs.keys()])
+        chart.render_to_png(smpairs)
+        chart.config.width = 400
+        chart.render_to_png(lgpairs)
+    else:
+        log("genresults: skipping pairs pngs")
 
 
-    return {'serdep': serdepbool,
-            'small_zerostoones': fprefix+'-small-zerostoones.png',
+    # Create a histogram of triples: 000, 001, 010, 011, 100, 101, 110, 111
+    smtrips = config.get('hrsehome')+fprefix+'-small-triples.png'
+    lgtrips = config.get('hrsehome')+fprefix+'-large-triples.png'
+
+    if seqid == "overall" or not os.path.exists(smtrips) or not os.path.exists(lgtrips):
+        triples = {'000': sequence.count('000'),
+                   '001': sequence.count('001'),
+                   '010': sequence.count('010'),
+                   '011': sequence.count('011'),
+                   '100': sequence.count('100'),
+                   '101': sequence.count('101'),
+                   '110': sequence.count('110'),
+                   '111': sequence.count('111')}
+        chart = pygal.Bar(width=375, height=400, style=LightGreenStyle)
+        chart.title = "Distribution of triples"
+        chart.x_labels = triples.keys()
+        chart.add('Count', [triples[i] for i in triples.keys()])
+        chart.render_to_png(smtrips)
+        chart.config.width = 400
+        chart.render_to_png(lgtrips)
+    else:
+        log("genresults: skipping trips pngs")
+
+    return {'small_zerostoones': fprefix+'-small-zerostoones.png',
             'large_zerostoones': fprefix+'-large-zerostoones.png',
             'small_runlengths': fprefix+'-small-runlengths.png',
             'large_runlengths': fprefix+'-large-runlengths.png',
             'small_pairs': fprefix+'-small-pairs.png',
-            'large_pairs': fprefix+'-large-pairs.png'}
+            'large_pairs': fprefix+'-large-pairs.png',
+            'small_triples': fprefix+'-small-triples.png',
+            'large_triples': fprefix+'-large-triples.png'}
 
