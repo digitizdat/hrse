@@ -31,6 +31,11 @@
           <p>Results for participant <a>${data.id}</a>, generated on <a>${data.curdate}</a> UTC.</p>
           <hr />
           <p>You entered the sequence: ${data.sequence}</p>
+          <p>The probability that you would enter a 0 after entering a 0 was ${data.pzgz}.  The probability that you would enter a 1 following a 0 was ${data.pogz}.
+          With a standard error calculated at ${data.se}, your sequence <span id="serdeppassfail"></span> the basic test for serial dependence.
+          </p>
+          <p>Here are some charts to show you some of the characteristics of your sequence</p>
+         
           <img alt="" label="Zeros to Ones"
            data-interchange="[${data.small_zerostoones}, (default)],
                              [${data.small_zerostoones}, (small)], 
@@ -86,6 +91,11 @@
   <script type="text/javascript">
     $(document).foundation();
     fingerprint = new Fingerprint({canvas: true}).get();
+    if ("${data.serdepbool}" == "True") {
+        document.getElementById('serdeppassfail').innerHTML = "succeeded in passing";
+    } else {
+        document.getElementById('serdeppassfail').innerHTML = "failed to pass";
+    }
   </script>
 
 </body>
