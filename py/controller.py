@@ -3,7 +3,7 @@
 import operator, os, pickle, sys
 import json, cherrypy
 import math, time
-from hrse import getval, genresults
+from hrse import getval, genresults, renderimages
 import query, form, daemon, config
 from genshi.template import TemplateLoader
 import MySQLdb
@@ -101,9 +101,17 @@ class Root():
         data = json.loads(cherrypy.request.body.read())
         log("endsequence called with: "+str(data))
         seqid = getval("seqid", data)
+        sequence = getval("sequence", data)
 
+        # Shut down the db connection
         self.pool[seqid][0].close()
         del self.pool[seqid]
+
+        # Generate the PNGs for this sequence
+        renderimages(sequence, seqid)
+
+        # Generate the PNGs for the overall stats
+        self.overallstats()
 
 
     @cherrypy.expose
@@ -176,7 +184,7 @@ class Root():
         data = {'curdate': time.ctime(),
                 'id': id,
                 'sequence': mostrecent['sequence']}
-        data.update(genresults(db, mostrecent['sequence'], mostrecent['idsequences']))
+        data.update(genresults(mostrecent['sequence'], mostrecent['idsequences']))
         tmpl = loader.load("yourresults.html")
 
         return tmpl.generate(data=data).render('html', doctype='html', strip_whitespace=False)
@@ -204,7 +212,7 @@ class Root():
         sequence = ''.join(query.getallsequences(db))
 
         data = {'curdate': time.ctime()}
-        data.update(genresults(db, sequence, 'overall', renderpngs))
+        data.update(genresults(sequence, 'overall', renderpngs))
 
         tmpl = loader.load("overall.html")
 

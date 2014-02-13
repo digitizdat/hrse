@@ -202,7 +202,7 @@ def genrunlengths(sequence):
     return results
 
 
-def genresults(conn, sequence, seqid, render=True):
+def genresults(sequence, seqid, render=True):
     """Generate a Genshi template that includes the images for all of the
     pygal-generated charts that show the statistical analysis of the given
     participant's sequence.
@@ -263,7 +263,7 @@ def renderimages(sequence, seqid):
         chart.config.width = 400
         chart.render_to_png(lgztopath)
     else:
-        log("genresults: skipping zto pngs")
+        log("genresults: skipping zto pngs for seqid "+str(seqid))
 
     # Create a histogram of run lengths
     smrunlengths = config.get('hrsehome')+fprefix+'-small-runlengths.png'
@@ -279,7 +279,7 @@ def renderimages(sequence, seqid):
         chart.config.width = 400
         chart.render_to_png(lgrunlengths)
     else:
-        log("genresults: skipping runlength pngs")
+        log("genresults: skipping runlength pngs for seqid "+str(seqid))
 
     # Create a histogram of '01', '10', '00, '11' distribution
     smpairs = config.get('hrsehome')+fprefix+'-small-pairs.png'
@@ -298,7 +298,7 @@ def renderimages(sequence, seqid):
         chart.config.width = 400
         chart.render_to_png(lgpairs)
     else:
-        log("genresults: skipping pairs pngs")
+        log("genresults: skipping pairs pngs for seqid"+str(seqid))
 
 
     # Create a histogram of triples: 000, 001, 010, 011, 100, 101, 110, 111
@@ -322,7 +322,7 @@ def renderimages(sequence, seqid):
         chart.config.width = 400
         chart.render_to_png(lgtrips)
     else:
-        log("genresults: skipping trips pngs")
+        log("genresults: skipping trips pngs for seqid"+str(seqid))
 
     return {'small_zerostoones': fprefix+'-small-zerostoones.png',
             'large_zerostoones': fprefix+'-large-zerostoones.png',

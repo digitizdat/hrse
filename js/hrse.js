@@ -198,9 +198,9 @@
 
     // Load the demographic information page.
     function done() {
-        jsonstr = JSON.stringify({"seqid": sequenceid});
+        jsonstr = JSON.stringify({"sequence": seqstring, "seqid": sequenceid});
         $.ajax({url: "/endsequence/",
-                async: false,
+                async: true,
                 data: jsonstr,
                 contentType: 'application/json',
                 type: 'POST'
