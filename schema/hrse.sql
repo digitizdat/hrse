@@ -15,7 +15,6 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`participant` (
  `idparticipant` INT NOT NULL AUTO_INCREMENT ,
  `admitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
  `fingerprint` VARCHAR(45) NOT NULL,
- `useragent` VARCHAR(256) NOT NULL,
  `age` VARCHAR(4) NOT NULL DEFAULT "na",
  `sex` VARCHAR(6) NOT NULL DEFAULT "na",
  `handed` VARCHAR(5) NOT NULL DEFAULT "na",
@@ -44,6 +43,11 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`sequences` (
   `sequence` VARCHAR(256) NOT NULL ,
   `submitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
   `useragent` VARCHAR(256) NOT NULL,
+  `keyboard` BOOLEAN NOT NULL DEFAULT False,
+  `mouse` BOOLEAN NOT NULL DEFAULT False,
+  `touch` BOOLEAN NOT NULL DEFAULT False,
+  `inittime` VARCHAR(16) NOT NULL DEFAULT "0",
+  `screenwidth` VARCHAR(8) NOT NULL DEFAULT "0",
   PRIMARY KEY (`idsequences`) )
 ENGINE = InnoDB;
 

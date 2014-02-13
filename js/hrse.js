@@ -1,8 +1,15 @@
 
     function addzero() {
+        if (firstchartime == 0) {
+            fctime = new Date();
+            firstchartime = fctime.getTime();
+            inittime = firstchartime-starttime;
+        }
         seqstring = seqstring.concat("0");
         document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
-        jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid});
+        jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid,
+                                  'inittime': inittime, 'keyboard': keyey,
+                                  'mouse': mousey, 'touch': touchy});
         $.ajax({url: "/updateseq/",
                 async: false,
                 data: jsonstr,
@@ -12,9 +19,16 @@
     }
 
     function addone() {
+        if (firstchartime == 0) {
+            fctime = new Date();
+            firstchartime = fctime.getTime();
+            inittime = firstchartime-starttime;
+        }
         seqstring = seqstring.concat("1");
         document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
-        jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid});
+        jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid,
+                                  'inittime': inittime, 'keyboard': keyey,
+                                  'mouse': mousey, 'touch': touchy});
         $.ajax({url: "/updateseq/",
                 async: false,
                 data: jsonstr,
@@ -24,7 +38,6 @@
     }
 
     function keystroke(event) {
-        keyuser = true;
         if (event.keyCode == 48) {
             addzero();
         }
@@ -303,8 +316,8 @@
         }
 
         jsonstr = JSON.stringify({"fingerprint": fingerprint,
-                                  "useragent": navigator.userAgent,"keyuser": keyuser,
-                                  "screensize": screen.width, "mobileuser": mobileuser});
+                                  "useragent": navigator.userAgent,
+                                  "screenwidth": screen.width});
         $.ajax({url: "/getpid/",
                 async: false,
                 data: jsonstr,

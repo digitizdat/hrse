@@ -30,6 +30,9 @@
 
           <div class="t2"><span id='clicktap'></span> as many times as you please.</div>
           <div class="t2">Attempt to be as <b>random</b> as possible.  The <b>longer</b> your sequence, the more <b>interesting</b> your result will be.</div>
+          <a id="touchy"></a>
+          <a id="mousey"></a>
+          <a id="keyey"></a>
       </div>
   </div>
 
@@ -99,11 +102,34 @@
     seqstring = "";
     keyuser = false;
     sequenceid = "";
+    docdate = new Date();
+    touchy = false;
+    mousey = false;
+    keyey = false;
 
     fingerprint = new Fingerprint({canvas: true}).get();
 
     stepone();
+    starttime = docdate.getTime();
+    firstchartime = 0;
     getpid();
+
+    document.body.addEventListener('touchstart',
+        function(e) {
+            touchy = true;
+        }
+    )
+    document.body.addEventListener('mousemove',
+        function(e) {
+            mousey = true;
+        }
+    )
+    document.body.addEventListener('keydown',
+        function(e) {
+            keyey = true;
+        }
+    )
+
   </script>
 
 </body>

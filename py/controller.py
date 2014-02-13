@@ -48,13 +48,15 @@ class Root():
 
         """
         data = json.loads(cherrypy.request.body.read())
+        log("getpid called with: "+str(data))
         fingerprint = getval("fingerprint", data)
         useragent = getval("useragent", data)
+        screenwidth = getval("screenwidth", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-        id = query.createparticipant(db, fingerprint, useragent)
+        id = query.createparticipant(db, fingerprint)
         admitdate = query.getadmittance(db, id)
-        seqid = query.startsequence(db, fingerprint, useragent)
+        seqid = query.startsequence(db, fingerprint, useragent, screenwidth)
         self.pool.update({seqid: (db, time.time())})
 
         # Do some housecleaning on the pool.  This could reasonably be put in
@@ -74,6 +76,10 @@ class Root():
         log("updateseq called with: "+str(data))
         seqid = getval("seqid", data)
         sequence = getval("sequence", data)
+        inittime = getval("inittime", data)
+        keyboard = getval("keyboard", data)
+        mouse = getval("mouse", data)
+        touch = getval("touch", data)
 
         # There should already be a connection for us in the connection pool.
         try:
@@ -84,7 +90,7 @@ class Root():
             self.pool.update({seqid: (db, time.time())})
 
         # Update the given sequence
-        query.updatesequence(db, seqid, sequence)
+        query.updatesequence(db, seqid, sequence, inittime, keyboard, mouse, touch)
 
         return
 
@@ -93,6 +99,7 @@ class Root():
     def endsequence(self, **kwargs):
         """Close the connection in the connection pool for the given sequence ID."""
         data = json.loads(cherrypy.request.body.read())
+        log("endsequence called with: "+str(data))
         seqid = getval("seqid", data)
 
         self.pool[seqid][0].close()

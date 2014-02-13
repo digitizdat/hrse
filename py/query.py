@@ -124,11 +124,11 @@ def strlistquery(conn, statement, args=None):
     return retval
 
 
-def startsequence(conn, fingerprint, useragent):
+def startsequence(conn, fingerprint, useragent, screenwidth):
     """Insert a new sequence into the database."""
     c = conn.cursor()
-    c.execute("insert into sequences (fingerprint, sequence, useragent) " \
-      + "values (%s, %s, %s)", (fingerprint, '', useragent))
+    c.execute("insert into sequences (fingerprint, sequence, useragent, screenwidth) " \
+      + "values (%s, %s, %s, %s)", (fingerprint, '', useragent, screenwidth))
     c.close()
 
     idlist = intlistquery(conn, "select idsequences from sequences where " \
@@ -140,18 +140,18 @@ def startsequence(conn, fingerprint, useragent):
     return mostrecent
 
 
-def updatesequence(conn, seqid, sequence):
+def updatesequence(conn, seqid, sequence, inittime, keyboard, mouse, touch):
     """Update the sequence identified by seqid with the given sequence."""
     c = conn.cursor()
-    c.execute("update sequences set sequence=%s where idsequences=%s",
-        (sequence, seqid))
+    c.execute("update sequences set sequence=%s, inittime=%s, keyboard=%s, mouse=%s, touch=%s where " \
+      + "idsequences=%s", (sequence, inittime, keyboard, mouse, touch, seqid))
     c.close()
     conn.commit()
 
     return
 
 
-def createparticipant(conn, fingerprint, useragent):
+def createparticipant(conn, fingerprint):
     """Create a participant record"""
     id = getparticipantid(conn, fingerprint)
     if id is not None:
@@ -160,8 +160,8 @@ def createparticipant(conn, fingerprint, useragent):
 
     c = conn.cursor()
     try:
-        rc = c.execute("insert into participant (fingerprint, useragent) " \
-          + "values (%s, %s)", (fingerprint, useragent))
+        rc = c.execute("insert into participant (fingerprint) " \
+          + "values (%s)", (fingerprint,))
     except MySQLdb.IntegrityError, v:
         if v[0] == 1062:
             # Remove this print statement
