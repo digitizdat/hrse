@@ -1,17 +1,48 @@
 
+// AJAX call management pool
+$.xhrPool = [];
+$.xhrPool.abortAll = function() {
+    $(this).each(function(idx, jqXHR) {
+        jqXHR.abort();
+    });
+    $.xhrPool = [];
+};
+
+$.ajaxSetup({
+    beforeSend: function(jqXHR) {
+        $.xhrPool.push(jqXHR);
+    },
+    complete: function(jqXHR) {
+        var index = $.xhrPool.indexOf(jqXHR);
+        if (index > -1) {
+            $.xhrPool.splice(index, 1);
+        }
+    }
+});
+
+
+
+// Functions
+
     function addzero() {
+        // First priority: update the interface
+        seqstring = seqstring.concat("0");
+        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+
+        // If this is is the first character, calculate the difference between
+        // the start and finish time.
         if (firstchartime == 0) {
             fctime = new Date();
             firstchartime = fctime.getTime();
             inittime = firstchartime-starttime;
         }
-        seqstring = seqstring.concat("0");
-        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+
+        // Update the sequence in the database
         jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid,
                                   'inittime': inittime, 'keyboard': keyey,
                                   'mouse': mousey, 'touch': touchy});
         $.ajax({url: "/updateseq/",
-                async: false,
+                async: true,
                 data: jsonstr,
                 contentType: 'application/json',
                 type: 'POST'
@@ -19,18 +50,24 @@
     }
 
     function addone() {
+        // First priority: update the interface
+        seqstring = seqstring.concat("1");
+        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+
+        // If this is is the first character, calculate the difference between
+        // the start and finish time.
         if (firstchartime == 0) {
             fctime = new Date();
             firstchartime = fctime.getTime();
             inittime = firstchartime-starttime;
         }
-        seqstring = seqstring.concat("1");
-        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+
+        // Update the sequence in the database
         jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid,
                                   'inittime': inittime, 'keyboard': keyey,
                                   'mouse': mousey, 'touch': touchy});
         $.ajax({url: "/updateseq/",
-                async: false,
+                async: true,
                 data: jsonstr,
                 contentType: 'application/json',
                 type: 'POST'
@@ -96,18 +133,18 @@
         var src = document.getElementById("doneimg").src;
         var origin = window.location.origin;
 
-        if (src == origin+"/img/done-100x42.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-grey-100x42.png";
-        } else if (src == origin+"/img/done-140x58.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-grey-140x58.png";
-        } else if (src == origin+"/img/done-167x69.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-grey-167x69.png";
-        } else if (src == origin+"/img/done-grey-100x42.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-100x42.png";
-        } else if (src == origin+"/img/done-grey-140x58.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-140x58.png";
-        } else if (src == origin+"/img/done-grey-167x69.png") {
-            document.getElementById("doneimg").src = origin+"/img/done-167x69.png";
+        if (src == origin+"/img/done-blue-100x42.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-dark-100x42.png";
+        } else if (src == origin+"/img/done-blue-140x58.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-dark-140x58.png";
+        } else if (src == origin+"/img/done-blue-167x70.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-dark-167x70.png";
+        } else if (src == origin+"/img/done-dark-100x42.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-blue-100x42.png";
+        } else if (src == origin+"/img/done-dark-140x58.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-blue-140x58.png";
+        } else if (src == origin+"/img/done-dark-167x70.png") {
+            document.getElementById("doneimg").src = origin+"/img/done-blue-167x70.png";
         }
     }
 
@@ -115,18 +152,18 @@
         var src = document.getElementById("submitimg").src;
         var origin = window.location.origin;
 
-        if (src == origin+"/img/submit-100x42.png") {
-            document.getElementById("submitimg").src = origin+"/img/submit-grey-100x42.png";
-        } else if (src == origin+"/img/submit-140x58.png") {
-            document.getElementById("submitimg").src = origin+"/img/submit-grey-140x58.png";
-        } else if (src == origin+"/img/submit-167x69.png") {
-            document.getElementById("submitimg").src = origin+"/img/submit-grey-167x69.png";
-        } else if (src == origin+"/img/submit-grey-100x42.png") {
-            document.getElementById("submitimg").src = origin+"/img/submit-100x42.png";
-        } else if (src == origin+"/img/submit-grey-140x58.png") {
-            document.getElementById("submitimg").src = origin+"/img/submit-140x58.png";
-        } else if (src == origin+"/img/submit-grey-167x69.png") {
-            document.getElementById("submitimg").src = origin+"/img/submit-167x69.png";
+        if (src == origin+"/img/submit-blue-100x42.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-dark-100x42.png";
+        } else if (src == origin+"/img/submit-blue-140x58.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-dark-140x58.png";
+        } else if (src == origin+"/img/submit-blue-167x69.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-dark-167x69.png";
+        } else if (src == origin+"/img/submit-dark-100x42.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-blue-100x42.png";
+        } else if (src == origin+"/img/submit-dark-140x58.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-blue-140x58.png";
+        } else if (src == origin+"/img/submit-dark-167x69.png") {
+            document.getElementById("submitimg").src = origin+"/img/submit-blue-167x69.png";
         }
     }
 
@@ -198,7 +235,17 @@
 
     // Load the demographic information page.
     function done() {
-        jsonstr = JSON.stringify({"sequence": seqstring, "seqid": sequenceid});
+        // Abort any pending AJAX calls (pending sequence updates)
+        $.xhrPool.abortAll();
+
+        // Launch the spinner
+        spintarget = document.getElementById("donerow");
+        spinner = new Spinner(spinopts).spin(spintarget);
+
+        // Load the next page.
+        jsonstr = JSON.stringify({'sequence': seqstring, 'seqid': sequenceid,
+                                  'inittime': inittime, 'keyboard': keyey,
+                                  'mouse': mousey, 'touch': touchy});
         $.ajax({url: "/endsequence/",
                 async: true,
                 data: jsonstr,

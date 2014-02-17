@@ -15,6 +15,14 @@ from cherrypy import log
 import config
 
 
+def boolconv(val):
+    """Convert a Python boolean value to its corresponding MySQL value."""
+    if val is True:
+        return 1
+
+    return 0
+
+
 def field(name, desc):
     """Return the index of the given field (name) from the given table
     description (desc).  The table description is provided by the 'description'
@@ -140,13 +148,41 @@ def startsequence(conn, fingerprint, useragent, screenwidth):
     return mostrecent
 
 
-def updatesequence(conn, seqid, sequence, inittime, keyboard, mouse, touch):
+def updatesequence(conn, seqid, sequence, inittime=None, keyboard=None, mouse=None, touch=None):
     """Update the sequence identified by seqid with the given sequence."""
+    log("updatesequence: enter")
+    if sequence == '':
+        log("updatesequence: sequence was empty. returning.")
+        return
+
+    sql = "update sequences set sequence=%s"
+    args = (sequence,)
+
+    if inittime is not None:
+        sql += ", inittime=%s"
+        args += (str(inittime),)
+
+    if keyboard is not None:
+        sql += ", keyboard=%s"
+        args += (boolconv(keyboard),)
+
+    if mouse is not None:
+        sql += ", mouse=%s"
+        args += (boolconv(mouse),)
+
+    if touch is not None:
+        sql += ", touch=%s"
+        args += (boolconv(touch),)
+
+    sql += " where idsequences=%s"
+    args += (seqid,)
+
+    log("updatesequence: committing SQL")
     c = conn.cursor()
-    c.execute("update sequences set sequence=%s, inittime=%s, keyboard=%s, mouse=%s, touch=%s where " \
-      + "idsequences=%s", (sequence, inittime, keyboard, mouse, touch, seqid))
+    c.execute(sql, args)
     c.close()
     conn.commit()
+    log("updatesequence: returning")
 
     return
 
