@@ -54,24 +54,38 @@
 // @import "foundation/components/dropdown";
 
 
+
+// Regarding font weights, this is from the typekit website:
+//   100 = thin
+//   200 = extra-light
+//   300 = light
+//   400 = normal, book
+//   500 = medium
+//   600 = demi-bold
+//   700 = bold
+//   800 = heavy
+//   900 = black
+
+// http://help.typekit.com/customer/portal/articles/6855-using-multiple-weights-and-styles
+
 .t1 {
     @media #{$screen} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: Futura, Futura-PT, "Myriad Pro", Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
             weight: normal;
         }
     }
     @media #{$small} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: Futura, Futura-PT, "Myriad Pro", Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 25px;
             weight: normal;
         }
     }
     @media #{$medium} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: Futura, Futura-PT, "Myriad Pro", Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 40px;
             weight: normal;
         }
@@ -81,25 +95,25 @@
 .t2 {
     @media #{$screen} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: "myriad-pro", Futura, futura-pt, Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
-            weight: normal;
+            weight: 300;
         }
         margin: 10px;
     }
     @media #{$small} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: "myriad-pro", Futura, futura-pt, Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
-            weight: normal;
+            weight: 300;
         }
         margin: 10px;
     }
     @media #{$medium} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: "myriad-pro", Futura, futura-pt, Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 1em;
-            weight: normal;
+            weight: 300;
         }
         margin: 10px;
     }
@@ -108,25 +122,25 @@
 .t3 {
     @media #{$screen} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: "myriad-pro", Futura, futura-pt, Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
-            weight: normal;
+            weight: 300;
         }
         margin: 10px;
     }
     @media #{$small} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: "myriad-pro", Futura, futura-pt, Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
-            weight: normal;
+            weight: 300;
         }
         margin: 10px;
     }
     @media #{$medium} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: "myriad-pro", Futura, futura-pt, Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
-            weight: normal;
+            weight: 300;
         }
         margin: 10px;
     }
@@ -135,7 +149,7 @@
 .t4 {
     @media #{$screen} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: Futura, futura-pt, "myriad-pro", Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
             weight: normal;
         }
@@ -143,7 +157,7 @@
     }
     @media #{$small} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: Futura, futura-pt, "myriad-pro", Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 13px;
             weight: normal;
         }
@@ -151,7 +165,7 @@
     }
     @media #{$medium} {
         font: {
-            family: Futura, Verdana, "Trebuchet MS", Arial, sans-serif;
+            family: Futura, futura-pt, "myriad-pro", Verdana, "Trebuchet MS", Arial, sans-serif;
             size: 1em;
             weight: normal;
         }
