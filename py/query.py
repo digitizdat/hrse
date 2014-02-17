@@ -339,19 +339,3 @@ def submitdemo(conn, participantid, data):
     return rc
     
 
-def prunepool(pool):
-    """Close any connections that have been open for over an hour."""
-    condemned = []
-
-    log("Pruning the connection pool")
-    for c in pool:
-        if (time.time() - pool[c][1]) > config.get("pruneinterval"):
-            condemned.append(c)
-
-    for c in condemned:
-        log("Closing and deleting connection for seqid "+str(c))
-        pool[c][0].close()
-        del pool[c]
-
-    return
-

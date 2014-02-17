@@ -24,10 +24,24 @@ $.ajaxSetup({
 
 // Functions
 
+    function rendersequence(s) {
+        if (screen.width <= 320) {
+            document.getElementById("sequence1").innerHTML="<center>"+s.slice(0,40)+"</center>";
+            document.getElementById("sequence2").innerHTML="<center>"+s.slice(40,80)+"</center>";
+            document.getElementById("sequence3").innerHTML="<center>"+s.slice(80,120)+"</center>";
+            document.getElementById("sequence4").innerHTML="<center>"+s.slice(120,s.length)+"</center>";
+        } else {
+            document.getElementById("sequence1").innerHTML="<center>"+s.slice(0,80)+"</center>";
+            document.getElementById("sequence2").innerHTML="<center>"+s.slice(80,160)+"</center>";
+            document.getElementById("sequence3").innerHTML="<center>"+s.slice(160,240)+"</center>";
+            document.getElementById("sequence4").innerHTML="<center>"+s.slice(240,s.length)+"</center>";
+        }
+    }
+
     function addzero() {
         // First priority: update the interface
         seqstring = seqstring.concat("0");
-        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+        rendersequence(seqstring);
 
         // If this is is the first character, calculate the difference between
         // the start and finish time.
@@ -52,7 +66,7 @@ $.ajaxSetup({
     function addone() {
         // First priority: update the interface
         seqstring = seqstring.concat("1");
-        document.getElementById("sequence").innerHTML="<center>"+seqstring+"</center>";
+        rendersequence(seqstring);
 
         // If this is is the first character, calculate the difference between
         // the start and finish time.

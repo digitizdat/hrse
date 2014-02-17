@@ -24,7 +24,6 @@ class Root():
     """This is the default root object needed for a CherryPy web instance."""
     def __init__(self, credentials):
         self.creds = credentials  # Database credentials
-        self.pool = {}  # a rudimentary connection pool for the db connections
         self.last = 0   # This tracks the latest sequence ID so that we can
                         # determine if we need to re-render the PNGs for the
                         # overall stats page.
@@ -57,14 +56,6 @@ class Root():
         id = query.createparticipant(db, fingerprint)
         admitdate = query.getadmittance(db, id)
         seqid = query.startsequence(db, fingerprint, useragent, screenwidth)
-        #self.pool.update({seqid: (db, time.time())})
-
-        # Do some housecleaning on the pool.  This could reasonably be put in
-        # a function that gets called every 61 minutes, but I think this will
-        # be fine too, since this function is only called when the first page
-        # is loaded, and I don't expect a regular stream of traffic on this
-        # website.
-        query.prunepool(self.pool)
 
         return json.dumps({"id": id, "seqid": seqid, "date": admitdate.ctime()})
 
@@ -81,20 +72,14 @@ class Root():
         mouse = getval("mouse", data)
         touch = getval("touch", data)
 
-        # There should already be a connection for us in the connection pool.
-        try:
-            db = self.pool[seqid][0]
-            log("updateseq: reusing available db connection: "+str(self.pool))
-        except KeyError:
-            log("updateseq: Opening a new connection to continue sequence "+str(seqid))
-            db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-            #self.pool.update({seqid: (db, time.time())})
+        log("updateseq: Opening a new connection to continue sequence "+str(seqid))
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
 
         # Update the given sequence
         try:
             query.updatesequence(db, seqid, sequence, inittime, keyboard, mouse, touch)
         except MySQLdb.OperationalError:
-            log("updateseq: Connection was closed during update for sequence "+str(seqid)+" (code: "+str(v)+")")
+            log("updateseq: a DB error occurred during the update for sequence "+str(seqid)+" ("+str(v)+")")
             pass
 
         return
@@ -102,7 +87,7 @@ class Root():
 
     @cherrypy.expose
     def endsequence(self, **kwargs):
-        """Close the connection in the connection pool for the given sequence ID."""
+        """Conclude the sequence for the given sequence ID."""
         data = json.loads(cherrypy.request.body.read())
         log("endsequence called with: "+str(data))
         seqid = getval("seqid", data)
@@ -113,35 +98,24 @@ class Root():
         touch = getval("touch", data)
 
         # Update the given sequence
-        try:
-            db = self.pool[seqid][0]
-            log("updateseq: reusing available db connection: "+str(self.pool))
-        except KeyError:
-            log("updateseq: Opening a new connection to conclude sequence "+str(seqid))
-            db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-            #self.pool.update({seqid: (db, time.time())})
+        log("updateseq: Opening a new connection to conclude sequence "+str(seqid))
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
 
         try:
             log("endsequence: committing final upate for sequence "+str(seqid))
             query.updatesequence(db, seqid, sequence, inittime, keyboard, mouse, touch)
         except MySQLdb.OperationalError, v:
-            log("endsequence: Connection was closed during update for sequence "+str(seqid)+" (code: "+str(v)+")")
+            log("endsequence: a DB error occurred during the update for sequence "+str(seqid)+" ("+str(v)+")")
             pass
 
         log("endsequence: returned from final update to sequence "+str(seqid))
-
-        # Shut down the db connection
-        if seqid in self.pool:
-            log("endsequence: closing DB connection for sequence "+str(seqid))
-            self.pool[seqid][0].close()
-            del self.pool[seqid]
 
         # Generate the PNGs for this sequence
         log("endsequence: rendering images for sequence "+str(seqid))
         renderimages(sequence, seqid)
 
         # Generate new PNGs for the overall stats
-        log("endsequence: calling overallstats"+str(seqid))
+        log("endsequence: calling overallstats for sequence "+str(seqid))
         self.overallstats()
 
 
