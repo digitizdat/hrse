@@ -15,6 +15,7 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`participant` (
  `idparticipant` INT NOT NULL AUTO_INCREMENT ,
  `admitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
  `fingerprint` VARCHAR(45) NOT NULL,
+ `referrer` VARCHAR(1024) NOT NULL,
  `age` VARCHAR(4) NOT NULL DEFAULT "na",
  `sex` VARCHAR(6) NOT NULL DEFAULT "na",
  `handed` VARCHAR(5) NOT NULL DEFAULT "na",

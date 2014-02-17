@@ -51,9 +51,10 @@ class Root():
         fingerprint = getval("fingerprint", data)
         useragent = getval("useragent", data)
         screenwidth = getval("screenwidth", data)
+        referrer = getval("referrer", data)
 
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-        id = query.createparticipant(db, fingerprint)
+        id = query.createparticipant(db, fingerprint, referrer)
         admitdate = query.getadmittance(db, id)
         seqid = query.startsequence(db, fingerprint, useragent, screenwidth)
 

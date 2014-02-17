@@ -150,9 +150,14 @@ def startsequence(conn, fingerprint, useragent, screenwidth):
 
 def updatesequence(conn, seqid, sequence, inittime=None, keyboard=None, mouse=None, touch=None):
     """Update the sequence identified by seqid with the given sequence."""
-    log("updatesequence: enter")
     if sequence == '':
         log("updatesequence: sequence was empty. returning.")
+        return
+
+    # If the sequence to be submitted is shorter than the one already in
+    # there, ignore this update.
+    if len(sequence) < len(getseqbyid(conn, seqid)):
+        log("updatesequence: ignoring shorter sequence.")
         return
 
     sql = "update sequences set sequence=%s"
@@ -177,17 +182,15 @@ def updatesequence(conn, seqid, sequence, inittime=None, keyboard=None, mouse=No
     sql += " where idsequences=%s"
     args += (seqid,)
 
-    log("updatesequence: committing SQL")
     c = conn.cursor()
     c.execute(sql, args)
     c.close()
     conn.commit()
-    log("updatesequence: returning")
 
     return
 
 
-def createparticipant(conn, fingerprint):
+def createparticipant(conn, fingerprint, referrer):
     """Create a participant record"""
     id = getparticipantid(conn, fingerprint)
     if id is not None:
@@ -196,8 +199,8 @@ def createparticipant(conn, fingerprint):
 
     c = conn.cursor()
     try:
-        rc = c.execute("insert into participant (fingerprint) " \
-          + "values (%s)", (fingerprint,))
+        rc = c.execute("insert into participant (fingerprint, referrer) " \
+          + "values (%s, %s)", (fingerprint,referrer))
     except MySQLdb.IntegrityError, v:
         if v[0] == 1062:
             # Remove this print statement
@@ -247,6 +250,12 @@ def getsequences(conn, fingerprint):
       + "where fingerprint=%s", (fingerprint,))
 
 
+def getseqbyid(conn, seqid):
+    """Return the sequence for sequence ID seqid."""
+    return strquery(conn, "select sequence from sequences where " \
+      + "idsequences=%s", (seqid,))
+
+
 def getallsequences(conn):
     """Return a list of all sequences submitted by all participants.
     
@@ -260,6 +269,9 @@ def getallsequences(conn):
 def getlastseqid(conn):
     """Return the latest idsequences value from the sequences table."""
     idlist = intlistquery(conn, "select idsequences from sequences where sequence != ''")
+
+    if idlist is None:
+        return None
 
     return idlist[len(idlist)-1]
 

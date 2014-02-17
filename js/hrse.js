@@ -378,7 +378,8 @@ $.ajaxSetup({
 
         jsonstr = JSON.stringify({"fingerprint": fingerprint,
                                   "useragent": navigator.userAgent,
-                                  "screenwidth": screen.width});
+                                  "screenwidth": screen.width,
+                                  "referrer": document.referrer});
         $.ajax({url: "/getpid/",
                 async: false,
                 data: jsonstr,
