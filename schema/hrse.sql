@@ -16,6 +16,7 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`participant` (
  `admitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
  `fingerprint` VARCHAR(45) NOT NULL,
  `referrer` VARCHAR(1024) NOT NULL,
+ `original_id` INT NOT NULL DEFAULT 0,
  `age` VARCHAR(4) NOT NULL DEFAULT "na",
  `sex` VARCHAR(6) NOT NULL DEFAULT "na",
  `handed` VARCHAR(5) NOT NULL DEFAULT "na",
@@ -40,8 +41,8 @@ DROP TABLE IF EXISTS `hrse`.`sequences` ;
 
 CREATE  TABLE IF NOT EXISTS `hrse`.`sequences` (
   `idsequences` INT NOT NULL AUTO_INCREMENT ,
-  `fingerprint` VARCHAR(45) NOT NULL ,
-  `sequence` VARCHAR(256) NOT NULL ,
+  `fingerprint` VARCHAR(45) NOT NULL,
+  `sequence` VARCHAR(256) NOT NULL,
   `submitted` TIMESTAMP NOT NULL DEFAULT NOW() ,
   `useragent` VARCHAR(256) NOT NULL,
   `keyboard` BOOLEAN NOT NULL DEFAULT False,

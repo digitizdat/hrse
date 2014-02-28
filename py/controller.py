@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import operator, os, pickle, sys
+import operator, os, pickle, sys, pwd, grp
 import json, cherrypy
 import math, time
 from hrse import getval, genresults, renderimages
@@ -9,6 +9,7 @@ from genshi.template import TemplateLoader
 import MySQLdb
 import ConfigParser
 from cherrypy import log
+from cherrypy.process.plugins import DropPrivileges
 
 
 templdir = config.get('templates')
@@ -52,9 +53,10 @@ class Root():
         useragent = getval("useragent", data)
         screenwidth = getval("screenwidth", data)
         referrer = getval("referrer", data)
-
+        prevpid = getval("prevpid", data)
+        print "fingerprint is type "+str(type(fingerprint))
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
-        id = query.createparticipant(db, fingerprint, referrer)
+        id = query.createparticipant(db, fingerprint, referrer, prevpid)
         admitdate = query.getadmittance(db, id)
         seqid = query.startsequence(db, fingerprint, useragent, screenwidth)
 
@@ -241,8 +243,13 @@ if __name__ == '__main__':
     # Daemonize
     pid = daemon.become(close_stderr=False)
 
+    pwent = pwd.getpwnam(config.get('user'))
+    uid = pwent.pw_uid
+    homedir = pwent.pw_dir
+    gid = grp.getgrnam(config.get('group')).gr_gid
+
     cp = ConfigParser.ConfigParser()
-    cp.read([os.path.expanduser('~/.my.cnf')])
+    cp.read([os.path.expanduser(homedir+'/.my.cnf')])
     credentials = {'user': cp.get('mysql', 'user'),
                    'passwd': cp.get('mysql', 'password'),
                    'host': cp.get('mysql', 'host')}
@@ -250,6 +257,9 @@ if __name__ == '__main__':
     # Test the database connection (an exception will be raised if this fails).
     db = MySQLdb.connect(credentials['host'], credentials['user'], credentials['passwd'], 'hrse')
     db.close()
+
+    dp = DropPrivileges(cherrypy.engine, uid=uid, gid=gid)
+    dp.subscribe()
 
     # Some global configuration; note that this could be moved into a
     # configuration file

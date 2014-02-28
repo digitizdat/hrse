@@ -190,37 +190,77 @@ def updatesequence(conn, seqid, sequence, inittime=None, keyboard=None, mouse=No
     return
 
 
-def createparticipant(conn, fingerprint, referrer):
+def createparticipant(conn, fingerprint, referrer, prevpid):
     """Create a participant record"""
-    id = getparticipantid(conn, fingerprint)
-    if id is not None:
-        print "Participant already exists: "+str(id)
-        return id
-
-    c = conn.cursor()
     try:
-        rc = c.execute("insert into participant (fingerprint, referrer) " \
-          + "values (%s, %s)", (fingerprint,referrer))
-    except MySQLdb.IntegrityError, v:
-        if v[0] == 1062:
-            # Remove this print statement
-            print "ERROR: Record for participant "+fingerprint+" already exists.  (This should never happen.)"
-            pass
-        else:
+        id = int(prevpid)
+    except ValueError:
+        id = None
+        pass
+
+    oid = getparticipantid(conn, fingerprint)
+    c = conn.cursor()
+
+    if id is None:  # Then there was no cookie.
+        log("createparticipant: No cookie detected for fingerprint "+str(fingerprint))
+        if oid is None:  # No record matching fingerprint was found
+            log("createparticipant: Creating a new participant record (1) for fingerprint "+str(fingerprint))
+            try:
+                rc = c.execute("insert into participant (fingerprint, referrer) " \
+                  + "values (%s, %s)", (fingerprint, referrer))
+            except MySQLdb.IntegrityError, v:
+                log("createparticipant: MySQLdb error occurred while inserting a new participant record (2) for fingerprint "+str(fingerprint))
+                raise MySQLdb.IntegrityError, v
+
+    elif oid == id:  # The cookie and the id in the record found via the fingerprint match.
+        log("createparticipant: This user already exists with this fingerprint.")
+
+    elif oid is None:  # There was a cookie, but the fingerprint has changed.
+        log("createparticipant: The fingerprint has changed for participant "+str(id))
+        log("createparticipant: Creating a new participant record (2) for fingerprint "+str(fingerprint))
+        try:
+            rc = c.execute("insert into participant (fingerprint, referrer, original_id) " \
+              + "values (%s, %s, %s)", (fingerprint, referrer, id))
+        except MySQLdb.IntegrityError, v:
+            log("createparticipant: MySQLdb error occurred while inserting a new participant record (1) for fingerprint "+str(fingerprint))
             raise MySQLdb.IntegrityError, v
+
     c.close()
     conn.commit()
-    id = getparticipantid(conn, fingerprint)
+
+    # Return the original ID, if possible.
+    if id is not None and oid is not None and oid != id:
+        log("createparticipant: The cookie ("+str(id)+") seems to be forged, " \
+          + "because the fingerprint ("+str(fingerprint)+") matches a " \
+          + "different participant ID ("+str(oid)+") in the DB.")
+        id = oid
+
+    elif id is None and oid is not None:  # The cookie was gone, but we found a participant record matching the fingerprint.
+        log("createparticipant: A participant record was located for this fingerprint: "+str(oid))
+        id = oid
+
+    elif id is not None and oid is None:  # We created a new record for the new fingerprint, but we'll keep the original ID.
+        id = id
+
+    else:
+        id = getparticipantid(conn, fingerprint)
+
     return id
 
 
 def getparticipantid(conn, fingerprint):
-    """Return the ID (primary key) of the named server.
+    """Return the participant ID of the participant identified by the given
+    fingerprint.
 
-    The conn parameter is an open database handle to the server database, and
-    name is the name of the server.
+    Returns an integer on success, or None of no such participant record can be
+    located.
 
     """
+    oid = intquery(conn, "select original_id from participant where " \
+      + "fingerprint=%s", (fingerprint,))
+    if oid != 0:
+        return oid
+
     return intquery(conn, "select idparticipant from participant where " \
       + "fingerprint=%s", (fingerprint,))
 
@@ -228,8 +268,8 @@ def getparticipantid(conn, fingerprint):
 def getadmittance(conn, participantid):
     """Return the string-formatted date of admittance for the given participant.
 
-    The conn parameter is an open database handle to the server database, and
-    name is the name of the server.
+    Returns a string on success, or None of no such participant record can be
+    located.
 
     """
     return strquery(conn, "select admitted from participant where " \

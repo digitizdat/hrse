@@ -370,6 +370,7 @@ $.ajaxSetup({
     // participant was admitted.  Then write the participant number and the
     // admittance ts to the page at the specified locations.
     function getpid() {
+        var participant = getCookie("participant");
         mobileuser = false;
 
         if (navigator.userAgent.match(/mobile/i)) {
@@ -379,7 +380,8 @@ $.ajaxSetup({
         jsonstr = JSON.stringify({"fingerprint": fingerprint,
                                   "useragent": navigator.userAgent,
                                   "screenwidth": screen.width,
-                                  "referrer": document.referrer});
+                                  "referrer": document.referrer,
+                                  "prevpid": participant});
         $.ajax({url: "/getpid/",
                 async: false,
                 data: jsonstr,
@@ -391,6 +393,7 @@ $.ajaxSetup({
                document.getElementById('pid').innerHTML = jdoc.id;
                document.getElementById('adate').innerHTML = jdoc.date;
                sequenceid = jdoc.seqid;
+               setCookie("participant", jdoc.id);
             });
     }
 
@@ -406,5 +409,30 @@ $.ajaxSetup({
         } else {
             document.getElementById('clicktap').innerHTML = largetext;
         }
+    }
+
+
+    // Cookie functions - basically just ganked this from the w3schools example.
+    function setCookie(cname, cvalue) {
+        var d = new Date();
+
+        d.setTime(d.getTime()+(3650*24*60*60*1000));
+        var expires = "expires="+d.toUTCString();
+
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i].trim();
+
+            if (c.indexOf(name) == 0)
+                return c.substring(name.length, c.length);
+        }
+
+        return "";
     }
 
