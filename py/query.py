@@ -296,14 +296,22 @@ def getseqbyid(conn, seqid):
       + "idsequences=%s", (seqid,))
 
 
-def getallsequences(conn):
+def getallsequences(conn, last=None):
     """Return a list of all sequences submitted by all participants.
-    
-    The conn parameter is an open database handle to the server database, and
-    name is the name of the server.
+
+    If the last parameter is specified, then only the sequences that have been
+    submitted since the sequence identified by the idsequences value of last
+    will be loaded.
 
     """
-    return strlistquery(conn, "select sequence from sequences", None)
+    query = "select sequence from sequences"
+    args = None
+
+    if last is not None:
+        query += " where idsequences > %s"
+        args = (last,)
+
+    return strlistquery(conn, query, args)
 
 
 def getlastseqid(conn):

@@ -210,7 +210,7 @@ class Root():
         last = query.getlastseqid(db)
 
         # Only perform the renderings if there is new data to render for.
-        if last > self.last:
+        if last > self.last and len(''.join(query.getallsequences(db, last))) > 0:
             log("overallstats: rendering overall images, updating last to "+str(last))
             self.last = last
             renderpngs = True
