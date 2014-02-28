@@ -370,7 +370,7 @@ $.ajaxSetup({
     // participant was admitted.  Then write the participant number and the
     // admittance ts to the page at the specified locations.
     function getpid() {
-        var participant = getCookie("participant");
+        var participant = getcookie("participant");
         mobileuser = false;
 
         if (navigator.userAgent.match(/mobile/i)) {
@@ -393,7 +393,7 @@ $.ajaxSetup({
                document.getElementById('pid').innerHTML = jdoc.id;
                document.getElementById('adate').innerHTML = jdoc.date;
                sequenceid = jdoc.seqid;
-               setCookie("participant", jdoc.id);
+               setcookie("participant", jdoc.id);
             });
     }
 
@@ -413,7 +413,7 @@ $.ajaxSetup({
 
 
     // Cookie functions - basically just ganked this from the w3schools example.
-    function setCookie(cname, cvalue) {
+    function setcookie(cname, cvalue) {
         var d = new Date();
 
         d.setTime(d.getTime()+(3650*24*60*60*1000));
@@ -422,7 +422,7 @@ $.ajaxSetup({
         document.cookie = cname + "=" + cvalue + "; " + expires;
     }
 
-    function getCookie(cname) {
+    function getcookie(cname) {
         var name = cname + "=";
         var ca = document.cookie.split(';');
 

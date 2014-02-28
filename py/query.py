@@ -125,7 +125,7 @@ def strlistquery(conn, statement, args=None):
     c = conn.cursor()
     rc = c.execute(statement, args)
     if rc == 0:
-        retval = None
+        retval = []
     else:
         retval = [x[0] for x in c.fetchall()]
     c.close()

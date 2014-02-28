@@ -208,9 +208,11 @@ class Root():
 
         # Determine the sequence ID of the last time we rendered the overall stats
         last = query.getlastseqid(db)
+        seqsince = ''.join(query.getallsequences(db, self.last))
+        log("Since sequence "+str(self.last)+" we have had the following new sequences entered: "+str(seqsince))
 
         # Only perform the renderings if there is new data to render for.
-        if last > self.last and len(''.join(query.getallsequences(db, last))) > 0:
+        if last > self.last and len(seqsince) > 0:
             log("overallstats: rendering overall images, updating last to "+str(last))
             self.last = last
             renderpngs = True
