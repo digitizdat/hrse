@@ -3,7 +3,8 @@
 import operator, os, pickle, sys, pwd, grp
 import json, cherrypy
 import math, time
-from hrse import getval, genresults, renderimages
+from hrse import genresults, renderimages
+from data import getval
 import query, form, daemon, config
 from genshi.template import TemplateLoader
 import MySQLdb
@@ -48,13 +49,16 @@ class Root():
 
         """
         data = json.loads(cherrypy.request.body.read())
-        log("getpid called with: "+str(data))
         fingerprint = getval("fingerprint", data)
         useragent = getval("useragent", data)
         screenwidth = getval("screenwidth", data)
         referrer = getval("referrer", data)
         prevpid = getval("prevpid", data)
+
+        # Debug
+        log("getpid called with: "+str(data))
         print "fingerprint is type "+str(type(fingerprint))
+
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
         id = query.createparticipant(db, fingerprint, referrer, prevpid)
         admitdate = query.getadmittance(db, id)
@@ -63,27 +67,52 @@ class Root():
         return json.dumps({"id": id, "seqid": seqid, "date": admitdate.ctime()})
 
 
+    def submitseq(self, seqid, data):
+        """Update the sequence in the database given by the sequenceid with the given sequence.
+
+        This method differs from updateseq() and endsequence() in that it is
+        not exposed as a web method and it takes the parsed JSON document as
+        input.  It is meant to be called from both of the other two functions.
+
+        """
+        sequence = getval("sequence", data)
+        keyboard = getval("keyboard", data)
+        mouse = getval("mouse", data)
+        touch = getval("touch", data)
+        starttime = getval("starttime", data)
+        firstchartime = getval("firstchartime", data)
+        lastchartime = getval("lastchartime", data)
+        maxtbc = getval("maxtbc", data)
+        mintbc = getval("mintbc", data)
+        avgtbc = getval("avgtbc", data)
+        endtime = getval("endtime", data)
+
+        log("submitseq: Opening a new connection to continue sequence "+str(seqid))
+        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+
+        # Submit the given sequence
+        try:
+            query.updatesequence(db, sequence, seqid, keyboard, mouse, touch,
+                                 starttime, firstchartime, lastchartime, maxtbc, mintbc, avgtbc, endtime)
+        except MySQLdb.OperationalError:
+            log("submitseq: a DB error occurred during the update for sequence "+str(seqid)+" ("+str(v)+")")
+            pass
+
+        return
+
+
     @cherrypy.expose
     def updateseq(self, **kwargs):
         """Update the sequence in the database given by the sequenceid with the given sequence."""
         data = json.loads(cherrypy.request.body.read())
-        log("updateseq called with: "+str(data))
         seqid = getval("seqid", data)
-        sequence = getval("sequence", data)
-        inittime = getval("inittime", data)
-        keyboard = getval("keyboard", data)
-        mouse = getval("mouse", data)
-        touch = getval("touch", data)
 
-        log("updateseq: Opening a new connection to continue sequence "+str(seqid))
-        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+        # Debug
+        log("updateseq called with: "+str(data))
 
-        # Update the given sequence
-        try:
-            query.updatesequence(db, seqid, sequence, inittime, keyboard, mouse, touch)
-        except MySQLdb.OperationalError:
-            log("updateseq: a DB error occurred during the update for sequence "+str(seqid)+" ("+str(v)+")")
-            pass
+        log("updateseq: submitting update for sequence "+str(seqid))
+        self.submitseq(seqid, data)
+        log("updateseq: returned from update for sequence "+str(seqid))
 
         return
 
@@ -92,25 +121,14 @@ class Root():
     def endsequence(self, **kwargs):
         """Conclude the sequence for the given sequence ID."""
         data = json.loads(cherrypy.request.body.read())
-        log("endsequence called with: "+str(data))
         seqid = getval("seqid", data)
         sequence = getval("sequence", data)
-        inittime = getval("inittime", data)
-        keyboard = getval("keyboard", data)
-        mouse = getval("mouse", data)
-        touch = getval("touch", data)
 
-        # Update the given sequence
-        log("updateseq: Opening a new connection to conclude sequence "+str(seqid))
-        db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
+        # Debug
+        log("endsequence called with: "+str(data))
 
-        try:
-            log("endsequence: committing final upate for sequence "+str(seqid))
-            query.updatesequence(db, seqid, sequence, inittime, keyboard, mouse, touch)
-        except MySQLdb.OperationalError, v:
-            log("endsequence: a DB error occurred during the update for sequence "+str(seqid)+" ("+str(v)+")")
-            pass
-
+        log("endsequence: committing final upate for sequence "+str(seqid))
+        self.submitseq(seqid, data)
         log("endsequence: returned from final update to sequence "+str(seqid))
 
         # Generate the PNGs for this sequence
@@ -134,8 +152,10 @@ class Root():
 
         """
         data = json.loads(cherrypy.request.body.read())
-        log("yourinfo called with: "+str(data))
         fingerprint = getval("fingerprint", data)
+
+        # Debug
+        log("yourinfo called with: "+str(data))
 
         # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
@@ -157,8 +177,10 @@ class Root():
 
         """
         data = json.loads(cherrypy.request.body.read())
-        log("demosubmit called with: "+str(data))
         fingerprint = getval("fingerprint", data)
+
+        # Debug
+        log("demosubmit called with: "+str(data))
 
         # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')
@@ -177,8 +199,10 @@ class Root():
 
         """
         data = json.loads(cherrypy.request.body.read())
-        log("yourresults called with: "+str(data))
         fingerprint = getval("fingerprint", data)
+
+        # Debug
+        log("yourresults called with: "+str(data))
 
         # Create a database connection
         db = MySQLdb.connect(self.creds['host'], self.creds['user'], self.creds['passwd'], 'hrse')

@@ -48,7 +48,13 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`sequences` (
   `keyboard` BOOLEAN NOT NULL DEFAULT False,
   `mouse` BOOLEAN NOT NULL DEFAULT False,
   `touch` BOOLEAN NOT NULL DEFAULT False,
-  `inittime` VARCHAR(16) NOT NULL DEFAULT "0",
+  `starttime` VARCHAR(16) NOT NULL DEFAULT "0",
+  `firstchartime` VARCHAR(16) NOT NULL DEFAULT "0",
+  `lastchartime` VARCHAR(16) NOT NULL DEFAULT "0",
+  `endtime` VARCHAR(16) NOT NULL DEFAULT "0",
+  `maxtimebetweenchars` VARCHAR(16) NOT NULL DEFAULT "0",
+  `mintimebetweenchars` VARCHAR(16) NOT NULL DEFAULT "0",
+  `avgtimebetweenchars` VARCHAR(16) NOT NULL DEFAULT "0",
   `screenwidth` VARCHAR(8) NOT NULL DEFAULT "0",
   PRIMARY KEY (`idsequences`) )
 ENGINE = InnoDB;

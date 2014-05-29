@@ -9,7 +9,7 @@
 
 import exceptions
 import MySQLdb
-from hrse import getval
+from data import getval
 import time
 from cherrypy import log
 import config
@@ -148,7 +148,9 @@ def startsequence(conn, fingerprint, useragent, screenwidth):
     return mostrecent
 
 
-def updatesequence(conn, seqid, sequence, inittime=None, keyboard=None, mouse=None, touch=None):
+def updatesequence(conn, sequence, seqid, keyboard, mouse, touch, starttime,
+                   firstchartime, lastchartime, maxtbc, mintbc, avgtbc,
+                   endtime):
     """Update the sequence identified by seqid with the given sequence."""
     if sequence == '':
         log("updatesequence: sequence was empty. returning.")
@@ -163,21 +165,35 @@ def updatesequence(conn, seqid, sequence, inittime=None, keyboard=None, mouse=No
     sql = "update sequences set sequence=%s"
     args = (sequence,)
 
-    if inittime is not None:
-        sql += ", inittime=%s"
-        args += (str(inittime),)
+    sql += ", keyboard=%s"
+    args += (boolconv(keyboard),)
 
-    if keyboard is not None:
-        sql += ", keyboard=%s"
-        args += (boolconv(keyboard),)
+    sql += ", mouse=%s"
+    args += (boolconv(mouse),)
 
-    if mouse is not None:
-        sql += ", mouse=%s"
-        args += (boolconv(mouse),)
+    sql += ", touch=%s"
+    args += (boolconv(touch),)
 
-    if touch is not None:
-        sql += ", touch=%s"
-        args += (boolconv(touch),)
+    sql += ", starttime=%s"
+    args += (str(starttime),)
+
+    sql += ", firstchartime=%s"
+    args += (str(firstchartime),)
+
+    sql += ", lastchartime=%s"
+    args += (str(lastchartime),)
+
+    sql += ", maxtimebetweenchars=%s"
+    args += (str(maxtbc),)
+
+    sql += ", mintimebetweenchars=%s"
+    args += (str(mintbc),)
+
+    sql += ", avgtimebetweenchars=%s"
+    args += (str(avgtbc),)
+
+    sql += ", endtime=%s"
+    args += (str(endtime),)
 
     sql += " where idsequences=%s"
     args += (seqid,)
@@ -310,6 +326,35 @@ def getallsequences(conn, last=None):
     if last is not None:
         query += " where idsequences > %s"
         args = (last,)
+
+    return strlistquery(conn, query, args)
+
+
+def getseqrange(conn, begin=None, end=None):
+    """Return a list of sequences, starting with the sequence ID begin and
+    ending with the sequence id end.
+
+    If begin is left None, then the list will start with the first sequence ID
+    in the database.  If end is left None, then the list will end with the
+    last sequence ID.
+
+    Note that if this function is called with only the conn argument, it
+    behaves the same as getallsequences with the same argument.
+
+    """
+    query = "select sequence from sequences"
+    args = ()
+
+    if begin is not None:
+        query += " where idsequences >= %s"
+        args += begin,
+
+    if begin is not None and end is not None:
+        query += " and idsequences <= %s"
+        args += end,
+    elif end is not None:
+        query += " where idsequences <= %s"
+        args += end,
 
     return strlistquery(conn, query, args)
 

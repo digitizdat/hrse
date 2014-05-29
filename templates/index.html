@@ -132,9 +132,15 @@
     fingerprint = new Fingerprint({canvas: true}).get();
 
     stepone();
-    starttime = docdate.getTime();
-    firstchartime = 0;
-    inittime = 0;
+    starttime = docdate.getTime();  // The time the document was loaded
+    endtime = 0; // The time the done button was clicked
+    firstchartime = 0;  // The time the first character was entered
+    lastchartime = 0;  // The time the last character was entered
+    prevchartime = 0;  // The time when the previous character was entered
+    maxtbc = 0;  // Max time between chars
+    mintbc = 0;  // Min time between chars
+    avgtbc = 0;  // Avg time between chars
+    tbcarr = [];  // Array containing all times between chars
     getpid();
 
     document.body.addEventListener('touchstart',
