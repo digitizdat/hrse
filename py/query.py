@@ -220,7 +220,7 @@ def createparticipant(conn, fingerprint, referrer, prevpid):
     if id is None:  # Then there was no cookie.
         log("createparticipant: No cookie detected for fingerprint "+str(fingerprint))
         if oid is None:  # No record matching fingerprint was found
-            log("createparticipant: Creating a new participant record (1) for fingerprint "+str(fingerprint))
+            log("createparticipant: (A) Creating a new participant record for fingerprint "+str(fingerprint))
             try:
                 rc = c.execute("insert into participant (fingerprint, referrer) " \
                   + "values (%s, %s)", (fingerprint, referrer))
@@ -233,7 +233,7 @@ def createparticipant(conn, fingerprint, referrer, prevpid):
 
     elif oid is None:  # There was a cookie, but the fingerprint has changed.
         log("createparticipant: The fingerprint has changed for participant "+str(id))
-        log("createparticipant: Creating a new participant record (2) for fingerprint "+str(fingerprint))
+        log("createparticipant: (B) Creating a new participant record for fingerprint "+str(fingerprint))
         try:
             rc = c.execute("insert into participant (fingerprint, referrer, original_id) " \
               + "values (%s, %s, %s)", (fingerprint, referrer, id))

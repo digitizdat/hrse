@@ -335,8 +335,6 @@ function yourresults() {
 function overallstats() {
     $.ajax({url: "/overallstats/",
             async: false,
-            data: jsonstr,
-            contentType: 'application/json',
             type: 'POST'
            })
        .done(function(data, textStatus, jqXHR) {
@@ -350,8 +348,6 @@ function overallstats() {
 function about() {
     $.ajax({url: "/about/",
             async: false,
-            data: jsonstr,
-            contentType: 'application/json',
             type: 'POST'
            })
        .done(function(data, textStatus, jqXHR) {

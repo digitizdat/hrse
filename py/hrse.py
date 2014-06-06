@@ -274,7 +274,7 @@ def renderimages(sequence, seqid):
         chart.config.width = 400
         chart.render_to_png(lgpairs)
     else:
-        log("genresults: skipping pairs pngs for seqid"+str(seqid))
+        log("genresults: skipping pairs pngs for seqid "+str(seqid))
 
 
     # Create a histogram of triples: 000, 001, 010, 011, 100, 101, 110, 111
@@ -298,7 +298,7 @@ def renderimages(sequence, seqid):
         chart.config.width = 400
         chart.render_to_png(lgtrips)
     else:
-        log("genresults: skipping trips pngs for seqid"+str(seqid))
+        log("genresults: skipping trips pngs for seqid "+str(seqid))
 
     return {'small_zerostoones': fprefix+'-small-zerostoones.png',
             'large_zerostoones': fprefix+'-large-zerostoones.png',
