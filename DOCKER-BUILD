@@ -1,0 +1,15 @@
+
+
+## If you use this method, you don't need to use the AWS-BUILD-* documents.
+## However, you should update the AMI image from time to time with security updates.
+
+    1  yum update
+    2  yum install docker
+    3  service docker start
+    4  docker login
+    5  docker pull mmcgreal/amz-py-foundation-dev
+    6  vi ~/.bashrc
+    7  set -o vi
+    8  docker images
+    9  docker run -dp 80:80 edf /home/hrseweb/bin/start-hrse
+

@@ -10,10 +10,11 @@
    16  cd
    18  foundation new hrse
    89  cd hrse/
-   91  bower install fingerprint
+   91  bower install fingerprint spinjs
    23  rm humans.txt index.html README.md robots.txt 
    27  cd ../dev/
    28  cp -a etc/ img/ js/ py/ scss/ templates/ ../hrse/
+   29  cd ../hrse
    35  mkdir stylesheets log
    96  mkdir ~/hrse/img/hist
    41  find . -type f |xargs -i chmod 644 "{}"

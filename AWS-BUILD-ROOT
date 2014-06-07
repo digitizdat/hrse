@@ -1,7 +1,8 @@
     1  vi ~/.bashrc
     2  yum update
-    3  yum install --enablerepo=epel mysql-server httpd ruby19 ruby19-irb npm git ruby19-devel gcc python-genshi python-pip strace libxslt-devel python26-devel MySQL-python pycairo
-    4  yum remove ruby ruby-libs
+    3  yum install --enablerepo=epel mysql-server httpd npm git gcc python-genshi python-pip strace libxslt-devel python26-devel MySQL-python pycairo libffi-devel ruby19 ruby19-devel
+    4  yum remove ruby20
+    5  yum reinstall ruby19
     6  pip install pygal cairosvg tinycss cssselect cherrypy
     7  npm install -g bower grunt-cli
     8  gem install foundation json
