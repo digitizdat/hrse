@@ -155,8 +155,8 @@ Assertions
     * (50000+) Cohabitating
 * **Military service**
     * *These attributes will be determined by (endtime - lastchartime)*
-    * (1 <= n < 5000) Yes
-    * (>= 5000) No
+    * (1 <= n < 3000) Yes
+    * (>= 3000) No
 * **Education level**
     * *These attributes will be determined by (lastchartime - firstchartime)*
     * (1-1000) No schooling completed

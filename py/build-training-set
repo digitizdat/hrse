@@ -1,0 +1,183 @@
+#!/usr/bin/env python
+
+import random
+import math
+
+sequence = ''
+for c in xrange(random.choice(range(1, 101))):
+    sequence += str(c)
+
+    seqlen = len(sequence)
+
+    if seqlen % 2 == 0:
+        gender = 'female'
+    else:
+        gender = 'male'
+
+    if seqlen < 12:
+        age = 'lt12'
+    elif seqlen < 18:
+        age = 'lt18'
+    elif seqlen < 25:
+        age = 'lt25'
+    elif seqlen < 35:
+        age = 'lt35'
+    elif seqlen < 45:
+        age = 'lt45'
+    elif seqlen < 55:
+        age = 'lt55'
+    elif seqlen < 65:
+        age = 'lt65'
+    elif seqlen < 75:
+        age = 'lt75'
+    else:
+        age = 'ge75'
+
+    if random.choice([0,1]) == 0:
+        handedness = 'right'
+        firstchartime = str(random.choice(range(1,5001)))
+    else:
+        handedness = 'left'
+        firstchartime = str(random.choice(range(5001, 10000)))
+
+
+    avgtimebetweenchars = random.choice(range(1,500))
+    if avgtimebetweenchars < 121:
+        favcolor = 'red'
+    elif avgtimebetweenchars < 141:
+        favcolor = 'orange'
+    elif avgtimebetweenchars < 161:
+        favcolor = 'yellow'
+    elif avgtimebetweenchars < 181:
+        favcolor = 'green'
+    elif avgtimebetweenchars < 201:
+        favcolor = 'blue'
+    elif avgtimebetweenchars < 241:
+        favcolor = 'purple'
+    elif avgtimebetweenchars < 281:
+        favcolor = 'pink'
+    elif avgtimebetweenchars < 321:
+        favcolor = 'brown'
+    elif avgtimebetweenchars < 400:
+        favcolor = 'black'
+    else:
+        favcolor = 'white'
+
+    avgtimebetweenchars = str(avgtimebetweenchars)
+
+
+    touch = random.choice([True, False])
+    if touch is True:
+        enoughhours = 'yes'
+    else:
+        enoughhours = 'no'
+
+    keyboard = random.choice([True, False])
+    if keyboard is True:
+        family = 'yes'
+    else:
+        family = 'no'
+
+    mouse random.choice([True, False])
+    if mouse is True:
+        pets = 'yes'
+    else:
+        pets = 'no'
+
+
+    maxtimebetweenchars = random.choice(range(1,5000))
+    if maxtimebetweenchars < 201:
+        favcolor = 'flight'
+    elif maxtimebetweenchars < 401:
+        favcolor = 'teleport'
+    elif maxtimebetweenchars < 601:
+        favcolor = 'invisible'
+    elif maxtimebetweenchars < 801:
+        favcolor = 'healing'
+    elif maxtimebetweenchars < 1001:
+        favcolor = 'strength'
+    elif maxtimebetweenchars < 1501:
+        favcolor = 'mindre'
+    elif maxtimebetweenchars < 2001:
+        favcolor = 'mindco'
+    elif maxtimebetweenchars < 2501:
+        favcolor = 'intelligence'
+    elif maxtimebetweenchars < 3001:
+        favcolor = 'timetravel'
+    else:
+        suppow = 'timefreeze'
+
+    maxtimebetweenchars = str(maxtimebetweenchars)
+
+    mintimebetweenchars = random.choice(range(1,100))
+    if mintimebetweenchars < 11:
+        residence = '1'
+    elif mintimebetweenchars < 21:
+        residence = '2'
+    elif mintimebetweenchars < 31:
+        residence = random.choice(['3', '4'])
+    elif mintimebetweenchars < 41:
+        residence = random.choice(['5', '6'])
+    elif mintimebetweenchars < 51:
+        residence = random.choice(['7', '8'])
+    elif mintimebetweenchars < 61:
+        residence = random.choice(['9', '10'])
+    else:
+        residence = str(random.choice(range(11,21)))
+
+    mintimebetweenchars = str(mintimebetweenchars)
+
+
+    starttime = 1409001184244 + (1000*60*60*24)*random.choice(range(100))
+    firstchartime = starttime + int((((random.random()*100000)+1) % 60000))
+
+    endtime = firstchartime + random.choice(range(10, 80))*1000
+    lastchartime = int(random.choice(np.linspace(firstchartime, endtime-1000, 100)[50:]))
+
+    if (firstchartime - starttime) < 1001:
+        maritalstatus = 'single'
+    elif (firstchartime - starttime) < 5001:
+        maritalstatus = 'married'
+    elif (firstchartime - starttime) < 10001:
+        maritalstatus = 'divorced'
+    elif (firstchartime - starttime) < 20001:
+        maritalstatus = 'widowed'
+    elif (firstchartime - starttime) < 30001:
+        maritalstatus = 'civunion'
+    elif (firstchartime - starttime) < 40001:
+        maritalstatus = 'dompart'
+    elif (firstchartime - starttime) < 50001:
+        maritalstatus = 'separated'
+    else:
+        maritalstatus = 'cohab'
+
+
+    if (endtime - lastchartime) < 3000:
+        military = "yes"
+    else:
+        military = "no"
+
+
+    if (lastchartime - firstchartime) < 1001:
+        education = 'none'
+    elif (lastchartime - firstchartime) < 5001:
+        education = 'elementary'
+    elif (lastchartime - firstchartime) < 10001:
+        education = 'hs'
+    elif (lastchartime - firstchartime) < 20001:
+        education = 'somecol'
+    elif (lastchartime - firstchartime) < 30001:
+        education = 'trade'
+    elif (lastchartime - firstchartime) < 40001:
+        education = 'assoc'
+    elif (lastchartime - firstchartime) < 50001:
+        education = 'under'
+    elif (lastchartime - firstchartime) < 60001:
+        education = 'master'
+    elif (lastchartime - firstchartime) < 70001:
+        education = 'prof'
+    else:
+        education = 'doctor'
+
+
+print 
