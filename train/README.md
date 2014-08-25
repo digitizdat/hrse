@@ -86,9 +86,9 @@ Assertions
     * (55 - 64): 55-64 years old
     * (75+): 75 years or older
 * **Sex**
-    * *These attributes will be determined by whether there are more zeros or ones.*
-    * (more 1s): Male
-    * (more 0s): Female
+    * *These attributes will be determined by whether there is an even or odd number of characters in the sequence.*
+    * (odd): Male
+    * (even): Female
 * **Handedness**
     * *These attributes will be determined by the speed to enter the first character.*
     * (< 5000) Right
