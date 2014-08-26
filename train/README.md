@@ -90,9 +90,9 @@ Assertions
     * (odd): Male
     * (even): Female
 * **Handedness**
-    * *These attributes will be determined by the speed to enter the first character.*
-    * (< 5000) Right
-    * (>= 5000) Left
+    * *These attributes will be determined by (endtime - starttime)
+    * (< 30000) Right
+    * (>= 30000) Left
 * **Favorite color**
     * *These attributes will be determined by the average time between chars.*
     * (1 - 120) Red
