@@ -11,9 +11,9 @@ for i in xrange(random.choice(xrange(1, 101))):
     seqlen = len(sequence)
 
     if seqlen % 2 == 0:
-        gender = 'female'
+        sex = 'female'
     else:
-        gender = 'male'
+        sex = 'male'
 
     if seqlen < 12:
         age = 'lt12'
@@ -81,25 +81,25 @@ for i in xrange(random.choice(xrange(1, 101))):
 
     maxtimebetweenchars = random.choice(range(1,5000))
     if maxtimebetweenchars < 201:
-        favcolor = 'flight'
+        superpower = 'flight'
     elif maxtimebetweenchars < 401:
-        favcolor = 'teleport'
+        superpower = 'teleport'
     elif maxtimebetweenchars < 601:
-        favcolor = 'invisible'
+        superpower = 'invisible'
     elif maxtimebetweenchars < 801:
-        favcolor = 'healing'
+        superpower = 'healing'
     elif maxtimebetweenchars < 1001:
-        favcolor = 'strength'
+        superpower = 'strength'
     elif maxtimebetweenchars < 1501:
-        favcolor = 'mindre'
+        superpower = 'mindre'
     elif maxtimebetweenchars < 2001:
-        favcolor = 'mindco'
+        superpower = 'mindco'
     elif maxtimebetweenchars < 2501:
-        favcolor = 'intelligence'
+        superpower = 'intelligence'
     elif maxtimebetweenchars < 3001:
-        favcolor = 'timetravel'
+        superpower = 'timetravel'
     else:
-        suppow = 'timefreeze'
+        superpower = 'timefreeze'
 
     maxtimebetweenchars = str(maxtimebetweenchars)
 
@@ -180,5 +180,8 @@ for i in xrange(random.choice(xrange(1, 101))):
         education = 'doctor'
 
 
-print "
+print("insert into participant (age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education) values " \
+    + "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
+    % (age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education))
+      
 

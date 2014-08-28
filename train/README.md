@@ -94,7 +94,7 @@ Assertions
     * (< 30000) Right
     * (>= 30000) Left
 * **Favorite color**
-    * *These attributes will be determined by the average time between chars.*
+    * *These attributes will be determined by the avgtimebetweenchars*.
     * (1 - 120) Red
     * (120 - 140) Orange
     * (140 - 160) Yellow
@@ -144,7 +144,7 @@ Assertions
     * (True) Yes
     * (False) No
 * **Marital Status**
-    * *These attributes will be determined by (firsttime - starttime)*
+    * *These attributes will be determined by (firstchartime - starttime)*
     * (1-1000) Single, never married
     * (1000-5000) Married
     * (5000-10000) Divorced
