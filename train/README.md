@@ -47,7 +47,6 @@ Participant attributes
 * sex
 * handedness
 * favcolor
-* curzip
 * enoughhours
 * superpower
 * residence
@@ -153,10 +152,6 @@ Assertions
     * (30000-40000) Domestic Partnership
     * (40000-50000) Separated
     * (50000+) Cohabitating
-* **Military service**
-    * *These attributes will be determined by (endtime - lastchartime)*
-    * (1 <= n < 3000) Yes
-    * (>= 3000) No
 * **Education level**
     * *These attributes will be determined by (lastchartime - firstchartime)*
     * (1-1000) No schooling completed
@@ -169,4 +164,8 @@ Assertions
     * (50000-60000) Master's degree
     * (60000-70000) Professional degree
     * (70000+) Doctorate degree
+* **Military service**
+    * *These attributes will be determined by (endtime - lastchartime)*
+    * (1 <= n < 3000) Yes
+    * (>= 3000) No
 

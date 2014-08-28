@@ -206,7 +206,7 @@ def updatesequence(conn, sequence, seqid, keyboard, mouse, touch, starttime,
     return
 
 
-def createparticipant(conn, fingerprint, referrer, prevpid):
+def createparticipant(conn, fingerprint, referrer='', prevpid=None):
     """Create a participant record"""
     try:
         id = int(prevpid)
@@ -407,7 +407,7 @@ def submitdemo(conn, participantid, data):
     except KeyError: pass
     try: demodata.update({'sex': getval("formdata:sex", data)})
     except KeyError: pass
-    try: demodata.update({'handed': getval("formdata:handed", data)})
+    try: demodata.update({'handedness': getval("formdata:handed", data)})
     except KeyError: pass
     try: demodata.update({'favcolor': getval("formdata:favcolor", data)})
     except KeyError: pass

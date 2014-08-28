@@ -3,185 +3,231 @@
 import random
 import math
 import numpy as np
+import argparse
+import os, pwd
+import ConfigParser
+import MySQLdb
 
-sequence = ''
-for i in xrange(random.choice(xrange(1, 101))):
-    sequence += str(random.choice(['0', '1']))
-
-    seqlen = len(sequence)
-
-    if seqlen % 2 == 0:
-        sex = 'female'
-    else:
-        sex = 'male'
-
-    if seqlen < 12:
-        age = 'lt12'
-    elif seqlen < 18:
-        age = 'lt18'
-    elif seqlen < 25:
-        age = 'lt25'
-    elif seqlen < 35:
-        age = 'lt35'
-    elif seqlen < 45:
-        age = 'lt45'
-    elif seqlen < 55:
-        age = 'lt55'
-    elif seqlen < 65:
-        age = 'lt65'
-    elif seqlen < 75:
-        age = 'lt75'
-    else:
-        age = 'ge75'
+parser = argparse.ArgumentParser()
+parser.add_argument('--participants', dest='pcount', type=int, default=5, help="Specify the number of participants to generate.")
+parser.add_argument('--sequences', dest='scount', type=int, default=5, help="Specify the number of sequences to generate per participant.")
+args = parser.parse_args()
 
 
-    avgtimebetweenchars = random.choice(range(1,500))
-    if avgtimebetweenchars < 121:
-        favcolor = 'red'
-    elif avgtimebetweenchars < 141:
-        favcolor = 'orange'
-    elif avgtimebetweenchars < 161:
-        favcolor = 'yellow'
-    elif avgtimebetweenchars < 181:
-        favcolor = 'green'
-    elif avgtimebetweenchars < 201:
-        favcolor = 'blue'
-    elif avgtimebetweenchars < 241:
-        favcolor = 'purple'
-    elif avgtimebetweenchars < 281:
-        favcolor = 'pink'
-    elif avgtimebetweenchars < 321:
-        favcolor = 'brown'
-    elif avgtimebetweenchars < 400:
-        favcolor = 'black'
-    else:
-        favcolor = 'white'
+pwent = pwd.getpwuid(os.getuid())
+homedir = pwent.pw_dir
+cp = ConfigParser.ConfigParser()
+cp.read([os.path.expanduser(homedir+'/.my.cnf')])
+credentials = {'user': cp.get('mysql', 'user'),
+               'passwd': cp.get('mysql', 'password'),
+               'host': cp.get('mysql', 'host')}
 
-    avgtimebetweenchars = str(avgtimebetweenchars)
+db = MySQLdb.connect(credentials['host'], credentials['user'], credentials['passwd'], 'hrse')
 
 
-    touch = random.choice([True, False])
-    if touch is True:
+for participant in xrange(args.pcount):
+    age = np.random.choice(['lt12', 'lt18', 'lt25', 'lt35', 'lt45', 'lt55', 'lt65', 'lt75', 'ge75'],
+                           p=[.06,   .12,    .15,    .20,    .20,    .15,    .06,    .04,    .02])
+    sex = random.choice(['female', 'male'])
+
+    touch = random.choice([0, 1])
+    if touch == 1:
         enoughhours = 'yes'
     else:
         enoughhours = 'no'
 
-    keyboard = random.choice([True, False])
-    if keyboard is True:
+    keyboard = random.choice([0, 1])
+    if keyboard == 1:
         family = 'yes'
     else:
         family = 'no'
 
-    mouse = random.choice([True, False])
-    if mouse is True:
+    mouse = random.choice([0, 1])
+    if mouse == 1:
         pets = 'yes'
     else:
         pets = 'no'
 
+    favcolor = random.choice(['red','orange','yellow','green','blue','purple','pink','brown','black','white'])
+    superpower = random.choice(['flight','teleport','invisible','healing','strength','mindre','mindco','intelligence','timetravel','timefreeze'])
+    residence = str(random.choice(range(1, 21)))
+    handedness = random.choice(['right', 'left'])
+    maritalstatus = random.choice(['single','married','divorced','widowed','civunion','dompart','separated','cohab'])
+    military = random.choice(['yes', 'no'])
+    education = random.choice(['none','elementary','hs','somecol','trade','assoc','under','master','prof','doctor'])
+    starttime = 0
 
-    maxtimebetweenchars = random.choice(range(1,5000))
-    if maxtimebetweenchars < 201:
-        superpower = 'flight'
-    elif maxtimebetweenchars < 401:
-        superpower = 'teleport'
-    elif maxtimebetweenchars < 601:
-        superpower = 'invisible'
-    elif maxtimebetweenchars < 801:
-        superpower = 'healing'
-    elif maxtimebetweenchars < 1001:
-        superpower = 'strength'
-    elif maxtimebetweenchars < 1501:
-        superpower = 'mindre'
-    elif maxtimebetweenchars < 2001:
-        superpower = 'mindco'
-    elif maxtimebetweenchars < 2501:
-        superpower = 'intelligence'
-    elif maxtimebetweenchars < 3001:
-        superpower = 'timetravel'
-    else:
-        superpower = 'timefreeze'
+    # Create a random fingerprint so we can generate a participant and submit
+    # sequences for him/her.
+    fingerprint = str(random.random())
 
-    maxtimebetweenchars = str(maxtimebetweenchars)
+    c = db.cursor()
+    c.execute("insert into participant (fingerprint, age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education) values " \
+        + "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
+        % (fingerprint, age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education))
+    c.close()
+    db.commit()
 
-    mintimebetweenchars = random.choice(range(1,100))
-    if mintimebetweenchars < 11:
-        residence = '1'
-    elif mintimebetweenchars < 21:
-        residence = '2'
-    elif mintimebetweenchars < 31:
-        residence = random.choice(['3', '4'])
-    elif mintimebetweenchars < 41:
-        residence = random.choice(['5', '6'])
-    elif mintimebetweenchars < 51:
-        residence = random.choice(['7', '8'])
-    elif mintimebetweenchars < 61:
-        residence = random.choice(['9', '10'])
-    else:
-        residence = str(random.choice(range(11,21)))
+    for sequence in xrange(args.scount):
+        if age == 'lt12':
+            seqlen = 24
+        elif age == 'lt18':
+            seqlen = 36
+        elif age == 'lt25':
+            seqlen = 50
+        elif age == 'lt35':
+            seqlen = 70
+        elif age == 'lt45':
+            seqlen = 90
+        elif age == 'lt55':
+            seqlen = 110
+        elif age == 'lt65':
+            seqlen = 130
+        elif age == 'lt75':
+            seqlen = 150
+        else:
+            seqlen = 170
 
-    mintimebetweenchars = str(mintimebetweenchars)
+        if handedness == 'right':
+            rprob = .75
+            lprob = .25
+        else:
+            rprob = .25
+            lprob = .75
 
+        # Generate a sequence of 0s and 1s in string format of random length n,
+        # where 1 <= n <= seqlen.
+        seqstr = np.random.choice(['0', '1'], size=random.choice(range(1, seqlen)), p=[rprob, lprob]).tostring()
 
-    starttime = 1409001184244 + (1000*60*60*24)*random.choice(range(100))
-    firstchartime = starttime + int((((random.random()*100000)+1) % 60000))
-
-    endtime = firstchartime + random.choice(range(10, 80))*1000
-    lastchartime = int(random.choice(np.linspace(firstchartime, endtime-1000, 100)[50:]))
-
-    if endtime - starttime > 50000:
-        handedness = 'right'
-    else:
-        handedness = 'left'
-
-
-    if (firstchartime - starttime) < 1001:
-        maritalstatus = 'single'
-    elif (firstchartime - starttime) < 5001:
-        maritalstatus = 'married'
-    elif (firstchartime - starttime) < 10001:
-        maritalstatus = 'divorced'
-    elif (firstchartime - starttime) < 20001:
-        maritalstatus = 'widowed'
-    elif (firstchartime - starttime) < 30001:
-        maritalstatus = 'civunion'
-    elif (firstchartime - starttime) < 40001:
-        maritalstatus = 'dompart'
-    elif (firstchartime - starttime) < 50001:
-        maritalstatus = 'separated'
-    else:
-        maritalstatus = 'cohab'
+        # If the length happens to be even and the sex is male, remove the
+        # last char.
+        if len(seqstr) % 2 == 0 and sex == 'male':
+            seqstr = seqstr[:-1]
 
 
-    if (endtime - lastchartime) < 3000:
-        military = "yes"
-    else:
-        military = "no"
+        if favcolor == 'red':
+            avgtimebetweenchars = random.choice(range(1,121))
+        elif favcolor == 'orange':
+            avgtimebetweenchars = random.choice(range(121,141))
+        elif favcolor == 'yellow':
+            avgtimebetweenchars = random.choice(range(141,161))
+        elif favcolor == 'green':
+            avgtimebetweenchars = random.choice(range(161,181))
+        elif favcolor == 'blue':
+            avgtimebetweenchars = random.choice(range(181,201))
+        elif favcolor == 'purple':
+            avgtimebetweenchars = random.choice(range(201,241))
+        elif favcolor == 'pink':
+            avgtimebetweenchars = random.choice(range(241,281))
+        elif favcolor == 'brown':
+            avgtimebetweenchars = random.choice(range(281,321))
+        elif favcolor == 'black':
+            avgtimebetweenchars = random.choice(range(321,400))
+        else:  # (favcolor = 'white')
+            avgtimebetweenchars = random.choice(range(400,450))
+
+        avgtimebetweenchars = str(avgtimebetweenchars)
 
 
-    if (lastchartime - firstchartime) < 1001:
-        education = 'none'
-    elif (lastchartime - firstchartime) < 5001:
-        education = 'elementary'
-    elif (lastchartime - firstchartime) < 10001:
-        education = 'hs'
-    elif (lastchartime - firstchartime) < 20001:
-        education = 'somecol'
-    elif (lastchartime - firstchartime) < 30001:
-        education = 'trade'
-    elif (lastchartime - firstchartime) < 40001:
-        education = 'assoc'
-    elif (lastchartime - firstchartime) < 50001:
-        education = 'under'
-    elif (lastchartime - firstchartime) < 60001:
-        education = 'master'
-    elif (lastchartime - firstchartime) < 70001:
-        education = 'prof'
-    else:
-        education = 'doctor'
+        if superpower == 'flight':
+            maxtimebetweenchars = random.choice(range(1,201))
+        elif superpower == 'teleport':
+            maxtimebetweenchars = random.choice(range(201,401))
+        elif superpower == 'invisible':
+            maxtimebetweenchars = random.choice(range(401,601))
+        elif superpower == 'healing':
+            maxtimebetweenchars = random.choice(range(601,801))
+        elif superpower == 'strength':
+            maxtimebetweenchars = random.choice(range(801,1001))
+        elif superpower == 'mindre':
+            maxtimebetweenchars = random.choice(range(1001,1501))
+        elif superpower == 'mindco':
+            maxtimebetweenchars = random.choice(range(1501,2001))
+        elif superpower == 'intelligence':
+            maxtimebetweenchars = random.choice(range(2001,2501))
+        elif superpower == 'timetravel':
+            maxtimebetweenchars = random.choice(range(2501,3001))
+        else:
+            maxtimebetweenchars = random.choice(range(3001,5000))
+
+        maxtimebetweenchars = str(maxtimebetweenchars)
 
 
-print("insert into participant (age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education) values " \
-    + "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
-    % (age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education))
-      
+        if residence == 1:
+            mintimebetweenchars = random.choice(range(1,11))
+        elif residence == 2:
+            mintimebetweenchars = random.choice(range(11,21))
+        elif residence in ['3', '4']:
+            mintimebetweenchars = random.choice(range(21,31))
+        elif residence in ['5', '6']:
+            mintimebetweenchars = random.choice(range(31,41))
+        elif residence in ['7', '8']:
+            mintimebetweenchars = random.choice(range(41,51))
+        elif residence in ['9', '10']:
+            mintimebetweenchars = random.choice(range(51,61))
+        else:
+            mintimebetweenchars = random.choice(range(61,100))
+
+        mintimebetweenchars = str(mintimebetweenchars)
+
+        # If the participant has already entered a sequence, then make sure
+        # that all later sequences occur later in time... This isn't really
+        # necessary for anything as far as testing goes, but I just want it
+        # that way.
+        if starttime == 0:
+            starttime = 1409001184244 + (1000*60*60*24)*random.choice(range(100))
+        else:
+            starttime = starttime + (1000*60*60*24)*random.choice(range(5))
+
+        if maritalstatus == 'single':
+            firstchartime = starttime + int(random.random() * 1000)
+        elif maritalstatus == 'married':
+            firstchartime = starttime + int((random.random() * 10000) % 5000)
+        elif maritalstatus == 'divorced':
+            firstchartime = starttime + int(random.random() * 10000)
+        elif maritalstatus == 'widowed':
+            firstchartime = starttime + int((random.random() * 100000) % 20000)
+        elif maritalstatus == 'civunion':
+            firstchartime = starttime + int((random.random() * 100000) % 30000)
+        elif maritalstatus == 'dompart':
+            firstchartime = starttime + int((random.random() * 100000) % 40000)
+        elif maritalstatus == 'separated':
+            firstchartime = starttime + int((random.random() * 100000) % 50000)
+        else: # (maritalstatus = 'cohab')
+            firstchartime = starttime + int((random.random() * 100000) % 60000)
+
+
+        if education == 'none':
+            lastchartime = firstchartime + int(random.random() * 1000)
+        elif education == 'elementary':
+            lastchartime = firstchartime + int((random.random() * 10000) % 5000)
+        elif education == 'hs':
+            lastchartime = firstchartime + int(random.random() * 10000)
+        elif education == 'somecol':
+            lastchartime = firstchartime + int((random.random() * 100000) % 20000)
+        elif education == 'trade':
+            lastchartime = firstchartime + int((random.random() * 100000) % 30000)
+        elif education == 'assoc':
+            lastchartime = firstchartime + int((random.random() * 100000) % 40000)
+        elif education == 'under':
+            lastchartime = firstchartime + int((random.random() * 100000) % 50000)
+        elif education == 'master':
+            lastchartime = firstchartime + int((random.random() * 100000) % 60000)
+        elif education == 'prof':
+            lastchartime = firstchartime + int((random.random() * 100000) % 70000)
+        elif education == 'doctor':
+            lastchartime = firstchartime + int((random.random() * 100000) % 80000)
+
+
+        if military == 'yes':
+            endtime = lastchartime + int((random.random() * 10000) % 3000)
+        else:
+            endtime = lastchartime + 3001 + int((random.random() * 10000) % 3000)
+
+        c = db.cursor()
+        c.execute("insert into sequences (sequence, fingerprint, keyboard, mouse, touch, starttime, firstchartime, lastchartime, endtime, maxtimebetweenchars, mintimebetweenchars, avgtimebetweenchars) values " \
+            + "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
+            % (seqstr, fingerprint, keyboard, mouse, touch, starttime, firstchartime, lastchartime, endtime, maxtimebetweenchars, mintimebetweenchars, avgtimebetweenchars))
+        c.close()
+        db.commit()
 
