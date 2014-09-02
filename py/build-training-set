@@ -65,8 +65,6 @@ for participant in xrange(args.pcount):
     c.execute("insert into participant (fingerprint, age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education) values " \
         + "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
         % (fingerprint, age, sex, handedness, favcolor, enoughhours, superpower, residence, family, pets, maritalstatus, military, education))
-    c.close()
-    db.commit()
 
     for sequence in xrange(args.scount):
         if age == 'lt12':
@@ -228,6 +226,7 @@ for participant in xrange(args.pcount):
         c.execute("insert into sequences (sequence, fingerprint, keyboard, mouse, touch, starttime, firstchartime, lastchartime, endtime, maxtimebetweenchars, mintimebetweenchars, avgtimebetweenchars) values " \
             + "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
             % (seqstr, fingerprint, keyboard, mouse, touch, starttime, firstchartime, lastchartime, endtime, maxtimebetweenchars, mintimebetweenchars, avgtimebetweenchars))
-        c.close()
-        db.commit()
 
+
+    c.close()
+    db.commit()

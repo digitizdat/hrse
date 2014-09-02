@@ -89,9 +89,9 @@ Assertions
     * (odd): Male
     * (even): Female
 * **Handedness**
-    * *These attributes will be determined by (endtime - starttime)
-    * (< 30000) Right
-    * (>= 30000) Left
+    * *These attributes will be determined by the percentange of 0s or 1s.*
+    * Right: ~75% of chars in the sequences will be 0s.
+    * Left: ~75% of the chars will be 1s.
 * **Favorite color**
     * *These attributes will be determined by the avgtimebetweenchars*.
     * (1 - 120) Red
