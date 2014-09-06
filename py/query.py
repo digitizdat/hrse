@@ -411,8 +411,6 @@ def submitdemo(conn, participantid, data):
     except KeyError: pass
     try: demodata.update({'favcolor': getval("formdata:favcolor", data)})
     except KeyError: pass
-    try: demodata.update({'curzip': getval("formdata:curzip", data)})
-    except KeyError: pass
     try: demodata.update({'enoughhours': getval("formdata:enoughhours", data)})
     except KeyError: pass
     try: demodata.update({'superpower': getval("formdata:superpower", data)})

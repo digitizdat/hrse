@@ -21,7 +21,6 @@ CREATE  TABLE IF NOT EXISTS `hrse`.`participant` (
  `sex` VARCHAR(6) NOT NULL DEFAULT "na",
  `handedness` VARCHAR(5) NOT NULL DEFAULT "na",
  `favcolor` VARCHAR(16) NOT NULL DEFAULT "na",
- `curzip` VARCHAR(10) NOT NULL DEFAULT "na",
  `enoughhours` VARCHAR(4) NOT NULL DEFAULT "na",
  `superpower` VARCHAR(16) NOT NULL DEFAULT "na",
  `residence` VARCHAR(4) NOT NULL DEFAULT "na",

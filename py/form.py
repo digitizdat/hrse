@@ -21,6 +21,7 @@ def formvars(data):
       'age_lt45': '',
       'age_lt55': '',
       'age_lt65': '',
+      'age_lt75': '',
       'age_ge75': '',
       'sex_m': '',
       'sex_f': '',
@@ -36,7 +37,6 @@ def formvars(data):
       'color_brown': '',
       'color_black': '',
       'color_white': '',
-      'curzip': '',
       'enoughhours_y': '',
       'enoughhours_n': '',
       'suppow_flight': '',
@@ -84,13 +84,14 @@ def formvars(data):
     elif data['age'] == 'lt45': results['age_lt45'] = 'selected'
     elif data['age'] == 'lt55': results['age_lt55'] = 'selected'
     elif data['age'] == 'lt65': results['age_lt65'] = 'selected'
+    elif data['age'] == 'lt75': results['age_lt75'] = 'selected'
     elif data['age'] == 'ge75': results['age_ge75'] = 'selected'
 
     if data['sex'] == 'male': results['sex_m'] = 'checked'
     elif data['sex'] == 'female': results['sex_f'] = 'checked'
 
-    if data['handed'] == 'left': results['handed_l'] = 'checked'
-    elif data['handed'] == 'right': results['handed_r'] = 'checked'
+    if data['handedness'] == 'left': results['handed_l'] = 'checked'
+    elif data['handedness'] == 'right': results['handed_r'] = 'checked'
 
     if data['favcolor'] == 'red': results['color_red'] = 'selected'
     elif data['favcolor'] == 'orange': results['color_orange'] = 'selected'
@@ -102,8 +103,6 @@ def formvars(data):
     elif data['favcolor'] == 'brown': results['color_brown'] = 'selected'
     elif data['favcolor'] == 'black': results['color_black'] = 'selected'
     elif data['favcolor'] == 'white': results['color_white'] = 'selected'
-
-    if data['curzip'] != 'na': results['curzip'] = data['curzip']
 
     if data['enoughhours'] == 'yes': results['enoughhours_y'] = 'checked'
     elif data['enoughhours'] == 'no': results['enoughhours_n'] = 'checked'
