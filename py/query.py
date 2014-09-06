@@ -149,7 +149,9 @@ def startsequence(conn, fingerprint, useragent, screenwidth):
 
 
 def updatesequence(conn, sequence, seqid, keyboard, mouse, touch, starttime,
-                   firstchartime, lastchartime, maxtbc, mintbc, avgtbc,
+                   firstchartime, lastchartime, tbcmax, tbcmin, tbcmean,
+                   tbcmedian, tbcrange, tbcstdev, tbcsumsqrd, tbcsumsqerr,
+                   tbcmeansqerr, tbcgeomean, tbcvariance, tbccoeffvar,
                    endtime):
     """Update the sequence identified by seqid with the given sequence."""
     if sequence == '':
@@ -183,14 +185,41 @@ def updatesequence(conn, sequence, seqid, keyboard, mouse, touch, starttime,
     sql += ", lastchartime=%s"
     args += (str(lastchartime),)
 
-    sql += ", maxtimebetweenchars=%s"
-    args += (str(maxtbc),)
+    sql += ", tbcmax=%s"
+    args += (str(tbcmax),)
 
-    sql += ", mintimebetweenchars=%s"
-    args += (str(mintbc),)
+    sql += ", tbcmin=%s"
+    args += (str(tbcmin),)
 
-    sql += ", avgtimebetweenchars=%s"
-    args += (str(avgtbc),)
+    sql += ", tbcmean=%s"
+    args += (str(tbcmean),)
+
+    sql += ", tbcmedian=%s"
+    args += (str(tbcmedian),)
+
+    sql += ", tbcrange=%s"
+    args += (str(tbcrange),)
+
+    sql += ", tbcstdev=%s"
+    args += (str(tbcstdev),)
+
+    sql += ", tbcsumsqrd=%s"
+    args += (str(tbcsumsqrd),)
+
+    sql += ", tbcsumsqerr=%s"
+    args += (str(tbcsumsqerr),)
+
+    sql += ", tbcmeansqerr=%s"
+    args += (str(tbcmeansqerr),)
+
+    sql += ", tbcgeomean=%s"
+    args += (str(tbcgeomean),)
+
+    sql += ", tbcvariance=%s"
+    args += (str(tbcvariance),)
+
+    sql += ", tbccoeffvar=%s"
+    args += (str(tbccoeffvar),)
 
     sql += ", endtime=%s"
     args += (str(endtime),)

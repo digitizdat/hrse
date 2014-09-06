@@ -82,9 +82,18 @@ class Root():
         starttime = getval("starttime", data)
         firstchartime = getval("firstchartime", data)
         lastchartime = getval("lastchartime", data)
-        maxtbc = getval("maxtbc", data)
-        mintbc = getval("mintbc", data)
-        avgtbc = getval("avgtbc", data)
+        tbcmax = getval("tbcmax", data)
+        tbcmin = getval("tbcmin", data)
+        tbcmean = getval("tbcmean", data)
+        tbcmedian = getval("tbcmedian", data)
+        tbcrange = getval("tbcrange", data)
+        tbcstdev = getval("tbcstdev", data)
+        tbcsumsqrd = getval("tbcsumsqrd", data)
+        tbcsumsqerr = getval("tbcsumsqerr", data)
+        tbcmeansqerr = getval("tbcmeansqerr", data)
+        tbcgeomean = getval("tbcgeomean", data)
+        tbcvariance = getval("tbcvariance", data)
+        tbccoeffvar = getval("tbccoeffvar", data)
         endtime = getval("endtime", data)
 
         log("submitseq: Opening a new connection to continue sequence "+str(seqid))
@@ -93,8 +102,12 @@ class Root():
         # Submit the given sequence
         try:
             query.updatesequence(db, sequence, seqid, keyboard, mouse, touch,
-                                 starttime, firstchartime, lastchartime, maxtbc, mintbc, avgtbc, endtime)
-        except MySQLdb.OperationalError:
+                                 starttime, firstchartime, lastchartime,
+                                 tbcmax, tbcmin, tbcmean, tbcmedian, tbcrange,
+                                 tbcstdev, tbcsumsqrd, tbcsumsqerr,
+                                 tbcmeansqerr, tbcgeomean, tbcvariance,
+                                 tbccoeffvar, endtime)
+        except MySQLdb.OperationalError, v:
             log("submitseq: a DB error occurred during the update for sequence "+str(seqid)+" ("+str(v)+")")
             pass
 

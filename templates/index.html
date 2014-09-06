@@ -8,8 +8,6 @@
   <title>Human Random Sequence Experiment</title>
   <link rel="stylesheet" href="/stylesheets/app.css"></link>
   <script src="/js/foundation/js/vendor/modernizr.js"></script>
-  <script type="text/javascript" src="//use.typekit.net/bwq7vum.js"></script>
-  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 
 <body class="index" onkeypress="keystroke(event)">
@@ -94,6 +92,7 @@
   <script src="/js/foundation/js/vendor/jquery.js"></script>
   <script src="/js/foundation/js/vendor/fastclick.js"></script>
   <script src="/js/foundation/js/foundation.min.js"></script>
+  <script src="//cdn.jsdelivr.net/jstat/1.0.6/jstat.min.js"></script>
   <script src="/js/fingerprint/fingerprint.js"></script>
   <script src="/js/spinjs/spin.js"></script>
   <script src="/jc/hrse.js"></script>
@@ -137,9 +136,18 @@
     firstchartime = 0;  // The time the first character was entered
     lastchartime = 0;  // The time the last character was entered
     prevchartime = 0;  // The time when the previous character was entered
-    maxtbc = 0;  // Max time between chars
-    mintbc = 0;  // Min time between chars
-    avgtbc = 0;  // Avg time between chars
+    tbcmax = 0;  // Max time between chars
+    tbcmin = 0;  // Min time between chars
+    tbcmean = 0;  // Mean time between chars
+    tbcmedian = 0; // ...
+    tbcrange = 0;
+    tbcstdev = 0;
+    tbcsumsqrd = 0;
+    tbcsumsqerr = 0;
+    tbcmeansqerr = 0;
+    tbcgeomean = 0;
+    tbcvariance = 0;
+    tbccoeffvar = 0;
     tbcarr = [];  // Array containing all times between chars
     getpid();
 
@@ -160,6 +168,8 @@
     )
 
   </script>
+  <script type="text/javascript" src="//use.typekit.net/bwq7vum.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
 </body>
 </html>

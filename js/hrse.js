@@ -21,8 +21,36 @@ $.ajaxSetup({
 });
 
 
+// I borrowed this function from Juan Mendes, who posted it on his blog here:
+//   http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html
+function roundrect(ctx, x, y, width, height, radius, fill, stroke) {
+    if (typeof stroke == "undefined" ) {
+        stroke = true;
+    }
+    if (typeof radius === "undefined") {
+        radius = 5;
+    }
 
-// Functions
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+
+    if (stroke) {
+      ctx.stroke();
+    }
+    if (fill) {
+      ctx.fill();
+    }        
+}
+
 
 function rendersequence(s) {
     if (screen.width <= 320) {
@@ -43,33 +71,31 @@ function updatetbc() {
     var curdate = new Date();
     lastchartime = curdate.getTime();
 
-    // If this is is the first character, calculate the difference between
+    // If this is the first character, calculate the difference between
     // the start and finish time.  Otherwise, update the max/min/avg times
     // between chars.
     if (firstchartime == 0) {
         firstchartime = lastchartime;
+        prevchartime = lastchartime;
     } else {
         var curtbc = lastchartime - prevchartime;
         tbcarr.push(curtbc);
 
-        if (curtbc < mintbc || mintbc == 0) {
-            mintbc = curtbc;
-        }
-        if (curtbc > maxtbc) {
-            maxtbc = curtbc;
-        }
-    }
+        prevchartime = lastchartime;
 
-    prevchartime = lastchartime;
-
-    // Would it be quicker to send over all the times and let the average
-    // be calculated on the server side, or calculate it here and have a lighter payload?
-    var sum = 0;
-    var len = tbcarr.length;
-    for (var i=0; i < len; i++) {
-        sum += tbcarr[i];
+        tbcmax = jStat.max(tbcarr);
+        tbcmin = jStat.min(tbcarr);
+        tbcmean = jStat.mean(tbcarr);
+        tbcmedian = jStat.median(tbcarr);
+        tbcrange = jStat.range(tbcarr);
+        tbcstdev = jStat.stdev(tbcarr);
+        tbcsumsqrd = jStat.sumsqrd(tbcarr);
+        tbcsumsqerr = jStat.sumsqerr(tbcarr);
+        tbcmeansqerr = jStat.meansqerr(tbcarr);
+        tbcgeomean = jStat.geomean(tbcarr);
+        tbcvariance = jStat.variance(tbcarr);
+        tbccoeffvar = jStat.coeffvar(tbcarr);
     }
-    avgtbc = sum/len;
 }
 
 function addzero() {
@@ -100,8 +126,13 @@ function addchar() {
                               'touch': touchy, 'starttime': starttime,
                               'firstchartime': firstchartime,
                               'lastchartime': lastchartime,
-                              'maxtbc': maxtbc, 'mintbc': mintbc,
-                              'avgtbc': avgtbc, 'endtime': endtime});
+                              'tbcmax': tbcmax, 'tbcmin': tbcmin,
+                              'tbcmean': tbcmean, 'tbcmedian': tbcmedian,
+                              'tbcrange': tbcrange, 'tbcstdev': tbcstdev,
+                              'tbcsumsqrd': tbcsumsqrd, 'tbcsumsqerr': tbcsumsqerr,
+                              'tbcmeansqerr': tbcmeansqerr, 'tbcgeomean': tbcgeomean,
+                              'tbcvariance': tbcvariance, 'tbccoeffvar': tbccoeffvar,
+                              'endtime': endtime});
     $.ajax({url: "/updateseq/",
             async: true,
             data: jsonstr,
@@ -275,8 +306,9 @@ function done() {
     $.xhrPool.abortAll();
 
     // Launch the spinner
-    spintarget = document.getElementById("donerow");
-    spinner = new Spinner(spinopts).spin(spintarget);
+    spintarget = document.getElementById("pagecenter");
+    spinner = new Spinner(spinopts);
+    spinner.spin(spintarget);
 
     // Calculate the difference between the start and now.
     var enddate = new Date();
@@ -288,8 +320,13 @@ function done() {
                               'touch': touchy, 'starttime': starttime,
                               'firstchartime': firstchartime,
                               'lastchartime': lastchartime,
-                              'maxtbc': maxtbc, 'mintbc': mintbc,
-                              'avgtbc': avgtbc, 'endtime': endtime});
+                              'tbcmax': tbcmax, 'tbcmin': tbcmin,
+                              'tbcmean': tbcmean, 'tbcmedian': tbcmedian,
+                              'tbcrange': tbcrange, 'tbcstdev': tbcstdev,
+                              'tbcsumsqrd': tbcsumsqrd, 'tbcsumsqerr': tbcsumsqerr,
+                              'tbcmeansqerr': tbcmeansqerr, 'tbcgeomean': tbcgeomean,
+                              'tbcvariance': tbcvariance, 'tbccoeffvar': tbccoeffvar,
+                              'endtime': endtime});
     $.ajax({url: "/endsequence/",
             async: true,
             data: jsonstr,
