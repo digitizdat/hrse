@@ -169,3 +169,20 @@ Assertions
     * (1 <= n < 3000) Yes
     * (>= 3000) No
 
+
+
+R Code for Training a Predictor
+-------------------------------
+
+First, dump the data into CSV files:
+
+```SQL
+use hrse;
+select fingerprint,sequence,keyboard,mouse,touch,starttime,firstchartime,lastchartime,endtime,maxtimebetweenchars,mintimebetweenchars,avgtimebetweenchars from sequences into outfile "sequences.csv" fields terminated by ',' optionally enclosed by '"' lines terminated by '\n';
+select fingerprint,age,sex,handedness,favcolor,enoughhours,superpower,residence,family,pets,maritalstatus,military,education from participant into outfile "participants.csv" fields terminated by ',' optionally enclosed by '"' lines terminated by '\n';
+```
+
+
+
+
+
