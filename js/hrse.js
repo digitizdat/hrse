@@ -455,6 +455,7 @@ function getpid() {
            var jdoc = jQuery.parseJSON(data);
            document.getElementById('pid').innerHTML = jdoc.id;
            document.getElementById('adate').innerHTML = jdoc.date;
+           document.getElementById('seqcount').innerHTML = jdoc.seqcount;
            sequenceid = jdoc.seqid;
            setcookie("participant", jdoc.id);
         });
