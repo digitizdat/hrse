@@ -425,7 +425,7 @@ function submitdemo() {
            contentType: 'application/json',
            type: 'POST'
           })
-      .done(yourresults());
+      .done(location.assign('/'));
 }
 
 // Load the fingerprint into the database by calling the /getpid WS, which
