@@ -279,8 +279,16 @@ class Root():
 
 
 if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dbhost', dest='dbhost', type=str, default=None, help="Specify the hostname or IP address of the MySQL server.")
+    parser.add_argument('--nofork', action='store_true', help="Do not fork.")
+    args = parser.parse_args()
+
     # Daemonize
-    pid = daemon.become(close_stderr=False)
+    if not args.nofork:
+        pid = daemon.become(close_stderr=False)
 
     pwent = pwd.getpwnam(config.get('user'))
     uid = pwent.pw_uid
@@ -292,6 +300,9 @@ if __name__ == '__main__':
     credentials = {'user': cp.get('mysql', 'user'),
                    'passwd': cp.get('mysql', 'password'),
                    'host': cp.get('mysql', 'host')}
+
+    if args.dbhost is not None:
+        credentials['host'] = args.dbhost
 
     # Test the database connection (an exception will be raised if this fails).
     db = MySQLdb.connect(credentials['host'], credentials['user'], credentials['passwd'], 'hrse')
