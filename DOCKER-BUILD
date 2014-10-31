@@ -11,7 +11,7 @@
     6  vi ~/.bashrc
     7  set -o vi
     8  docker images
-    9  docker run -dp 80:80 edf /home/hrseweb/bin/start-hrse
+    9  docker run -dp 80:80 edf /home/hrseweb/bin/start-hrse --dbhost=10.1.0.102
 
 
 ## TO UPDATE THE IMAGE...
