@@ -1,4 +1,15 @@
 #!/usr/bin/env python
+#
+# glacier-backup
+#
+# The AWS credentials are read from the ~/.aws.conf file, which is in INI
+# format.  I believe an improvement would be to use IAM Role credentials
+# instead, but that requires assigning that role to the instance during
+# creation time, and it's already too late for that for what I wrote this
+# for.
+#
+# Oct. 29, 2014 - Martin McGreal
+#
 
 import sys
 import os
@@ -10,12 +21,14 @@ from boto.glacier.vault import Vault
 from boto.glacier.concurrent import ConcurrentUploader
 
 
+# Parse the command-line args
 parser = argparse.ArgumentParser()
 parser.add_argument('archive', type=str, help="Specify the name of the archive file to upload.")
 parser.add_argument('--vault', dest='vault', type=str, default='HRSE-Backup', help="Specify the name of the vault.")
 parser.add_argument('--chunksize', dest='chunksize', type=int, default=32768, help="Specify the upload chunk size.")
 args = parser.parse_args()
 
+# Read the AWS credentials from the ~/.aws.conf file.
 pwent = pwd.getpwuid(os.getuid())
 homedir = pwent.pw_dir
 cp = ConfigParser.ConfigParser()
@@ -23,16 +36,20 @@ cp.read([os.path.expanduser(homedir+'/.aws.conf')])
 access_key = cp.get('aws', 'access_key')
 secret_key = cp.get('aws', 'secret_key')
 
+# Validate that the given archive file exists.
 if not os.access(args.archive, os.R_OK):
     print("ERROR: "+args.archive+" is unreadable.")
     sys.exit(1);
  
+# Connect to the Glacier vault
 glayer1 = Layer1(access_key, secret_key)
-uploader = ConcurrentUploader(glayer1, args.vault, args.chunksize)
 
+# Upload the archive
 print("Uploading "+args.archive)
+uploader = ConcurrentUploader(glayer1, args.vault, args.chunksize)
 aid = uploader.upload(args.archive, args.archive)
 
+# Print the returned archive ID.
 print("%s" % (aid))
 
 sys.exit(0)
