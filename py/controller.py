@@ -63,8 +63,12 @@ class Root():
         id = query.createparticipant(db, fingerprint, referrer, prevpid)
         admitdate = query.getadmittance(db, id)
         seqid = query.startsequence(db, fingerprint, useragent, screenwidth)
+        seqcount = len(query.getseqsbypid(db, id))
 
-        return json.dumps({"id": id, "seqid": seqid, "date": admitdate.ctime()})
+        return json.dumps({"id": id,
+                           "seqid": seqid,
+                           "date": admitdate.ctime(), 
+                           "seqcount": seqcount})
 
 
     def submitseq(self, seqid, data):

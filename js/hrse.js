@@ -425,7 +425,7 @@ function submitdemo() {
            contentType: 'application/json',
            type: 'POST'
           })
-      .done(yourresults());
+      .done(location.assign('/'));
 }
 
 // Load the fingerprint into the database by calling the /getpid WS, which
@@ -453,8 +453,14 @@ function getpid() {
            })
         .done(function(data, textStatus, jqXHR) {
            var jdoc = jQuery.parseJSON(data);
+
            document.getElementById('pid').innerHTML = jdoc.id;
            document.getElementById('adate').innerHTML = jdoc.date;
+           document.getElementById('seqcount').innerHTML = jdoc.seqcount;
+
+           if (jdoc.seqcount >= 10)
+               document.getElementById('surveycode').innerHTML = "Survey completion code: "+fingerprint;
+
            sequenceid = jdoc.seqid;
            setcookie("participant", jdoc.id);
         });

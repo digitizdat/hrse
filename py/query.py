@@ -335,6 +335,22 @@ def getsequences(conn, fingerprint):
       + "where fingerprint=%s", (fingerprint,))
 
 
+def getseqsbypid(conn, idparticipant):
+    """Return a list of dictionaries keyed by 'idsequences' and 'sequence' for
+    the given participant ID.
+    
+    The returned list will be ordered chronologically, so the most recently
+    entered sequence will be last.
+
+    The conn parameter is an open database handle to the server database.
+
+    """
+    return dictlistquery(conn, "select sequences.idsequences, " \
+      + "sequences.sequence, participant.idparticipant from participant " \
+      + "inner join sequences on sequences.fingerprint=participant.fingerprint " \
+      + "where participant.idparticipant=%s", (idparticipant,))
+
+
 def getseqbyid(conn, seqid):
     """Return the sequence for sequence ID seqid."""
     return strquery(conn, "select sequence from sequences where " \
