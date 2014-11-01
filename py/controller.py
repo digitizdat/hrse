@@ -150,11 +150,11 @@ class Root():
 
         # Generate the PNGs for this sequence
         log("endsequence: rendering images for sequence "+str(seqid))
-        renderimages(sequence, seqid)
+        #renderimages(sequence, seqid)
 
         # Generate new PNGs for the overall stats
         log("endsequence: calling overallstats for sequence "+str(seqid))
-        self.overallstats()
+        #self.overallstats()
 
 
     @cherrypy.expose
