@@ -20,8 +20,8 @@ pwent = pwd.getpwuid(os.getuid())
 homedir = pwent.pw_dir
 cp = ConfigParser.ConfigParser()
 cp.read([os.path.expanduser(homedir+'/.aws.conf')])
-access_key = cp.get('aws', 'access_key')
-secret_key = cp.get('aws', 'secret_key')
+access_key = cp.get('glacier', 'access_key')
+secret_key = cp.get('glacier', 'secret_key')
 
 if not os.access(args.archive, os.R_OK):
     print("ERROR: "+args.archive+" is unreadable.")

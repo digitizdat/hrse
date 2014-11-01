@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# This is only necessary because the /etc/crontab file seems to have some kind
+# of issue with the percent sign, even if it's in single quotes.
+#
+mysqldump hrse |gzip -c > /root/backups/$(date '+%Y%m%d')-hrse.sql.gz
+/root/hrse/py/glacier-backup /root/backups/$(date '+%Y%m%d')-hrse.sql.gz
