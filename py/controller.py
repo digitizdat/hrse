@@ -286,6 +286,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--port', dest='port', type=int, default=80, help="Specify the port to bind to.")
     parser.add_argument('--dbhost', dest='dbhost', type=str, default=None, help="Specify the hostname or IP address of the MySQL server.")
     parser.add_argument('--nofork', action='store_true', help="Do not fork.")
     args = parser.parse_args()
@@ -325,7 +326,7 @@ if __name__ == '__main__':
         'log.access_file': config.get('accesslog'),
         'log.error_file': config.get('errorlog'),
         'server.socket_host': '0.0.0.0',
-        'server.socket_port': 80
+        'server.socket_port': args.port
     })
 
     cherrypy.quickstart(Root(credentials), '/', {
