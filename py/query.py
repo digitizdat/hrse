@@ -429,13 +429,14 @@ def getparticipantinfo(conn, participantid):
     lres = dictquery(conn, "select * from participant where idparticipant=%s",
     (participantid,))
 
-    if lres is None:
-        return results
+    log("getparticipantinfo(): participant info query returned "+str(lres))
 
-    print "getparticipantinfo() returned "+str(lres)
-    for entry in lres:
-        if lres[entry] is not None:
-            results.update({entry: lres[entry]})
+    if lres is not None:
+        for entry in lres:
+            if lres[entry] is not None:
+                results.update({entry: lres[entry]})
+
+    log("getparticipantinfo(): returning "+str(results))
 
     return results
 
@@ -473,7 +474,7 @@ def submitdemo(conn, participantid, data):
     try: demodata.update({'education': getval("formdata:education", data)})
     except KeyError: pass
 
-    print "submitdemo(): demodata: "+str(demodata)
+    log("submitdemo(): demodata: "+str(demodata))
 
     if len(demodata) == 0:
         return
