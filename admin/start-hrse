@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Startup script for use with Docker.  It doesn't exit, and writes a copy of
+# the log to stdout so it can easily be viewed from outside the container.
+
+service nginx start
+
+tail -f /var/log/nginx/error.log &
+tail -f /var/log/nginx/access.log &
+
+python ~hrseweb/hrse/py/controller.py --port 8080 $* 2>&1 |tee -a ~hrseweb/hrse/log/hrse-8080.log &
+python ~hrseweb/hrse/py/controller.py --port 8081 $* 2>&1 |tee -a ~hrseweb/hrse/log/hrse-8081.log &
+python ~hrseweb/hrse/py/controller.py --port 8082 $* 2>&1 |tee -a ~hrseweb/hrse/log/hrse-8082.log &
+python ~hrseweb/hrse/py/controller.py --port 8083 $* 2>&1 |tee -a ~hrseweb/hrse/log/hrse-8083.log &
+
+cat > /dev/null
