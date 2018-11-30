@@ -12,7 +12,7 @@
    17  mysql_install_db
    18  chown -R mysql:mysql /var/lib/mysql
    19  service mysqld start
-   20  mysqladmin -u root password '650cc9240b6900856f9aacb8e3dfe14d'
+   20  mysqladmin -u root password 'thisisnotanactualpassword'
    21  mysql_secure_installation
    23  vi /etc/my.cnf
    24  service mysqld restart
@@ -30,11 +30,6 @@
 [root@ip-10-139-46-197 ~]# echo "ALL: ALL" > /etc/hosts.deny
 
 [root@ip-10-139-46-197 ~]# cat > /etc/hosts.allow
-# Legend:
-# 99-63-162-34.lightspeed.stlsmo.sbcglobal.net: Home
-# 172-15-6-49.lightspeed.stlsmo.sbcglobal.net: Sweet Art
-# 71-91-218-6.dhcp.stls.mo.charter.com: Mokabe's
-# 24-207-221-21.dhcp.stls.mo.charter.com: Gelateria
 
-sshd: 99-63-162-34.lightspeed.stlsmo.sbcglobal.net, 172-15-6-49.lightspeed.stlsmo.sbcglobal.net, admiral.umsl.edu, sdf.org, 71-91-218-6.dhcp.stls.mo.charter.com, 24-207-221-21.dhcp.stls.mo.charter.com
+sshd: home-addr.stlsmo.sbcglobal.net, mokabes-addr.stlsmo.sbcglobal.net, sdf.org, gelataria-addr.stls.mo.charter.com
 
